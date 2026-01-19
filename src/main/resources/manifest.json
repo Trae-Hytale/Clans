@@ -1,0 +1,10 @@
+{
+  "Group": "Trae",
+  "Name": "Clans",
+  "Version": "1.0.0",
+  "Description": "",
+  "Main": "me.trae.clans.Clans",
+  "Dependencies": {
+    "Trae:Core": ">=1.0.0"
+  }
+}
