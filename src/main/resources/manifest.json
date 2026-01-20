@@ -5,6 +5,6 @@
   "Description": "",
   "Main": "me.trae.clans.Clans",
   "Dependencies": {
-    "Trae:Core": ">=1.0.0"
+    "Trae:Core": "*"
   }
 }
