@@ -36,7 +36,7 @@ public class ClanManager implements Manager<Clans>, IClanManager, Updater {
 
     @Update(delay = 500L)
     public void onUpdater() {
-        System.out.println("Test");
+        UtilMessage.log("Test Updater");
         for (final Clan clan : this.getClans()) {
             this.clanUpdaterList.forEach(clanUpdater -> clanUpdater.onUpdater(clan));
         }
