@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.trae.clans.clan.data.*;
-import me.trae.clans.clan.data.enums.RelationRequestType;
+import me.trae.clans.clan.enums.RelationRequestType;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.framework.utility.objects.Chunk;
 

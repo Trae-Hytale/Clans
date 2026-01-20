@@ -2,12 +2,16 @@ package me.trae.clans.clan;
 
 import com.hypixel.hytale.math.vector.Location;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import lombok.AllArgsConstructor;
 import me.trae.clans.Clans;
 import me.trae.clans.clan.data.Alliance;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.interfaces.IClanManager;
+import me.trae.clans.clan.wrappers.ClanUpdater;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.Manager;
+import me.trae.framework.updater.annotations.Update;
+import me.trae.framework.updater.interfaces.Updater;
 import me.trae.framework.utility.UtilColor;
 import me.trae.framework.utility.UtilMessage;
 import me.trae.framework.utility.java.ConcurrentLinkedHashMap;
@@ -19,13 +23,24 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+@AllArgsConstructor
 @Component
-public class ClanManager implements Manager<Clans>, IClanManager {
+public class ClanManager implements Manager<Clans>, IClanManager, Updater {
 
     private final ConcurrentLinkedHashMap<UUID, Clan> CLAN_BY_ID_MAP = new ConcurrentLinkedHashMap<>();
     private final ConcurrentMap<String, Clan> CLAN_BY_NAME_MAP = new ConcurrentHashMap<>();
     private final ConcurrentMap<UUID, Clan> CLAN_BY_PLAYER_ID_MAP = new ConcurrentHashMap<>();
     private final ConcurrentMap<Chunk, Clan> CLAN_BY_CHUNK_MAP = new ConcurrentHashMap<>();
+
+    private final List<ClanUpdater> clanUpdaterList;
+
+    @Update(delay = 500L)
+    public void onUpdater() {
+        System.out.println("Test");
+        for (final Clan clan : this.getClans()) {
+            this.clanUpdaterList.forEach(clanUpdater -> clanUpdater.onUpdater(clan));
+        }
+    }
 
     @Override
     public void updateNameInClanCache(final String previousName, final Clan clan) {

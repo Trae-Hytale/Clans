@@ -7,7 +7,7 @@ import me.trae.clans.clan.data.Alliance;
 import me.trae.clans.clan.data.Enemy;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.Pillage;
-import me.trae.clans.clan.data.enums.RelationRequestType;
+import me.trae.clans.clan.enums.RelationRequestType;
 import me.trae.framework.utility.objects.Chunk;
 
 import java.util.List;

@@ -26,7 +26,7 @@ public class Member implements IMember {
 
     @Override
     public PlayerRef getPlayer() {
-        return PlayerTracker.getOnlinePlayer(this.getId());
+        return PlayerTracker.getOnlinePlayer(this.getId()).orElse(null);
     }
 
     @Override
