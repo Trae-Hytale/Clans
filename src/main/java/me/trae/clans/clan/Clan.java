@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.trae.clans.clan.data.*;
+import me.trae.clans.clan.data.enums.RelationRequestType;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.framework.utility.objects.Chunk;
 
@@ -20,8 +21,8 @@ public class Clan implements IClan {
 
     private String name;
 
-    private final LinkedHashMap<UUID, Request> relationRequests = new LinkedHashMap<>();
-    private final LinkedHashMap<UUID, Request> invitationRequests = new LinkedHashMap<>();
+    private final Map<UUID, Map<RelationRequestType, Request>> relationRequests = new LinkedHashMap<>();
+    private final Map<UUID, Request> invitationRequests = new LinkedHashMap<>();
 
     private final LinkedHashMap<UUID, Member> members = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Alliance> alliances = new LinkedHashMap<>();
@@ -31,6 +32,36 @@ public class Clan implements IClan {
     private final List<Chunk> territory = new ArrayList<>();
 
     private Location home;
+
+    @Override
+    public void addRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
+        this.getRelationRequests().computeIfAbsent(clan.getId(), _ -> new LinkedHashMap<>()).put(relationRequestType, new Request(clan.getId(), System.currentTimeMillis()));
+    }
+
+    @Override
+    public void removeRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
+        this.getRelationRequests().computeIfPresent(clan.getId(), (_, map) -> map.remove(relationRequestType) != null && map.isEmpty() ? null : map);
+    }
+
+    @Override
+    public boolean isRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
+        return this.getRelationRequests().getOrDefault(clan.getId(), Collections.emptyMap()).containsKey(relationRequestType);
+    }
+
+    @Override
+    public void addInvitationRequest(final PlayerRef playerRef) {
+        this.getInvitationRequests().put(playerRef.getUuid(), new Request(playerRef.getUuid(), System.currentTimeMillis()));
+    }
+
+    @Override
+    public void removeInvitationRequest(final PlayerRef playerRef) {
+        this.getInvitationRequests().remove(playerRef.getUuid());
+    }
+
+    @Override
+    public boolean isInvitationRequest(final PlayerRef playerRef) {
+        return this.getInvitationRequests().containsKey(playerRef.getUuid());
+    }
 
     @Override
     public void addMember(final Member member) {

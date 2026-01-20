@@ -7,6 +7,7 @@ import me.trae.clans.clan.data.Alliance;
 import me.trae.clans.clan.data.Enemy;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.Pillage;
+import me.trae.clans.clan.data.enums.RelationRequestType;
 import me.trae.framework.utility.objects.Chunk;
 
 import java.util.List;
@@ -22,6 +23,18 @@ public interface IClan {
     default String getType() {
         return this.isAdmin() ? "Admin Clan" : "Clan";
     }
+
+    void addRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
+
+    void removeRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
+
+    boolean isRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
+
+    void addInvitationRequest(final PlayerRef playerRef);
+
+    void removeInvitationRequest(final PlayerRef playerRef);
+
+    boolean isInvitationRequest(final PlayerRef playerRef);
 
     void addMember(final Member member);
 

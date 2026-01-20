@@ -12,6 +12,7 @@ import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.SubModule;
+import me.trae.framework.utility.UtilMessage;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -19,11 +20,12 @@ import java.util.Optional;
 @Component
 public class CreateCommand extends ClanSubCommand implements SubModule<Clans, ClanCommand> {
 
-    public CreateCommand(@Nonnull final String name, @Nonnull final String description) {
-        super(name, description);
+    public CreateCommand() {
+        super("create", "Create a Clan");
     }
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world, final Optional<Clan> clanOptional) {
+        UtilMessage.message(playerRef, "Clans", "You tried to create a clan, still in progress...");
     }
 }
