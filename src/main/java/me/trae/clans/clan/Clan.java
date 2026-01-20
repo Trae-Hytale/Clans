@@ -35,12 +35,12 @@ public class Clan implements IClan {
 
     @Override
     public void addRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
-        this.getRelationRequests().computeIfAbsent(clan.getId(), _ -> new LinkedHashMap<>()).put(relationRequestType, new Request(clan.getId(), System.currentTimeMillis()));
+        this.getRelationRequests().computeIfAbsent(clan.getId(), __ -> new LinkedHashMap<>()).put(relationRequestType, new Request(clan.getId(), System.currentTimeMillis()));
     }
 
     @Override
     public void removeRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
-        this.getRelationRequests().computeIfPresent(clan.getId(), (_, map) -> map.remove(relationRequestType) != null && map.isEmpty() ? null : map);
+        this.getRelationRequests().computeIfPresent(clan.getId(), (__, map) -> map.remove(relationRequestType) != null && map.isEmpty() ? null : map);
     }
 
     @Override
