@@ -14,7 +14,7 @@ public interface IClanManager {
 
     void updateNameInClanCache(final String previousName, final Clan clan);
 
-    void updatePlayerInClanCache(final PlayerRef playerRef, Clan clan);
+    void updatePlayerInClanCache(final UUID id, Clan clan);
 
     void updateChunkInClanCache(final Chunk chunk, final Clan clan);
 
@@ -30,7 +30,7 @@ public interface IClanManager {
 
     Optional<Clan> getClanByPlayerId(final UUID id);
 
-    Optional<Clan> getClanByPlayer(final PlayerRef playerRef);
+    Optional<Clan> getClanByPlayer(final PlayerRef player);
 
     Optional<Clan> getClanByChunk(final Chunk chunk);
 

@@ -30,11 +30,11 @@ public interface IClan {
 
     boolean isRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
 
-    void addInvitationRequest(final PlayerRef playerRef);
+    void addInvitationRequest(final PlayerRef player);
 
-    void removeInvitationRequest(final PlayerRef playerRef);
+    void removeInvitationRequest(final PlayerRef player);
 
-    boolean isInvitationRequest(final PlayerRef playerRef);
+    boolean isInvitationRequest(final PlayerRef player);
 
     void addMember(final Member member);
 
@@ -42,11 +42,11 @@ public interface IClan {
 
     Optional<Member> getMemberByPlayerId(final UUID id);
 
-    Optional<Member> getMemberByPlayer(final PlayerRef playerRef);
+    Optional<Member> getMemberByPlayer(final PlayerRef player);
 
     boolean isMemberByPlayerId(final UUID id);
 
-    boolean isMemberByPlayer(final PlayerRef playerRef);
+    boolean isMemberByPlayer(final PlayerRef player);
 
     boolean hasMembers();
 

@@ -46,10 +46,10 @@ public class ClanRequestUpdater implements Module<Clans, ClanManager>, ClanUpdat
 
         clan.getInvitationRequests().values().removeIf(request -> {
             if (UtilTime.elapsed(request.getSystemTime(), this.INVITATION_EXPIRATION)) {
-                PlayerTracker.getPlayer(request.getId()).ifPresent(playerRef -> {
-                    UtilMessage.message(playerRef, "Clans", "The invitation request from %s has expired.".formatted(this.getManager().getClanFullName(this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(playerRef).orElse(null), clan), clan)));
+                PlayerTracker.getPlayer(request.getId()).ifPresent(player -> {
+                    UtilMessage.message(player, "Clans", "The invitation request from %s has expired.".formatted(this.getManager().getClanFullName(this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(player).orElse(null), clan), clan)));
 
-                    this.getManager().messageClan(clan, "Clans", "The invitation request your clan sent to <yellow>%s</yellow> has expired.".formatted(playerRef.getUsername()), null);
+                    this.getManager().messageClan(clan, "Clans", "The invitation request your clan sent to <yellow>%s</yellow> has expired.".formatted(player.getUsername()), null);
                 });
 
                 return true;

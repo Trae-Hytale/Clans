@@ -36,7 +36,7 @@ public class ClanManager implements Manager<Clans>, IClanManager, Updater {
 
     @Update(delay = 500L)
     public void onUpdater() {
-        for (final Clan clan : this.getClans()) {
+        for (final Clan clan : this.CLAN_BY_ID_MAP.values()) {
             this.clanUpdaterList.forEach(clanUpdater -> clanUpdater.onUpdater(clan));
         }
     }
@@ -48,13 +48,13 @@ public class ClanManager implements Manager<Clans>, IClanManager, Updater {
     }
 
     @Override
-    public void updatePlayerInClanCache(final PlayerRef playerRef, final Clan clan) {
+    public void updatePlayerInClanCache(final UUID id, final Clan clan) {
         if (clan == null) {
-            this.CLAN_BY_PLAYER_ID_MAP.remove(playerRef.getUuid());
+            this.CLAN_BY_PLAYER_ID_MAP.remove(id);
             return;
         }
 
-        this.CLAN_BY_PLAYER_ID_MAP.put(playerRef.getUuid(), clan);
+        this.CLAN_BY_PLAYER_ID_MAP.put(id, clan);
     }
 
     @Override
@@ -107,37 +107,22 @@ public class ClanManager implements Manager<Clans>, IClanManager, Updater {
 
     @Override
     public Optional<Clan> getClanByName(final String name) {
-        final Clan nameClan = this.CLAN_BY_NAME_MAP.get(name);
-        if (nameClan != null && nameClan.getName().equals(name)) {
-            return Optional.of(nameClan);
-        }
-
-        return this.getClans().stream().filter(clan -> clan.getName().equals(name)).findFirst().map(clan -> this.CLAN_BY_NAME_MAP.computeIfAbsent(name, __ -> clan));
+        return Optional.ofNullable(this.CLAN_BY_NAME_MAP.get(name));
     }
 
     @Override
     public Optional<Clan> getClanByPlayerId(final UUID id) {
-        final Clan playerClan = this.CLAN_BY_PLAYER_ID_MAP.get(id);
-        if (playerClan != null && playerClan.isMemberByPlayerId(id)) {
-            return Optional.of(playerClan);
-        }
-
-        return this.getClans().stream().filter(clan -> clan.isMemberByPlayerId(id)).findFirst().map(clan -> this.CLAN_BY_PLAYER_ID_MAP.computeIfAbsent(id, __ -> clan));
+        return Optional.ofNullable(this.CLAN_BY_PLAYER_ID_MAP.get(id));
     }
 
     @Override
-    public Optional<Clan> getClanByPlayer(final PlayerRef playerRef) {
-        return this.getClanByPlayerId(playerRef.getUuid());
+    public Optional<Clan> getClanByPlayer(final PlayerRef player) {
+        return this.getClanByPlayerId(player.getUuid());
     }
 
     @Override
     public Optional<Clan> getClanByChunk(final Chunk chunk) {
-        final Clan chunkClan = this.CLAN_BY_CHUNK_MAP.get(chunk);
-        if (chunkClan != null && chunkClan.isTerritory(chunk)) {
-            return Optional.of(chunkClan);
-        }
-
-        return this.getClans().stream().filter(clan -> clan.isTerritory(chunk)).findFirst().map(clan -> this.CLAN_BY_CHUNK_MAP.computeIfAbsent(chunk, __ -> clan));
+        return Optional.ofNullable(this.CLAN_BY_CHUNK_MAP.get(chunk));
     }
 
     @Override

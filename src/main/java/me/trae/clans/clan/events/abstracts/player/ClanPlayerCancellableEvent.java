@@ -8,11 +8,11 @@ import me.trae.clans.clan.events.abstracts.ClanCancellableEvent;
 @Getter
 public class ClanPlayerCancellableEvent extends ClanCancellableEvent {
 
-    private final PlayerRef playerRef;
+    private final PlayerRef player;
 
-    public ClanPlayerCancellableEvent(final Clan clan, final PlayerRef playerRef) {
+    public ClanPlayerCancellableEvent(final Clan clan, final PlayerRef player) {
         super(clan);
 
-        this.playerRef = playerRef;
+        this.player = player;
     }
 }

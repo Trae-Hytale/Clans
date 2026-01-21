@@ -6,7 +6,7 @@ import me.trae.clans.clan.events.abstracts.player.ClanPlayerCancellableEvent;
 
 public class ClanDisbandEvent extends ClanPlayerCancellableEvent {
 
-    public ClanDisbandEvent(final Clan clan, final PlayerRef playerRef) {
-        super(clan, playerRef);
+    public ClanDisbandEvent(final Clan clan, final PlayerRef player) {
+        super(clan, player);
     }
 }

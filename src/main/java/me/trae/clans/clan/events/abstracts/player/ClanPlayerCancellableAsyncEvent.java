@@ -8,11 +8,11 @@ import me.trae.clans.clan.events.abstracts.ClanCancellableAsyncEvent;
 @Getter
 public class ClanPlayerCancellableAsyncEvent extends ClanCancellableAsyncEvent {
 
-    private final PlayerRef playerRef;
+    private final PlayerRef player;
 
-    public ClanPlayerCancellableAsyncEvent(final Clan clan, final PlayerRef playerRef) {
+    public ClanPlayerCancellableAsyncEvent(final Clan clan, final PlayerRef player) {
         super(clan);
 
-        this.playerRef = playerRef;
+        this.player = player;
     }
 }

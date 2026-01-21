@@ -12,6 +12,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import me.trae.clans.Clans;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.Module;
 import me.trae.framework.utility.UtilMessage;
@@ -38,6 +39,10 @@ public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world) {
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
+
+        if (commandContext.getCalledCommand() instanceof final ClanSubCommand clanSubCommand) {
+            UtilMessage.message(playerRef, "Clans", "ClanCommand picked up that you're executing <green>%s</green>".formatted(clanSubCommand.getName()));
+        }
 
         if (!(commandContext.provided(this.inputArg))) {
             if (playerClanOptional.isEmpty()) {

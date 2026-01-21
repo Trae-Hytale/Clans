@@ -8,11 +8,11 @@ import me.trae.clans.clan.events.abstracts.ClanAsyncEvent;
 @Getter
 public class ClanPlayerAsyncEvent extends ClanAsyncEvent {
 
-    private final PlayerRef playerRef;
+    private final PlayerRef player;
 
-    public ClanPlayerAsyncEvent(final Clan clan, final PlayerRef playerRef) {
+    public ClanPlayerAsyncEvent(final Clan clan, final PlayerRef player) {
         super(clan);
 
-        this.playerRef = playerRef;
+        this.player = player;
     }
 }

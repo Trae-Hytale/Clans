@@ -8,11 +8,11 @@ import me.trae.clans.clan.events.abstracts.ClanEvent;
 @Getter
 public class ClanPlayerEvent extends ClanEvent {
 
-    private final PlayerRef playerRef;
+    private final PlayerRef player;
 
-    public ClanPlayerEvent(final Clan clan, final PlayerRef playerRef) {
+    public ClanPlayerEvent(final Clan clan, final PlayerRef player) {
         super(clan);
 
-        this.playerRef = playerRef;
+        this.player = player;
     }
 }

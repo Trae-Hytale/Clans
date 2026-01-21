@@ -49,18 +49,18 @@ public class Clan implements IClan {
     }
 
     @Override
-    public void addInvitationRequest(final PlayerRef playerRef) {
-        this.getInvitationRequests().put(playerRef.getUuid(), new Request(playerRef.getUuid(), System.currentTimeMillis()));
+    public void addInvitationRequest(final PlayerRef player) {
+        this.getInvitationRequests().put(player.getUuid(), new Request(player.getUuid(), System.currentTimeMillis()));
     }
 
     @Override
-    public void removeInvitationRequest(final PlayerRef playerRef) {
-        this.getInvitationRequests().remove(playerRef.getUuid());
+    public void removeInvitationRequest(final PlayerRef player) {
+        this.getInvitationRequests().remove(player.getUuid());
     }
 
     @Override
-    public boolean isInvitationRequest(final PlayerRef playerRef) {
-        return this.getInvitationRequests().containsKey(playerRef.getUuid());
+    public boolean isInvitationRequest(final PlayerRef player) {
+        return this.getInvitationRequests().containsKey(player.getUuid());
     }
 
     @Override
@@ -79,8 +79,8 @@ public class Clan implements IClan {
     }
 
     @Override
-    public Optional<Member> getMemberByPlayer(final PlayerRef playerRef) {
-        return this.getMemberByPlayerId(playerRef.getUuid());
+    public Optional<Member> getMemberByPlayer(final PlayerRef player) {
+        return this.getMemberByPlayerId(player.getUuid());
     }
 
     @Override
@@ -89,8 +89,8 @@ public class Clan implements IClan {
     }
 
     @Override
-    public boolean isMemberByPlayer(final PlayerRef playerRef) {
-        return this.isMemberByPlayerId(playerRef.getUuid());
+    public boolean isMemberByPlayer(final PlayerRef player) {
+        return this.isMemberByPlayerId(player.getUuid());
     }
 
     @Override
