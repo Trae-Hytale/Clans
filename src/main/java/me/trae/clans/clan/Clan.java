@@ -21,8 +21,8 @@ public class Clan implements IClan {
 
     private String name;
 
-    private final Map<UUID, Map<RelationRequestType, Request>> relationRequests = new LinkedHashMap<>();
-    private final Map<UUID, Request> invitationRequests = new LinkedHashMap<>();
+    private final Map<UUID, Map<RelationRequestType, Request>> relationRequests = new HashMap<>();
+    private final Map<UUID, Request> invitationRequests = new HashMap<>();
 
     private final LinkedHashMap<UUID, Member> members = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Alliance> alliances = new LinkedHashMap<>();
@@ -35,7 +35,7 @@ public class Clan implements IClan {
 
     @Override
     public void addRelationRequest(final RelationRequestType relationRequestType, final Clan clan) {
-        this.getRelationRequests().computeIfAbsent(clan.getId(), __ -> new LinkedHashMap<>()).put(relationRequestType, new Request(clan.getId(), System.currentTimeMillis()));
+        this.getRelationRequests().computeIfAbsent(clan.getId(), __ -> new HashMap<>()).put(relationRequestType, new Request(clan.getId(), System.currentTimeMillis()));
     }
 
     @Override
