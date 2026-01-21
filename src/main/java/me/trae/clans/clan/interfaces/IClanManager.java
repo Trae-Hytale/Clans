@@ -1,8 +1,10 @@
 package me.trae.clans.clan.interfaces;
 
 import com.hypixel.hytale.math.vector.Location;
+import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.framework.utility.objects.Chunk;
 
@@ -49,4 +51,8 @@ public interface IClanManager {
     void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignore);
 
     void messageAllies(final Clan clan, final String prefix, final String message, final List<UUID> ignore);
+
+    Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform);
+
+    Optional<Member> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform);
 }

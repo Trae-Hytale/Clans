@@ -12,7 +12,6 @@ import me.trae.clans.Clans;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
-import me.trae.clans.clan.commands.subcommands.enums.ClanConditionType;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.SubModule;
 import me.trae.framework.utility.UtilMessage;
@@ -20,23 +19,18 @@ import me.trae.framework.utility.UtilMessage;
 import javax.annotation.Nonnull;
 
 @Component
-public class JoinCommand extends ClanSubCommand implements SubModule<Clans, ClanCommand> {
+public class InviteCommand extends ClanSubCommand implements SubModule<Clans, ClanCommand> {
 
     private final RequiredArg<String> nameArg;
 
-    public JoinCommand() {
-        super("join", "Join a Clan");
+    public InviteCommand() {
+        super("invite", "Invite a Player");
 
-        this.nameArg = this.withRequiredArg("name", "Provide a Clan name", ArgTypes.STRING);
-    }
-
-    @Override
-    protected ClanConditionType getClanConditionType() {
-        return ClanConditionType.ABSENT;
+        this.nameArg = this.withRequiredArg("name", "Provide a Player name", ArgTypes.STRING);
     }
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world, final Clan playerClan) {
-        UtilMessage.message(playerRef, "Clans", "You tried to join a clan, still in progress...");
+        UtilMessage.message(playerRef, "Clans", "You tried to invite a player, still in progress...");
     }
 }

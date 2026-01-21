@@ -12,7 +12,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import me.trae.clans.Clans;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
-import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.Module;
 import me.trae.framework.utility.UtilMessage;
@@ -23,9 +22,7 @@ import java.util.Optional;
 @Component
 public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, ClanManager> {
 
-    public static final String NOT_IN_CLAN_MESSAGE = "You are not in a Clan.";
-
-    private final OptionalArg<String> inputArg;
+    private final OptionalArg<String> nameArg;
 
     public ClanCommand() {
         super("clan", "Clan management");
@@ -33,43 +30,31 @@ public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, 
         this.addAliases("c");
         this.addAliases("faction", "fac", "f");
 
-        this.inputArg = this.withOptionalArg("input", "Search by Player or Clan name", ArgTypes.STRING);
+        this.nameArg = this.withOptionalArg("name", "Provide a name to search", ArgTypes.STRING);
     }
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world) {
-        final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
+        if (commandContext.provided(this.nameArg)) {
+            this.getManager().getClanByName(commandContext.get(this.nameArg)).ifPresent(targetClan -> {
+                final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
-        if (commandContext.getCalledCommand() instanceof final ClanSubCommand clanSubCommand) {
-            UtilMessage.message(playerRef, "Clans", "ClanCommand picked up that you're executing <green>%s</green>".formatted(clanSubCommand.getName()));
-        }
-
-        if (!(commandContext.provided(this.inputArg))) {
-            if (playerClanOptional.isEmpty()) {
-                UtilMessage.message(playerRef, "Clans", NOT_IN_CLAN_MESSAGE);
-                return;
-            }
-
-            final Clan playerClan = playerClanOptional.get();
-
-            this.showClanInformation(playerRef, playerClan, playerClan);
+                this.displayClan(playerRef, playerClanOptional.orElse(null), targetClan);
+            });
             return;
         }
 
-        final String input = commandContext.get(this.inputArg);
-
-        final Optional<Clan> targetClanOptional = this.getManager().getClanByName(input);
-        if (targetClanOptional.isEmpty()) {
-            UtilMessage.message(playerRef, "Clans", "The clan <yellow>%s</yellow> was not found".formatted(input));
-            return;
-        }
-
-        final Clan targetClan = targetClanOptional.get();
-
-        this.showClanInformation(playerRef, playerClanOptional.orElse(null), targetClan);
+        this.getManager().getClanByPlayer(playerRef).ifPresentOrElse(playerClan -> this.displayClan(playerRef, playerClan, playerClan), () -> this.sendAbsentClanMessage(playerRef));
     }
 
-    private void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
-        UtilMessage.message(playerRef, "Clans", "%s Information:".formatted(this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClan, targetClan), targetClan)));
+    private void displayClan(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
+    }
+
+    public void sendAbsentClanMessage(final PlayerRef playerRef) {
+        UtilMessage.message(playerRef, "Clans", "You are not in a Clan.");
+    }
+
+    public void sendPresentClanMessage(final PlayerRef playerRef) {
+        UtilMessage.message(playerRef, "Clans", "You are already in a Clan.");
     }
 }

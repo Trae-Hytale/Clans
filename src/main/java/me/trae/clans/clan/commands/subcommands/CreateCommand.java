@@ -12,7 +12,7 @@ import me.trae.clans.Clans;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
-import me.trae.clans.clan.commands.subcommands.enums.ClanRequirement;
+import me.trae.clans.clan.commands.subcommands.enums.ClanConditionType;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.SubModule;
 import me.trae.framework.utility.UtilMessage;
@@ -27,41 +27,16 @@ public class CreateCommand extends ClanSubCommand implements SubModule<Clans, Cl
     public CreateCommand() {
         super("create", "Create a Clan");
 
-        this.nameArg = this.withRequiredArg("name", "Choose a Clan name", ArgTypes.STRING);
+        this.nameArg = this.withRequiredArg("name", "Provide a Clan name", ArgTypes.STRING);
     }
 
     @Override
-    protected ClanRequirement getClanRequirement() {
-        return ClanRequirement.NULL;
+    protected ClanConditionType getClanConditionType() {
+        return ClanConditionType.ABSENT;
     }
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world, final Clan playerClan) {
-        if (!(commandContext.provided(this.nameArg))) {
-            UtilMessage.message(playerRef, "Clans", "You did not input a Name to Create.");
-            return;
-        }
-
-        final String name = commandContext.get(this.nameArg);
-
-        if (!(this.canCreateClan(playerRef, name))) {
-            return;
-        }
-
         UtilMessage.message(playerRef, "Clans", "You tried to create a clan, still in progress...");
-    }
-
-    private boolean canCreateClan(final PlayerRef playerRef, final String name) {
-        if (this.getModule().getSubCommands().containsKey(name.toLowerCase())) {
-            UtilMessage.message(playerRef, "Clans", "You cannot use that as a clan name!");
-            return false;
-        }
-
-        if (this.getModule().getManager().getClanByName(name).isPresent()) {
-            UtilMessage.message(playerRef, "Clans", "That Clan name is already owned by another clan!");
-            return false;
-        }
-
-        return true;
     }
 }
