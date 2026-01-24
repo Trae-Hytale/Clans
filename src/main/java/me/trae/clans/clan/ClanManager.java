@@ -14,6 +14,7 @@ import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.Manager;
+import me.trae.framework.database.providers.RepositoryProvider;
 import me.trae.framework.updater.annotations.Update;
 import me.trae.framework.updater.interfaces.Updater;
 import me.trae.framework.utility.UtilColor;
@@ -35,7 +36,7 @@ import java.util.function.Predicate;
 
 @AllArgsConstructor
 @Component
-public class ClanManager implements Manager<Clans>, IClanManager, Updater {
+public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProvider<ClanRepository>, Updater {
 
     private final ConcurrentLinkedHashMap<UUID, Clan> CLAN_BY_ID_MAP = new ConcurrentLinkedHashMap<>();
     private final ConcurrentMap<String, Clan> CLAN_BY_NAME_MAP = new ConcurrentHashMap<>();

@@ -8,6 +8,7 @@ import me.trae.clans.clan.data.*;
 import me.trae.clans.clan.enums.RelationRequestType;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.framework.utility.objects.Chunk;
+import org.bson.codecs.pojo.annotations.BsonId;
 
 import javax.xml.stream.Location;
 import java.util.*;
@@ -17,12 +18,13 @@ import java.util.*;
 @Setter
 public class Clan implements IClan {
 
+    @BsonId
     private final UUID id;
 
     private String name;
 
-    private final Map<UUID, Map<RelationRequestType, Request>> relationRequests = new HashMap<>();
-    private final Map<UUID, Request> invitationRequests = new HashMap<>();
+    private transient final Map<UUID, Map<RelationRequestType, Request>> relationRequests = new HashMap<>();
+    private transient final Map<UUID, Request> invitationRequests = new HashMap<>();
 
     private final LinkedHashMap<UUID, Member> members = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Alliance> alliances = new LinkedHashMap<>();

@@ -22,15 +22,13 @@ import java.util.Optional;
 @Component
 public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, ClanManager> {
 
-    private final OptionalArg<String> nameArg;
+    private final OptionalArg<String> nameArg = this.withOptionalArg("name", "Provide a name to search", ArgTypes.STRING);
 
     public ClanCommand() {
         super("clan", "Clan management");
 
         this.addAliases("c");
         this.addAliases("faction", "fac", "f");
-
-        this.nameArg = this.withOptionalArg("name", "Provide a name to search", ArgTypes.STRING);
     }
 
     @Override
