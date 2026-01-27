@@ -5,6 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import me.trae.clans.clan.data.*;
 import me.trae.clans.clan.data.enums.MemberRole;
+import me.trae.clans.clan.data.properties.AllianceProperty;
+import me.trae.clans.clan.data.properties.EnemyProperty;
+import me.trae.clans.clan.data.properties.MemberProperty;
+import me.trae.clans.clan.data.properties.PillageProperty;
 import me.trae.clans.clan.enums.ClanProperty;
 import me.trae.clans.clan.enums.RelationRequestType;
 import me.trae.clans.clan.interfaces.IClan;
@@ -71,7 +75,7 @@ public class Clan implements IClan, Domain<ClanProperty> {
         data.getList(Map.class, ClanProperty.TERRITORY).forEach(map -> this.addTerritory(new Chunk((Map<String, Object>) map)));
 
         this.founder = UUID.fromString(data.get(String.class, ClanProperty.FOUNDER));
-        this.home = new Location(data.getMap(String.class, Object.class, ClanProperty.HOME));
+        this.home = data.contains(ClanProperty.HOME) ? new Location(data.getMap(String.class, Object.class, ClanProperty.HOME)) : null;
     }
 
     @Override
@@ -253,10 +257,10 @@ public class Clan implements IClan, Domain<ClanProperty> {
     public Object getValueByProperty(final ClanProperty clanProperty) {
         return switch (clanProperty) {
             case NAME -> this.getName();
-            case MEMBERS -> this.getMembers().values().stream().collect(Collectors.toMap(Member::getIdString, member -> Map.of("System-Time", member.getSystemTime(), "Role", member.getRole().name())));
-            case ALLIANCES -> this.getAlliances().values().stream().collect(Collectors.toMap(Alliance::getIdString, alliance -> Map.of("System-Time", alliance.getSystemTime(), "Trusted", alliance.isTrusted())));
-            case ENEMIES -> this.getEnemies().values().stream().collect(Collectors.toMap(Enemy::getIdString, enemy -> Map.of("System-Time", enemy.getSystemTime(), "Points", enemy.getPoints())));
-            case PILLAGES -> this.getPillages().values().stream().collect(Collectors.toMap(Pillage::getIdString, pillage -> Map.of("System-Time", pillage.getSystemTime())));
+            case MEMBERS -> this.getMembers().values().stream().collect(Collectors.toMap(Member::getIdString, member -> Map.of(MemberProperty.SYSTEM_TIME, member.getSystemTime(), MemberProperty.ROLE, member.getRole().name())));
+            case ALLIANCES -> this.getAlliances().values().stream().collect(Collectors.toMap(Alliance::getIdString, alliance -> Map.of(AllianceProperty.SYSTEM_TIME, alliance.getSystemTime(), AllianceProperty.TRUSTED, alliance.isTrusted())));
+            case ENEMIES -> this.getEnemies().values().stream().collect(Collectors.toMap(Enemy::getIdString, enemy -> Map.of(EnemyProperty.SYSTEM_TIME, enemy.getSystemTime(), EnemyProperty.POINTS, enemy.getPoints())));
+            case PILLAGES -> this.getPillages().values().stream().collect(Collectors.toMap(Pillage::getIdString, pillage -> Map.of(PillageProperty.SYSTEM_TIME, pillage.getSystemTime())));
             case TERRITORY -> this.getTerritory().stream().map(chunk -> Map.of("World", chunk.getWorld(), "X", chunk.getX(), "Z", chunk.getZ())).toList();
             case FOUNDER -> this.getFounder().toString();
             case HOME -> this.hasHome() ? Map.of("World", this.getHome().getWorld(), "X", this.getHome().getX(), "Y", this.getHome().getY(), "Z", this.getHome().getZ()) : null;
