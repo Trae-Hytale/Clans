@@ -12,11 +12,14 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import me.trae.clans.Clans;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.Module;
+import me.trae.framework.utility.UtilJava;
 import me.trae.framework.utility.UtilMessage;
 
 import javax.annotation.Nonnull;
+import java.util.LinkedHashMap;
 import java.util.Optional;
 
 @Component
@@ -33,19 +36,29 @@ public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, 
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world) {
+        final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
+
         if (commandContext.provided(this.nameArg)) {
-            this.getManager().getClanByName(commandContext.get(this.nameArg)).ifPresent(targetClan -> {
-                final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
+            final String name = commandContext.get(this.nameArg);
 
-                this.displayClan(playerRef, playerClanOptional.orElse(null), targetClan);
+            this.getManager().searchClan(playerRef, name, true).ifPresent(targetClan -> this.displayClan(playerRef, playerClanOptional.orElse(null), targetClan));
+        } else {
+            playerClanOptional.ifPresentOrElse(playerClan -> {
+                this.displayClan(playerRef, playerClan, playerClan);
+            }, () -> {
+                this.sendAbsentClanMessage(playerRef);
             });
-            return;
         }
-
-        this.getManager().getClanByPlayer(playerRef).ifPresentOrElse(playerClan -> this.displayClan(playerRef, playerClan, playerClan), () -> this.sendAbsentClanMessage(playerRef));
     }
 
     private void displayClan(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
+        final ClanRelation clanRelation = this.getManager().getClanRelationByClan(playerClan, targetClan);
+
+        UtilMessage.message(playerRef, "Clans", "%s Information:".formatted(this.getManager().getClanShortName(clanRelation, targetClan)));
+
+        final LinkedHashMap<String, String> informationMap = UtilJava.updateMap(new LinkedHashMap<>(), map -> {
+            map.put("ID", targetClan.getId().toString());
+        });
     }
 
     public void sendAbsentClanMessage(final PlayerRef playerRef) {

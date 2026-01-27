@@ -13,9 +13,11 @@ import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.ClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.enums.ClanConditionType;
+import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.framework.base.annotations.Component;
 import me.trae.framework.base.wrappers.SubModule;
 import me.trae.framework.utility.UtilMessage;
+import me.trae.framework.utility.UtilServer;
 
 import javax.annotation.Nonnull;
 
@@ -37,6 +39,32 @@ public class CreateCommand extends ClanSubCommand implements SubModule<Clans, Cl
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world, final Clan playerClan) {
-        UtilMessage.message(playerRef, "Clans", "You tried to create a clan, still in progress...");
+        if (!(commandContext.provided(this.nameArg))) {
+            UtilMessage.message(playerRef, "Clans", "You did not input a Name to Create.");
+            return;
+        }
+
+        final String name = commandContext.get(this.nameArg);
+
+        if (this.getModule().getSubCommands().containsKey(name.toLowerCase())) {
+            UtilMessage.message(playerRef, "Clans", "You cannot use that name!");
+            return;
+        }
+
+        if (this.getModule().getManager().getClanByName(name).isPresent()) {
+            UtilMessage.message(playerRef, "Clans", "That name is already used by another clan!");
+            return;
+        }
+
+        final Clan clan = new Clan(playerRef, name);
+
+        this.getModule().getManager().addClan(clan);
+        this.getModule().getManager().getRepository().saveData(clan);
+
+        for (final PlayerRef target : UtilServer.getOnlinePlayers()) {
+            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByPlayer(target, playerRef);
+
+            UtilMessage.message(target, "Clans", "%s has formed %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
+        }
     }
 }

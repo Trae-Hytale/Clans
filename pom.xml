@@ -15,6 +15,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <!-- Hytale release repository -->
+        <repository>
+            <id>hytale-release</id>
+            <url>https://maven.hytale.com/release</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!-- Lombok -->
         <dependency>
@@ -35,10 +43,10 @@
         <!-- Hytale SDK -->
         <dependency>
             <groupId>com.hypixel.hytale</groupId>
-            <artifactId>Hytale</artifactId>
-            <version>1.0.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/../.libs/HytaleServer.jar</systemPath>
+            <artifactId>Server</artifactId>
+            <version>2026.01.24-6e2d4fc36</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -46,7 +54,6 @@
         <finalName>Clans</finalName>
 
         <plugins>
-
             <!-- Compiler + Lombok -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

@@ -84,6 +84,10 @@ public interface IClan {
 
     boolean hasPillages();
 
+    void addTerritory(final Chunk chunk);
+
+    void removeTerritory(final Chunk chunk);
+
     boolean hasTerritory();
 
     boolean isTerritory(final Chunk chunk);

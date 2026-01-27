@@ -48,6 +48,8 @@ public interface IClanManager {
 
     String getClanName(final ClanRelation clanRelation, final Clan clan);
 
+    String getPlayerName(final ClanRelation clanRelation, final PlayerRef player);
+
     void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignore);
 
     void messageAllies(final Clan clan, final String prefix, final String message, final List<UUID> ignore);

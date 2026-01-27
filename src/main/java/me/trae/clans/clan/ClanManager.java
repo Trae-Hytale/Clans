@@ -47,7 +47,7 @@ public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProv
 
     private final List<ClanUpdater> clanUpdaterList;
 
-    @Update(delay = 500L)
+    @Update(value = 500)
     public void onUpdater() {
         for (final Clan clan : this.CLAN_BY_ID_MAP.values()) {
             this.clanUpdaterList.forEach(clanUpdater -> clanUpdater.onUpdater(clan));
@@ -172,18 +172,35 @@ public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProv
     }
 
     @Override
-    public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
+    public String getClanFullName(ClanRelation clanRelation, final Clan clan) {
+        if (clanRelation == null) {
+            clanRelation = ClanRelation.NEUTRAL;
+        }
+
         return UtilColor.serialize(clanRelation.getSuffix(), "%s %s".formatted(clan.getType(), clan.getName()));
     }
 
     @Override
-    public String getClanShortName(final ClanRelation clanRelation, final Clan clan) {
+    public String getClanShortName(ClanRelation clanRelation, final Clan clan) {
+        if (clanRelation == null) {
+            clanRelation = ClanRelation.NEUTRAL;
+        }
+
         return UtilColor.serialize(clanRelation.getSuffix(), clan.getName());
     }
 
     @Override
     public String getClanName(final ClanRelation clanRelation, final Clan clan) {
         return clan.isAdmin() ? this.getClanShortName(clanRelation, clan) : this.getClanFullName(clanRelation, clan);
+    }
+
+    @Override
+    public String getPlayerName(ClanRelation clanRelation, final PlayerRef player) {
+        if (clanRelation == null) {
+            clanRelation = ClanRelation.NEUTRAL;
+        }
+
+        return UtilColor.serialize(clanRelation.getSuffix(), player.getUsername());
     }
 
     @Override
@@ -200,6 +217,11 @@ public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProv
 
     @Override
     public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+        final Optional<Clan> clanOptional = this.getClanByName(name);
+        if (clanOptional.isPresent()) {
+            return clanOptional;
+        }
+
         final List<Predicate<Clan>> predicateList = List.of(
                 clan -> clan.getName().equalsIgnoreCase(name),
                 clan -> clan.getName().toLowerCase().contains(name.toLowerCase())
