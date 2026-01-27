@@ -2,7 +2,7 @@ package me.trae.clans.clan;
 
 import me.trae.clans.clan.enums.ClanProperty;
 import me.trae.framework.database.annotations.Repository;
-import me.trae.framework.database.domain.DomainData;
+import me.trae.framework.database.domain.data.DomainData;
 import me.trae.framework.database.query.types.DeleteOperation;
 import me.trae.framework.database.query.types.SaveOperation;
 import me.trae.framework.database.query.types.UpdateOperation;
