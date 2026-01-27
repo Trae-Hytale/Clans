@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.data.properties.PillageProperty;
-import me.trae.framework.database.domain.data.DomainData;
 import me.trae.framework.database.domain.SubDomain;
+import me.trae.framework.database.domain.data.DomainData;
 
 import java.util.UUID;
 

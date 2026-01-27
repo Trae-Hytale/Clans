@@ -6,8 +6,8 @@ import lombok.Setter;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.data.interfaces.IMember;
 import me.trae.clans.clan.data.properties.MemberProperty;
-import me.trae.framework.database.domain.data.DomainData;
 import me.trae.framework.database.domain.SubDomain;
+import me.trae.framework.database.domain.data.DomainData;
 import me.trae.framework.utility.java.PlayerTracker;
 
 import java.util.UUID;
