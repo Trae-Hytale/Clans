@@ -26,7 +26,7 @@ public class CreateCommand extends ClanSubCommand implements SubModule<Clans, Cl
 
     private final RequiredArg<String> nameArg;
 
-    public CreateCommand() {
+    protected CreateCommand() {
         super("create", "Create a Clan");
 
         this.nameArg = this.withRequiredArg("name", "Provide a Clan name", ArgTypes.STRING);
@@ -39,12 +39,11 @@ public class CreateCommand extends ClanSubCommand implements SubModule<Clans, Cl
 
     @Override
     protected void execute(@Nonnull final CommandContext commandContext, @Nonnull final Store<EntityStore> store, @Nonnull final Ref<EntityStore> ref, @Nonnull final PlayerRef playerRef, @Nonnull final World world, final Clan playerClan) {
-        if (!(commandContext.provided(this.nameArg))) {
+        final String name = commandContext.get(this.nameArg);
+        if (name == null) {
             UtilMessage.message(playerRef, "Clans", "You did not input a Name to Create.");
             return;
         }
-
-        final String name = commandContext.get(this.nameArg);
 
         if (this.getModule().getSubCommands().containsKey(name.toLowerCase())) {
             UtilMessage.message(playerRef, "Clans", "You cannot use that name!");

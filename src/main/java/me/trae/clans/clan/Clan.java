@@ -144,7 +144,7 @@ public class Clan implements IClan, Domain<ClanProperty> {
 
     @Override
     public List<PlayerRef> getMembersAsPlayers() {
-        return this.getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayer).toList();
+        return this.getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).toList();
     }
 
     @Override

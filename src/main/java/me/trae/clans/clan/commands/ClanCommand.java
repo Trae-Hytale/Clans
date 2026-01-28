@@ -27,7 +27,7 @@ public class ClanCommand extends AbstractPlayerCommand implements Module<Clans, 
 
     private final OptionalArg<String> nameArg = this.withOptionalArg("name", "Provide a name to search", ArgTypes.STRING);
 
-    public ClanCommand() {
+    protected ClanCommand() {
         super("clan", "Clan management");
 
         this.addAliases("c");

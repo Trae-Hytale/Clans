@@ -1,5 +1,6 @@
 package me.trae.clans.clan.data;
 
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,13 +42,18 @@ public class Member implements IMember, SubDomain<MemberProperty> {
     }
 
     @Override
-    public PlayerRef getPlayer() {
-        return PlayerTracker.getOnlinePlayer(this.getId()).orElse(null);
+    public PlayerRef getPlayerRef() {
+        return PlayerTracker.getPlayerReferenceById(this.getId()).orElse(null);
+    }
+
+    @Override
+    public Player getPlayer() {
+        return PlayerTracker.getPlayerById(this.getId()).orElse(null);
     }
 
     @Override
     public boolean isOnline() {
-        return PlayerTracker.isOnlinePlayer(this.getId());
+        return this.getPlayer() != null;
     }
 
     @Override
