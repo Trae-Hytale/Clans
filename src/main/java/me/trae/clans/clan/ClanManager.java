@@ -12,7 +12,7 @@ import me.trae.clans.clan.interfaces.IClanManager;
 import me.trae.clans.clan.wrappers.ClanUpdater;
 import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
-import me.trae.framework.base.annotations.Component;
+import me.trae.framework.base.annotations.Service;
 import me.trae.framework.base.wrappers.Manager;
 import me.trae.framework.database.providers.RepositoryProvider;
 import me.trae.framework.updater.annotations.Update;
@@ -35,7 +35,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 @AllArgsConstructor
-@Component
+@Service
 public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProvider<ClanRepository>, Updater {
 
     private final ConcurrentLinkedHashMap<UUID, Clan> CLAN_BY_ID_MAP = new ConcurrentLinkedHashMap<>();
