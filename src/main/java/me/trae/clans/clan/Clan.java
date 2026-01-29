@@ -65,16 +65,21 @@ public class Clan implements IClan, Domain<ClanProperty> {
 
         this.name = data.get(String.class, ClanProperty.NAME);
 
-        data.getMap(String.class, Object.class, ClanProperty.MEMBERS).forEach((id, map) -> this.addMember(new Member(new DomainData<>(id, (Map<String, Object>) map))));
-        data.getMap(String.class, Object.class, ClanProperty.ALLIANCES).forEach((id, map) -> this.addAlliance(new Alliance(new DomainData<>(id, (Map<String, Object>) map))));
-        data.getMap(String.class, Object.class, ClanProperty.ENEMIES).forEach((id, map) -> this.addEnemy(new Enemy(new DomainData<>(id, (Map<String, Object>) map))));
-        data.getMap(String.class, Object.class, ClanProperty.PILLAGES).forEach((id, map) -> this.addPillage(new Pillage(new DomainData<>(id, (Map<String, Object>) map))));
+        data.getMap(String.class, Map.class, ClanProperty.MEMBERS).forEach((id, map) -> this.addMember(new Member(new DomainData<>(id, (Map<String, Object>) map))));
+        data.getMap(String.class, Map.class, ClanProperty.ALLIANCES).forEach((id, map) -> this.addAlliance(new Alliance(new DomainData<>(id, (Map<String, Object>) map))));
+        data.getMap(String.class, Map.class, ClanProperty.ENEMIES).forEach((id, map) -> this.addEnemy(new Enemy(new DomainData<>(id, (Map<String, Object>) map))));
+        data.getMap(String.class, Map.class, ClanProperty.PILLAGES).forEach((id, map) -> this.addPillage(new Pillage(new DomainData<>(id, (Map<String, Object>) map))));
 
         data.getList(Map.class, ClanProperty.TERRITORY).forEach(map -> this.addTerritory(new Chunk((Map<String, Object>) map)));
 
         this.created = data.get(Long.class, ClanProperty.CREATED);
         this.founder = UUID.fromString(data.get(String.class, ClanProperty.FOUNDER));
         this.home = data.contains(ClanProperty.HOME) ? new Location(data.getMap(String.class, Object.class, ClanProperty.HOME)) : null;
+    }
+
+    @Override
+    public String getDisplayName() {
+        return this.isAdmin() ? this.getName().replace("_", " ") : this.getName();
     }
 
     @Override
@@ -144,7 +149,7 @@ public class Clan implements IClan, Domain<ClanProperty> {
 
     @Override
     public List<PlayerRef> getMembersAsPlayers() {
-        return this.getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).toList();
+        return this.getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayer).toList();
     }
 
     @Override

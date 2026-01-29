@@ -34,6 +34,7 @@ public class ClanRepository implements IRepository<ClanManager, Clan, ClanProper
 
     @Override
     public MultiLoadResult loadData() {
+        final long systemTime = System.currentTimeMillis();
         int count = 0;
 
         for (final DomainData<ClanProperty> data : this.getDatabaseManager().findManySynchronously(this, MongoShared.emptyFilter())) {
@@ -49,6 +50,6 @@ public class ClanRepository implements IRepository<ClanManager, Clan, ClanProper
             }
         }
 
-        return new MultiLoadResult(count);
+        return new MultiLoadResult(systemTime, count);
     }
 }

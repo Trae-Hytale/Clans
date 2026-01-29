@@ -24,6 +24,8 @@ public interface IClan {
         return this.isAdmin() ? "Admin Clan" : "Clan";
     }
 
+    String getDisplayName();
+
     void addRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
 
     void removeRelationRequest(final RelationRequestType relationRequestType, final Clan clan);
