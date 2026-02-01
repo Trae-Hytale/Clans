@@ -39,7 +39,7 @@ public class ClanRepository implements IRepository<ClanManager, Clan, ClanProper
 
         for (final DomainData<ClanProperty> data : this.getDatabaseManager().findManySynchronously(this, MongoShared.emptyFilter())) {
             try {
-                final Clan clan = new Clan(data);
+                final Clan clan = data.get(Boolean.class, ClanProperty.ADMIN) ? new AdminClan(data) : new Clan(data);
 
                 this.getManager().addClan(clan);
 

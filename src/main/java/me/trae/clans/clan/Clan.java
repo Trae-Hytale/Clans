@@ -269,6 +269,8 @@ public class Clan implements IClan, Domain<ClanProperty> {
             case CREATED -> this.getCreated();
             case FOUNDER -> this.getFounder().toString();
             case HOME -> this.hasHome() ? this.getHome().toMap() : null;
+            case ADMIN -> this instanceof AdminClan;
+            case SAFE -> this instanceof final AdminClan adminClan && adminClan.isSafe();
         };
     }
 }

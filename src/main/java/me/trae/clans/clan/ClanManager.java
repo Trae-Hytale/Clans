@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import me.trae.clans.Clans;
 import me.trae.clans.clan.data.Alliance;
 import me.trae.clans.clan.data.Member;
+import me.trae.clans.clan.enums.ClanProperty;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.interfaces.IClanManager;
 import me.trae.clans.clan.wrappers.ClanUpdater;
@@ -267,5 +268,38 @@ public class ClanManager implements Manager<Clans>, IClanManager, RepositoryProv
         }
 
         return clan.getMemberByPlayerId(clientOptional.get().getId());
+    }
+
+    @Override
+    public void disbandClan(final Clan clan) {
+        for (final Chunk chunk : clan.getTerritory()) {
+            this.updateChunkInClanCache(chunk, null);
+        }
+
+        for (final Member member : clan.getMembers().values()) {
+            this.updatePlayerInClanCache(member.getId(), null);
+        }
+
+        for (final Clan targetClan : this.getClans()) {
+            targetClan.getRelationRequests().remove(clan.getId());
+
+            targetClan.getAllianceByClan(clan).ifPresent(alliance -> {
+                targetClan.removeAlliance(alliance);
+                this.getRepository().updateData(targetClan, ClanProperty.ALLIANCES);
+            });
+
+            targetClan.getEnemyByClan(clan).ifPresent(enemy -> {
+                targetClan.removeEnemy(enemy);
+                this.getRepository().updateData(targetClan, ClanProperty.ENEMIES);
+            });
+
+            targetClan.getPillageByClan(clan).ifPresent(pillage -> {
+                targetClan.removePillage(pillage);
+                this.getRepository().updateData(targetClan, ClanProperty.PILLAGES);
+            });
+        }
+
+        this.removeClan(clan);
+        this.getRepository().deleteData(clan);
     }
 }

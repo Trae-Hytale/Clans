@@ -57,4 +57,6 @@ public interface IClanManager {
     Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform);
 
     Optional<Member> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform);
+
+    void disbandClan(final Clan clan);
 }
