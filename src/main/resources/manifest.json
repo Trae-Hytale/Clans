@@ -1,0 +1,15 @@
+{
+  "Group": "Trae",
+  "Name": "Clans",
+  "Version": "0.0.1",
+  "Main": "me.trae.clans.ClansPlugin",
+  "ServerVersion": "*",
+  "Authors": [
+    {
+      "Name": "Trae"
+    }
+  ],
+  "Dependencies": {
+    "Trae:Core": "*"
+  }
+}

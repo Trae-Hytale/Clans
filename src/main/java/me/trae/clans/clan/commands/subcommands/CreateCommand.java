@@ -1,0 +1,96 @@
+package me.trae.clans.clan.commands.subcommands;
+
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
+import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.annotations.EventHandler;
+import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.UtilColor;
+import io.github.trae.hytale.framework.utility.UtilEvent;
+import io.github.trae.hytale.framework.utility.UtilMessage;
+import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
+import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.events.ClanCreateEvent;
+
+import java.util.Locale;
+
+@Component
+public class CreateCommand extends AbstractClanSubCommand implements Listener {
+
+    public CreateCommand() {
+        super("create", "Create a Clan");
+    }
+
+    @Override
+    public ClanStateRequirement getRequiredState() {
+        return ClanStateRequirement.CLAN_EMPTY;
+    }
+
+    @Override
+    public void execute(final PlayerRef playerRef, final Clan playerClan, final String[] args) {
+        if (args.length == 0) {
+            UtilMessage.message(playerRef, "Clans", "You did not input a Name to Create.");
+            return;
+        }
+
+        final String clanName = args[0];
+
+        if (!(this.canCreateClan(playerRef, clanName))) {
+            return;
+        }
+
+        UtilEvent.dispatch(new ClanCreateEvent(playerRef, clanName));
+    }
+
+    private boolean canCreateClan(final PlayerRef playerRef, final String name) {
+        if (this.getModule().getSubCommands().containsKey(name.toLowerCase(Locale.ROOT))) {
+            UtilMessage.message(playerRef, "Clans", "You cannot use that as your Clan name!");
+            return false;
+        }
+
+        if (!(name.matches(this.getModule().getManager().getConfig().getCreateCommand().nameRegex()))) {
+            UtilMessage.message(playerRef, "Clans", "You cannot have special characters in your Clan name!");
+            return false;
+        }
+
+        if (this.getModule().getManager().getClanByName(name).isPresent()) {
+            UtilMessage.message(playerRef, "Clans", "Clan name is already used by another Clan!");
+            return false;
+        }
+
+        if (name.length() > this.getModule().getManager().getConfig().getCreateCommand().maxNameLength()) {
+            UtilMessage.message(playerRef, "Clans", "Clan name is too long. Maximum Length is <yellow>%s</yellow>!".formatted(this.getModule().getManager().getConfig().getCreateCommand().maxNameLength()));
+            return false;
+        }
+
+        if (name.length() < this.getModule().getManager().getConfig().getCreateCommand().minNameLength()) {
+            UtilMessage.message(playerRef, "Clans", "Clan name is too short. Minimum Length is <yellow>%s</yellow>!".formatted(this.getModule().getManager().getConfig().getCreateCommand().minNameLength()));
+            return false;
+        }
+
+        return true;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onClanCreate(final ClanCreateEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        final PlayerRef playerRef = event.getPlayerRef();
+
+        final Clan clan = new Clan(playerRef, event.getName());
+
+        this.getModule().getManager().addClan(clan);
+        this.getModule().getManager().getRepository().save(clan);
+
+        for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
+            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
+
+            UtilMessage.message(targetPlayerRef, "Clans", "%s formed %s.".formatted(UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername()), UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()))));
+        }
+    }
+}
