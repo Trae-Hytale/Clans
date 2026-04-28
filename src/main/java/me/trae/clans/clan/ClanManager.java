@@ -22,13 +22,16 @@ import lombok.Getter;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.configs.ClansConfig;
 import me.trae.clans.clan.data.Member;
+import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.enums.InteractType;
 import me.trae.clans.clan.interfaces.IClanManager;
 import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.clans.clan.storages.ClanChunkStorage;
 import me.trae.clans.clan.storages.ClanIdStorage;
 import me.trae.clans.clan.storages.ClanNameStorage;
 import me.trae.clans.clan.storages.ClanPlayerStorage;
+import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
 
 import java.awt.*;
@@ -157,26 +160,6 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
-    public String getClanName(final ClanRelation clanRelation, final Clan clan) {
-        return this.getClanFullName(clanRelation, clan);
-    }
-
-    @Override
-    public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
-        return UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()));
-    }
-
-    @Override
-    public String getClanShortName(final ClanRelation clanRelation, final Clan clan) {
-        return UtilColor.serialize(clanRelation.getSuffix(), clan.getDisplayName());
-    }
-
-    @Override
-    public String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef) {
-        return UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername());
-    }
-
-    @Override
     public void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
         final LinkedHashMap<String, String> informationMap = UtilJava.createMap(new LinkedHashMap<>(), map -> {
             map.put("Age", "<yellow>%s</yellow>".formatted(UtilTime.getTime(System.currentTimeMillis() - targetClan.getCreatedAt())));
@@ -260,11 +243,6 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
-    public int getMaxClaimLimit(final Clan clan) {
-        return Math.min(this.config.getTerritory().maxClaimLimit(), 3 + clan.getMembers().size());
-    }
-
-    @Override
     public void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored) {
         for (final Member member : clan.getMembers().values()) {
             if (ignored != null && ignored.contains(member.getId())) {
@@ -273,5 +251,82 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
             UtilMessage.message(member.getPlayerRef(), prefix, message);
         }
+    }
+
+    @Override
+    public String getClanName(final ClanRelation clanRelation, final Clan clan) {
+        return this.getClanFullName(clanRelation, clan);
+    }
+
+    @Override
+    public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
+        return UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()));
+    }
+
+    @Override
+    public String getClanShortName(final ClanRelation clanRelation, final Clan clan) {
+        return UtilColor.serialize(clanRelation.getSuffix(), clan.getDisplayName());
+    }
+
+    @Override
+    public String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef) {
+        return UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername());
+    }
+
+    @Override
+    public int getMaxClaimLimit(final Clan clan) {
+        return Math.min(this.config.getTerritory().maxClaimLimit(), 3 + clan.getMembers().size());
+    }
+
+    @Override
+    public boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final InteractType interactType) {
+        if (territoryClan != null) {
+            if (this.clientManager.getClientByPlayer(playerRef).map(Client::isAdministrating).orElse(false)) {
+                return true;
+            }
+
+            if (playerClan != null) {
+                if (territoryClan.equals(playerClan)) {
+                    if (interactType == InteractType.GATEWAY_INTERACT) {
+                        return true;
+                    }
+
+                    return territoryClan.getMemberByPlayer(playerRef).map(member -> member.getRole() != MemberRole.RECRUIT).orElse(false);
+                }
+
+                if (territoryClan.isTrustedAllianceByClan(playerClan)) {
+                    return interactType == InteractType.GATEWAY_INTERACT;
+                }
+
+                if (playerClan.isPillageByClan(territoryClan)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean canHurt(final PlayerRef damagee, final PlayerRef damager) {
+        final Optional<Clan> damagerClanOptional = this.getClanByPlayer(damagee);
+        final Optional<Clan> damageeClanOptional = this.getClanByPlayer(damager);
+
+        if (damagerClanOptional.isPresent() && damageeClanOptional.isPresent()) {
+            final Clan damagerClan = damagerClanOptional.get();
+            final Clan damageeClan = damageeClanOptional.get();
+
+            if (damagerClan.equals(damageeClan)) {
+                return false;
+            }
+
+            if (damagerClan.isAllianceByClan(damageeClan)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

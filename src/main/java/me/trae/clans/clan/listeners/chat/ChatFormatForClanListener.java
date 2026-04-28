@@ -1,4 +1,4 @@
-package me.trae.clans.clan.listeners;
+package me.trae.clans.clan.listeners.chat;
 
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;

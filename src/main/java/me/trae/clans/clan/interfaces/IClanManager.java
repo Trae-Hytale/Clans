@@ -5,6 +5,7 @@ import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.enums.InteractType;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,12 @@ public interface IClanManager {
 
     ClanRelation getClanRelationByPlayer(final PlayerRef playerRef, final PlayerRef targetPlayerRef);
 
+    void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan);
+
+    void disbandClan(final Clan clan);
+
+    void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored);
+
     String getClanName(final ClanRelation clanRelation, final Clan clan);
 
     String getClanFullName(final ClanRelation clanRelation, final Clan clan);
@@ -44,11 +51,9 @@ public interface IClanManager {
 
     String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef);
 
-    void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan);
-
-    void disbandClan(final Clan clan);
-
     int getMaxClaimLimit(final Clan clan);
 
-    void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored);
+    boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final InteractType interactType);
+
+    boolean canHurt(final PlayerRef damager, final PlayerRef damagee);
 }
