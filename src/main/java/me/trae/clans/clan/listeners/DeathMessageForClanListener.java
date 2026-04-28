@@ -36,7 +36,7 @@ public class DeathMessageForClanListener implements Module<ClansPlugin, ClanMana
         }
 
         if (deathEvent.getKiller() instanceof final Player player) {
-            this.getName(player, targetPlayerRef).ifPresent(event::setEntityName);
+            this.getName(player, targetPlayerRef).ifPresent(event::setKillerName);
         }
     }
 
