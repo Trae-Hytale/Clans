@@ -1,9 +1,10 @@
 package me.trae.clans.clan.listeners;
 
-import com.hypixel.hytale.server.core.NameMatching;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.Listener;
@@ -40,7 +41,15 @@ public class DeathMessageForClanListener implements Module<ClansPlugin, ClanMana
     }
 
     private Optional<String> getName(final Player player, final PlayerRef targetPlayerRef) {
-        final PlayerRef playerRef = Universe.get().getPlayerByUsername(player.getDisplayName(), NameMatching.EXACT);
+        final Ref<EntityStore> playerReference = player.getReference();
+        final World playerWorld = player.getWorld();
+
+        if (playerReference == null || playerWorld == null) {
+            return Optional.empty();
+        }
+
+        final PlayerRef playerRef = playerWorld.getEntityStore().getStore().getComponent(playerReference, PlayerRef.getComponentType());
+
         if (playerRef == null) {
             return Optional.empty();
         }
