@@ -31,7 +31,7 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
 
             final ClanRelation clanRelation = this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(recipient).orElse(null), clan);
 
-            event.setFormat(Message.join(client.getRank().getPrefix(), Message.raw(clan.getDisplayName()).color(clanRelation.getPrefix()), Message.raw(" "), AbstractChatEvent.USERNAME_FORMAT.apply(client.getName(), clanRelation.getSuffix()), Message.raw(" "), AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent())));
+            event.setFormat(Message.join(client.getRank().getPrefix(), Message.raw(clan.getDisplayName()).color(clanRelation.getPrefix()), AbstractChatEvent.SEPARATOR, AbstractChatEvent.USERNAME_FORMAT.apply(client.getName(), clanRelation.getSuffix()), Message.raw(" "), AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent())));
         }));
     }
 }
