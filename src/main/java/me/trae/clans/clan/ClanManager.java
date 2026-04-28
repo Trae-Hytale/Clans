@@ -1,12 +1,16 @@
 package me.trae.clans.clan;
 
+import com.hypixel.hytale.server.core.event.events.BootEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
-import io.github.trae.di.annotations.method.ApplicationReady;
 import io.github.trae.di.annotations.type.component.Service;
 import io.github.trae.hf.Manager;
+import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.annotations.EventHandler;
+import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilTask;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
@@ -25,15 +29,17 @@ import me.trae.clans.clan.storages.ClanChunkStorage;
 import me.trae.clans.clan.storages.ClanIdStorage;
 import me.trae.clans.clan.storages.ClanNameStorage;
 import me.trae.clans.clan.storages.ClanPlayerStorage;
+import me.trae.core.client.ClientManager;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 @Getter
 @Service
-public class ClanManager implements Manager<ClansPlugin>, IClanManager {
+public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener {
 
     private final ClanIdStorage clanIdStorage = new ClanIdStorage();
     private final ClanNameStorage clanNameStorage = new ClanNameStorage();
@@ -42,13 +48,25 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager {
 
     private final ClanRepository repository;
 
+    private final ClientManager clientManager;
+
     private final ClansConfig config;
 
-    @ApplicationReady
-    public void onApplicationReady() {
-        this.flushAllClans();
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onBootEvent(final BootEvent event) {
+        UtilTask.executeLaterSynchronous(() -> {
+            this.flushAllClans();
 
-        this.repository.findManySynchronously(List.of()).forEach(this::addClan);
+            this.repository.findManySynchronously(List.of()).forEach(clan -> {
+                System.out.println("Loaded Clan: " + clan.getName());
+
+                for (final Chunk chunk : clan.getTerritory()) {
+                    System.out.println("Found Chunk: " + chunk.toString());
+                }
+
+                this.addClan(clan);
+            });
+        }, 2, TimeUnit.SECONDS);
     }
 
     @Override
@@ -140,17 +158,22 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager {
 
     @Override
     public String getClanName(final ClanRelation clanRelation, final Clan clan) {
-        return "";
+        return this.getClanFullName(clanRelation, clan);
     }
 
     @Override
     public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
-        return "";
+        return UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()));
     }
 
     @Override
     public String getClanShortName(final ClanRelation clanRelation, final Clan clan) {
-        return "";
+        return UtilColor.serialize(clanRelation.getSuffix(), clan.getDisplayName());
+    }
+
+    @Override
+    public String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef) {
+        return UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername());
     }
 
     @Override
@@ -239,5 +262,16 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager {
     @Override
     public int getMaxClaimLimit(final Clan clan) {
         return Math.min(this.config.getTerritory().maxClaimLimit(), 3 + clan.getMembers().size());
+    }
+
+    @Override
+    public void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored) {
+        for (final Member member : clan.getMembers().values()) {
+            if (ignored != null && ignored.contains(member.getId())) {
+                continue;
+            }
+
+            UtilMessage.message(member.getPlayerRef(), prefix, message);
+        }
     }
 }

@@ -3,6 +3,7 @@ package me.trae.clans.clan;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.database.domain.data.DomainData;
 import io.github.trae.database.domain.models.Domain;
+import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
     private final LinkedHashMap<UUID, Enemy> enemies = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Pillage> pillages = new LinkedHashMap<>();
 
+    private BlockLocation home;
     private UUID founder;
     private long createdAt;
 
@@ -44,7 +46,6 @@ public class Clan implements Domain<ClanProperty>, IClan {
         this(domainData.getIdentifier());
 
         this.name = domainData.get(String.class, ClanProperty.NAME);
-        this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER);
 
         this.territory.addAll(domainData.getList(LinkedHashMap.class, ClanProperty.TERRITORY).stream().map(Chunk::deserialize).toList());
 
@@ -53,6 +54,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
         this.enemies.putAll(domainData.<EnemyProperty, Enemy>getSubDomainMap(ClanProperty.ENEMIES, Enemy::new));
         this.pillages.putAll(domainData.<PillageProperty, Pillage>getSubDomainMap(ClanProperty.PILLAGES, Pillage::new));
 
+        this.home = BlockLocation.deserialize(domainData.getMap(String.class, Object.class, ClanProperty.HOME));
+        this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER);
         this.createdAt = domainData.get(Long.class, ClanProperty.CREATED_AT);
     }
 
@@ -73,6 +76,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
             case ALLIANCES -> this.getAlliances();
             case ENEMIES -> this.getEnemies();
             case PILLAGES -> this.getPillages();
+            case HOME -> BlockLocation.serialize(this.getHome());
             case FOUNDER -> this.getFounder();
             case CREATED_AT -> this.getCreatedAt();
         };
@@ -96,6 +100,11 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean isTerritoryByChunk(final Chunk chunk) {
         return this.getTerritory().contains(chunk);
+    }
+
+    @Override
+    public boolean hasTerritory() {
+        return !(this.getTerritory().isEmpty());
     }
 
     @Override

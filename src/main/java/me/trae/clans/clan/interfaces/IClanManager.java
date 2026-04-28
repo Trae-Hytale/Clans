@@ -42,9 +42,13 @@ public interface IClanManager {
 
     String getClanShortName(final ClanRelation clanRelation, final Clan clan);
 
+    String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef);
+
     void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan);
 
     void disbandClan(final Clan clan);
 
     int getMaxClaimLimit(final Clan clan);
+
+    void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored);
 }

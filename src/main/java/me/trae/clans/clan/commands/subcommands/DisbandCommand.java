@@ -1,5 +1,6 @@
 package me.trae.clans.clan.commands.subcommands;
 
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
@@ -16,6 +17,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirem
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.ClanDisbandEvent;
+import me.trae.core.client.Client;
 
 @Component
 public class DisbandCommand extends AbstractClanSubCommand implements Listener {
@@ -35,7 +37,7 @@ public class DisbandCommand extends AbstractClanSubCommand implements Listener {
     }
 
     @Override
-    public void execute(final PlayerRef playerRef, final Clan playerClan, final String[] args) {
+    public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
         if (!(this.canDisbandClan(playerRef, playerClan))) {
             return;
         }

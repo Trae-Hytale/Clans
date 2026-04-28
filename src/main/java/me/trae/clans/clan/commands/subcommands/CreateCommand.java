@@ -1,12 +1,12 @@
 package me.trae.clans.clan.commands.subcommands;
 
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
@@ -14,6 +14,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.ClanCreateEvent;
+import me.trae.core.client.Client;
 
 import java.util.Locale;
 
@@ -30,7 +31,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
     }
 
     @Override
-    public void execute(final PlayerRef playerRef, final Clan playerClan, final String[] args) {
+    public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
         if (args.length == 0) {
             UtilMessage.message(playerRef, "Clans", "You did not input a Name to Create.");
             return;
@@ -90,7 +91,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
         for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
             final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
 
-            UtilMessage.message(targetPlayerRef, "Clans", "%s formed %s.".formatted(UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername()), UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()))));
+            UtilMessage.message(targetPlayerRef, "Clans", "%s formed %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
         }
     }
 }

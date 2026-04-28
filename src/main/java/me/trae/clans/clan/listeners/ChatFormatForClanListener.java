@@ -13,13 +13,10 @@ import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.core.chat.events.ChatReceiveEvent;
 import me.trae.core.chat.events.abstracts.AbstractChatEvent;
-import me.trae.core.client.ClientManager;
 
 @AllArgsConstructor
 @Component
 public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManager>, Listener {
-
-    private final ClientManager clientManager;
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChatReceive(final ChatReceiveEvent event) {
@@ -29,7 +26,7 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
 
         final PlayerRef sender = event.getSender();
 
-        this.clientManager.getClientByPlayer(sender).ifPresent(client -> this.getManager().getClanByPlayer(sender).ifPresent(clan -> {
+        this.getManager().getClientManager().getClientByPlayer(sender).ifPresent(client -> this.getManager().getClanByPlayer(sender).ifPresent(clan -> {
             final PlayerRef recipient = event.getRecipient();
 
             final ClanRelation clanRelation = this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(recipient).orElse(null), clan);

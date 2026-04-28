@@ -21,6 +21,8 @@ public interface IClan {
 
     boolean isTerritoryByChunk(final Chunk chunk);
 
+    boolean hasTerritory();
+
     void addMember(final Member member);
 
     void removeMember(final Member member);

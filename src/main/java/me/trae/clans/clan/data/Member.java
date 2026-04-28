@@ -1,6 +1,7 @@
 package me.trae.clans.clan.data;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.database.domain.data.DomainData;
 import io.github.trae.database.domain.models.SubDomain;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,11 @@ public class Member implements SubDomain<MemberProperty>, IMember {
             case CREATED_AT -> this.getCreatedAt();
             case ROLE -> this.getRole().name();
         };
+    }
+
+    @Override
+    public PlayerRef getPlayerRef() {
+        return Universe.get().getPlayer(this.getId());
     }
 
     @Override
