@@ -1,0 +1,121 @@
+package me.trae.clans.clan.commands.subcommands;
+
+import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.annotations.EventHandler;
+import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.UtilEvent;
+import io.github.trae.hytale.framework.utility.UtilMessage;
+import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
+import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.data.enums.MemberRole;
+import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.events.MemberDemoteEvent;
+import me.trae.clans.clan.properties.ClanProperty;
+import me.trae.core.client.Client;
+import me.trae.core.client.enums.Rank;
+
+import java.util.List;
+import java.util.Optional;
+
+@Component
+public class DemoteCommand extends AbstractClanSubCommand implements Listener {
+
+    public DemoteCommand() {
+        super("demote", "Demote a Member");
+    }
+
+    @Override
+    public ClanStateRequirement getRequiredState() {
+        return ClanStateRequirement.CLAN_PRESENT;
+    }
+
+    @Override
+    public MemberRole getRequiredMemberRole() {
+        return MemberRole.LEADER;
+    }
+
+    @Override
+    public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
+        if (args.length == 0) {
+            UtilMessage.message(playerRef, "Clans", "You did not input a Member to Demote.");
+            return;
+        }
+
+        final String targetClientName = args[0];
+
+        final Optional<Client> targetClientOptional = this.getModule().getManager().getClientManager().getClientByName(targetClientName);
+        if (targetClientOptional.isEmpty()) {
+            UtilMessage.message(player, "Clans", "Could not find Player <yellow>%s</yellow>.".formatted(targetClientName));
+            return;
+        }
+
+        final Client targetClient = targetClientOptional.get();
+
+        if (!(this.canDemoteMember(playerRef, client, playerClan, targetClient))) {
+            return;
+        }
+
+        UtilEvent.dispatch(new MemberDemoteEvent(playerClan, playerRef, targetClient));
+    }
+
+    private boolean canDemoteMember(final PlayerRef playerRef, final Client client, final Clan playerClan, final Client targetClient) {
+        if (!(playerClan.isMemberById(targetClient.getId()))) {
+            final Optional<Clan> targetClanOptional = this.getModule().getManager().getClanByPlayerId(targetClient.getId());
+
+            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(playerClan, targetClanOptional.orElse(null));
+
+            UtilMessage.message(playerRef, "Clans", "%s is not in your Clan!".formatted(this.getModule().getManager().getPlayerName(clanRelation, targetClient.getName())));
+            return false;
+        }
+
+        if (!(client.isAdministrating())) {
+            if (targetClient.equals(client)) {
+                UtilMessage.message(playerRef, "Clans", "You cannot demote yourself!");
+                return false;
+            }
+
+            if (targetClient.isAdministrating() && !(client.hasRank(Rank.OWNER))) {
+                UtilMessage.message(playerRef, "Clans", "You do not outrank %s!".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, targetClient.getName())));
+                return false;
+            }
+        }
+
+        if (playerClan.getMemberById(targetClient.getId()).map(member -> member.getRole().isLowestValue()).orElse(false)) {
+            UtilMessage.message(playerRef, "Clans", "%s cannot be demoted any further!".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, targetClient.getName())));
+            return false;
+        }
+
+        return true;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onMemberDemote(final MemberDemoteEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        final Clan clan = event.getClan();
+        final PlayerRef playerRef = event.getPlayerRef();
+        final Client targetClient = event.getTargetClient();
+
+        clan.getMemberById(targetClient.getId()).ifPresent(member -> {
+            MemberRole.getByOrdinal(member.getRole().ordinal() - 1).ifPresent(memberRole -> {
+                member.setRole(memberRole);
+                this.getModule().getManager().getRepository().update(clan, ClanProperty.MEMBERS);
+
+                if (targetClient.getId().equals(playerRef.getUuid())) {
+                    UtilMessage.message(playerRef, "Clans", "You demoted yourself to <green>%s</green>.".formatted(memberRole.getName()));
+                } else {
+                    UtilMessage.message(playerRef, "Clans", "You have demoted %s to <green>%s</green>.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, targetClient.getName()), memberRole.getName()));
+                    UtilMessage.message(targetClient.getPlayerRef(), "Clans", "%s has demoted you to <green>%s</green>.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), memberRole.getName()));
+
+                    this.getModule().getManager().messageClan(clan, "Clans", "%s has demoted %s to <green>%s</green>.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getPlayerName(ClanRelation.SELF, targetClient.getName()), memberRole.getName()), List.of(playerRef.getUuid(), targetClient.getId()));
+                }
+            });
+        });
+    }
+}
