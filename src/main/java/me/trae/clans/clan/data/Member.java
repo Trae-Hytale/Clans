@@ -46,6 +46,10 @@ public class Member implements SubDomain<MemberProperty>, IMember {
 
     @Override
     public boolean hasRole(final MemberRole role) {
+        if (role == null) {
+            return false;
+        }
+
         return this.getRole().ordinal() >= role.ordinal();
     }
 }

@@ -7,13 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.trae.clans.clan.Clan;
 
-import java.util.List;
-
 @AllArgsConstructor
 @Getter
-public class ClanUnClaimAllEvent extends CustomCancellableEvent {
+public class TerritoryClaimEvent extends CustomCancellableEvent {
 
     private final Clan clan;
     private final PlayerRef playerRef;
-    private final List<Chunk> chunks;
+    private final Chunk chunk;
 }

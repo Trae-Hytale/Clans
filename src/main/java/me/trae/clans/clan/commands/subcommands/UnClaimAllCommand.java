@@ -14,7 +14,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
-import me.trae.clans.clan.events.ClanUnClaimAllEvent;
+import me.trae.clans.clan.events.TerritoryUnClaimAllEvent;
 import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
@@ -49,7 +49,7 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements Listene
             return;
         }
 
-        UtilEvent.dispatch(new ClanUnClaimAllEvent(playerClan, playerRef, playerClan.getTerritory()));
+        UtilEvent.dispatch(new TerritoryUnClaimAllEvent(playerClan, playerRef, playerClan.getTerritory()));
     }
 
     private boolean canUnClaimAll(final PlayerRef playerRef, final Clan playerClan) {
@@ -62,7 +62,7 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements Listene
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onClanUnClaimAll(final ClanUnClaimAllEvent event) {
+    public void onTerritoryUnClaimAll(final TerritoryUnClaimAllEvent event) {
         if (event.isCancelled()) {
             return;
         }

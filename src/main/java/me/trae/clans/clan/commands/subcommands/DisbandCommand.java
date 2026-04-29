@@ -8,7 +8,6 @@ import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilChunk;
-import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
@@ -66,7 +65,7 @@ public class DisbandCommand extends AbstractClanSubCommand implements Listener {
         for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
             final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
 
-            UtilMessage.message(targetPlayerRef, "Clans", "%s has disbanded %s.".formatted(UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername()), UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()))));
+            UtilMessage.message(targetPlayerRef, "Clans", "%s has disbanded %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
         }
 
         this.getModule().getManager().disbandClan(clan);

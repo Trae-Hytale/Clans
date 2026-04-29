@@ -49,9 +49,17 @@ public interface IClanManager {
 
     String getClanShortName(final ClanRelation clanRelation, final Clan clan);
 
+    String getPlayerName(final ClanRelation clanRelation, final String playerName);
+
     String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef);
 
     int getMaxClaimLimit(final Clan clan);
+
+    int getMaxSquadLimit(final Clan clan);
+
+    boolean isSquadFull(final Clan clan);
+
+    boolean isBeingPillaged(final Clan clan);
 
     boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final InteractType interactType);
 

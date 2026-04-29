@@ -11,7 +11,7 @@ import me.trae.clans.clan.Clan;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class ClanUnClaimEvent extends CustomCancellableEvent {
+public class TerritoryUnClaimEvent extends CustomCancellableEvent {
 
     private final Clan clan;
     private final PlayerRef playerRef;

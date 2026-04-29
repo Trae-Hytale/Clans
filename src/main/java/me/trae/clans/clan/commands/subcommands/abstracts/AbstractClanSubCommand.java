@@ -10,13 +10,14 @@ import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.commands.subcommands.abstracts.interfaces.IAbstractClanSubCommand;
 import me.trae.clans.clan.data.Member;
+import me.trae.core.client.enums.Rank;
 
 import java.util.Optional;
 
 public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugin, ClanCommand> implements IAbstractClanSubCommand {
 
     public AbstractClanSubCommand(final String name, final String description) {
-        super(name, description);
+        super(name, description, Rank.DEFAULT);
     }
 
     @Override
@@ -42,7 +43,7 @@ public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugi
                     final Member member = memberOptional.get();
 
                     if (!(member.hasRole(this.getRequiredMemberRole()))) {
-                        UtilMessage.message(playerRef, "Clans", "You must be <white>Clan %s</white> to execute this!".formatted(this.getRequiredMemberRole().getName()));
+                        UtilMessage.message(playerRef, "Clans", "You must be Clan <white>%s</white> to execute this!".formatted(this.getRequiredMemberRole().getName()));
                         return;
                     }
                 }

@@ -3,15 +3,17 @@ package me.trae.clans.clan.interfaces;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
-import me.trae.clans.clan.data.Alliance;
-import me.trae.clans.clan.data.Enemy;
-import me.trae.clans.clan.data.Member;
-import me.trae.clans.clan.data.Pillage;
+import me.trae.clans.clan.data.*;
+import me.trae.clans.clan.data.enums.RelationRequestType;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface IClan {
+
+    boolean isOnline();
+
+    String getType();
 
     String getDisplayName();
 
@@ -22,6 +24,18 @@ public interface IClan {
     boolean isTerritoryByChunk(final Chunk chunk);
 
     boolean hasTerritory();
+
+    void addRelationRequest(final Clan clan, final RelationRequestType type);
+
+    void removeRelationRequest(final Clan clan, final RelationRequestType type);
+
+    Optional<Request> getRelationRequestByClan(final Clan clan, final RelationRequestType type);
+
+    void addInvitationRequest(final PlayerRef playerRef);
+
+    void removeInvitationRequest(final PlayerRef playerRef);
+
+    Optional<Request> getInvitationRequestByPlayer(final PlayerRef playerRef);
 
     void addMember(final Member member);
 
@@ -72,4 +86,8 @@ public interface IClan {
     boolean isPillageById(final UUID id);
 
     boolean isPillageByClan(final Clan clan);
+
+    boolean hasHome();
+
+    String getHomeLocationString();
 }

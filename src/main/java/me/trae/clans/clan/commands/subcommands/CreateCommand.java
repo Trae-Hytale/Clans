@@ -43,7 +43,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        UtilEvent.dispatch(new ClanCreateEvent(playerRef, clanName));
+        UtilEvent.dispatch(new ClanCreateEvent(playerRef, client, clanName));
     }
 
     private boolean canCreateClan(final PlayerRef playerRef, final String name) {
@@ -84,6 +84,10 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
         final PlayerRef playerRef = event.getPlayerRef();
 
         final Clan clan = new Clan(playerRef, event.getName());
+
+        if (event.getPlayerClient().isAdministrating()) {
+            clan.setAdmin(true);
+        }
 
         this.getModule().getManager().addClan(clan);
         this.getModule().getManager().getRepository().save(clan);

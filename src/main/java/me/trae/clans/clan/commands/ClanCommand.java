@@ -7,6 +7,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.core.client.enums.Rank;
 
 import java.util.Optional;
 
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class ClanCommand extends PlayerCommand<ClansPlugin, ClanManager> {
 
     public ClanCommand() {
-        super("clan", "Clan management");
+        super("clan", "Clan management", Rank.DEFAULT);
 
         this.addAliases("c");
         this.addAliases("faction", "fac", "f");

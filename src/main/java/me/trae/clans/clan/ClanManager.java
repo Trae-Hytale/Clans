@@ -157,7 +157,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                     this.getClanById(id).ifPresent(allianceClan -> {
                         final ClanRelation clanRelation = this.getClanRelationByClan(playerClan, allianceClan);
 
-                        list.add(UtilColor.serialize(clanRelation.getSuffix(), allianceClan.getDisplayName()));
+                        list.add(this.getClanShortName(clanRelation, allianceClan));
                     });
                 }
             })));
@@ -167,7 +167,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                     this.getClanById(id).ifPresent(enemyClan -> {
                         final ClanRelation clanRelation = this.getClanRelationByClan(playerClan, enemyClan);
 
-                        list.add(UtilColor.serialize(clanRelation.getSuffix(), enemyClan.getDisplayName()));
+                        list.add(this.getClanShortName(clanRelation, enemyClan));
                     });
                 }
             })));
@@ -177,7 +177,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                     this.getClanById(id).ifPresent(pillageClan -> {
                         final ClanRelation clanRelation = this.getClanRelationByClan(playerClan, pillageClan);
 
-                        list.add(UtilColor.serialize(clanRelation.getSuffix(), pillageClan.getDisplayName()));
+                        list.add(this.getClanShortName(clanRelation, pillageClan));
                     });
                 }
             })));
@@ -198,7 +198,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
             })));
         });
 
-        UtilMessage.message(playerRef, "Clans", "%s Information:".formatted(UtilColor.serialize(this.getClanRelationByClan(playerClan, targetClan).getSuffix(), targetClan.getDisplayName())));
+        UtilMessage.message(playerRef, "Clans", "%s Information:".formatted(this.getClanShortName(this.getClanRelationByClan(playerClan, targetClan), targetClan)));
 
         for (final Map.Entry<String, String> entry : informationMap.entrySet()) {
             UtilMessage.message(playerRef, UtilString.pair(entry.getKey(), entry.getValue()));
@@ -246,7 +246,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
-        return UtilColor.serialize(clanRelation.getSuffix(), "Clan %s".formatted(clan.getDisplayName()));
+        return UtilColor.serialize(clanRelation.getSuffix(), "%s %s".formatted(clan.getType(), clan.getDisplayName()));
     }
 
     @Override
@@ -255,13 +255,37 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
+    public String getPlayerName(final ClanRelation clanRelation, final String playerName) {
+        return UtilColor.serialize(clanRelation.getSuffix(), playerName);
+    }
+
+    @Override
     public String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef) {
-        return UtilColor.serialize(clanRelation.getSuffix(), playerRef.getUsername());
+        return this.getPlayerName(clanRelation, playerRef.getUsername());
     }
 
     @Override
     public int getMaxClaimLimit(final Clan clan) {
-        return Math.min(this.config.getTerritory().maxClaimLimit(), 3 + clan.getMembers().size());
+        return Math.min(this.config.getTerritory().maxClaimLimit(), clan.getMembers().size());
+    }
+
+    @Override
+    public int getMaxSquadLimit(final Clan clan) {
+        final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
+
+        return Math.min(this.config.getSquad().maxLimit(), squadCount);
+    }
+
+    @Override
+    public boolean isSquadFull(final Clan clan) {
+        final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
+
+        return squadCount >= this.config.getSquad().maxLimit();
+    }
+
+    @Override
+    public boolean isBeingPillaged(final Clan clan) {
+        return this.getClans().stream().anyMatch(targetClan -> targetClan.isPillageByClan(clan));
     }
 
     @Override

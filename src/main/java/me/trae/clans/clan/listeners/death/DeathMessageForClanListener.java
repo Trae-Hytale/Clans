@@ -10,7 +10,6 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.utility.UtilColor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.core.death.events.CustomDeathEvent;
@@ -54,6 +53,6 @@ public class DeathMessageForClanListener implements Module<ClansPlugin, ClanMana
             return Optional.empty();
         }
 
-        return Optional.of(UtilColor.serialize(this.getManager().getClanRelationByPlayer(playerRef, targetPlayerRef).getSuffix(), playerRef.getUsername()));
+        return Optional.of(this.getManager().getPlayerName(this.getManager().getClanRelationByPlayer(playerRef, targetPlayerRef), playerRef));
     }
 }

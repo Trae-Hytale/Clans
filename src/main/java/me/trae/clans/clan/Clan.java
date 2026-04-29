@@ -8,15 +8,11 @@ import io.github.trae.hytale.framework.wrappers.Chunk;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.trae.clans.clan.data.Alliance;
-import me.trae.clans.clan.data.Enemy;
-import me.trae.clans.clan.data.Member;
-import me.trae.clans.clan.data.Pillage;
+import me.trae.clans.clan.data.*;
 import me.trae.clans.clan.data.enums.MemberRole;
-import me.trae.clans.clan.data.properties.AllianceProperty;
-import me.trae.clans.clan.data.properties.EnemyProperty;
-import me.trae.clans.clan.data.properties.MemberProperty;
-import me.trae.clans.clan.data.properties.PillageProperty;
+import me.trae.clans.clan.data.enums.RelationRequestType;
+import me.trae.clans.clan.data.enums.RequestType;
+import me.trae.clans.clan.data.properties.*;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.clans.clan.properties.ClanProperty;
 
@@ -33,6 +29,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
     private final List<Chunk> territory = new ArrayList<>();
 
+    private final LinkedHashMap<UUID, Request> requests = new LinkedHashMap<>();
+
     private final LinkedHashMap<UUID, Member> members = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Alliance> alliances = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Enemy> enemies = new LinkedHashMap<>();
@@ -40,7 +38,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
     private BlockLocation home;
     private UUID founder;
-    private long createdAt;
+    private boolean admin;
+    private long createdAt, lastOnline;
 
     public Clan(final DomainData<ClanProperty> domainData) {
         this(domainData.getIdentifier());
@@ -49,6 +48,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
         this.territory.addAll(domainData.getList(LinkedHashMap.class, ClanProperty.TERRITORY).stream().map(Chunk::deserialize).toList());
 
+        this.requests.putAll(domainData.<RequestProperty, Request>getSubDomainMap(ClanProperty.REQUESTS, Request::new));
+
         this.members.putAll(domainData.<MemberProperty, Member>getSubDomainMap(ClanProperty.MEMBERS, Member::new));
         this.alliances.putAll(domainData.<AllianceProperty, Alliance>getSubDomainMap(ClanProperty.ALLIANCES, Alliance::new));
         this.enemies.putAll(domainData.<EnemyProperty, Enemy>getSubDomainMap(ClanProperty.ENEMIES, Enemy::new));
@@ -56,7 +57,9 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
         this.home = BlockLocation.deserialize(domainData.getMap(String.class, Object.class, ClanProperty.HOME));
         this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER);
+        this.admin = domainData.get(Boolean.class, ClanProperty.ADMIN);
         this.createdAt = domainData.get(Long.class, ClanProperty.CREATED_AT);
+        this.lastOnline = domainData.get(Long.class, ClanProperty.LAST_ONLINE);
     }
 
     public Clan(final PlayerRef playerRef, final String name) {
@@ -72,14 +75,27 @@ public class Clan implements Domain<ClanProperty>, IClan {
         return switch (clanProperty) {
             case NAME -> this.getName();
             case TERRITORY -> this.getTerritory().stream().map(Chunk::serialize).toList();
+            case REQUESTS -> this.getRequests();
             case MEMBERS -> this.getMembers();
             case ALLIANCES -> this.getAlliances();
             case ENEMIES -> this.getEnemies();
             case PILLAGES -> this.getPillages();
             case HOME -> BlockLocation.serialize(this.getHome());
             case FOUNDER -> this.getFounder();
+            case ADMIN -> this.isAdmin();
             case CREATED_AT -> this.getCreatedAt();
+            case LAST_ONLINE -> this.getLastOnline();
         };
+    }
+
+    @Override
+    public boolean isOnline() {
+        return this.getMembers().values().stream().anyMatch(Member::isOnline);
+    }
+
+    @Override
+    public String getType() {
+        return this.isAdmin() ? "Admin Clan" : "Clan";
     }
 
     @Override
@@ -105,6 +121,44 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean hasTerritory() {
         return !(this.getTerritory().isEmpty());
+    }
+
+    @Override
+    public void addRelationRequest(final Clan clan, final RelationRequestType type) {
+        RequestType.getByName(type.name()).ifPresent(requestType -> {
+            this.getRequests().put(Request.ID_FORMATTER.apply(clan.getId(), requestType), new Request(clan.getId(), requestType));
+        });
+    }
+
+    @Override
+    public void removeRelationRequest(final Clan clan, final RelationRequestType type) {
+        RequestType.getByName(type.name()).ifPresent(requestType -> {
+            this.getRequests().remove(Request.ID_FORMATTER.apply(clan.getId(), requestType));
+        });
+    }
+
+    @Override
+    public Optional<Request> getRelationRequestByClan(final Clan clan, final RelationRequestType type) {
+        return RequestType.getByName(type.name()).map(requestType -> this.getRequests().get(Request.ID_FORMATTER.apply(clan.getId(), requestType)));
+    }
+
+    @Override
+    public void addInvitationRequest(final PlayerRef playerRef) {
+        RequestType.getByName(PlayerRequestType.INVITATION.name()).ifPresent(requestType -> {
+            this.getRequests().put(Request.ID_FORMATTER.apply(playerRef.getUuid(), requestType), new Request(playerRef.getUuid(), requestType));
+        });
+    }
+
+    @Override
+    public void removeInvitationRequest(final PlayerRef playerRef) {
+        RequestType.getByName(PlayerRequestType.INVITATION.name()).ifPresent(requestType -> {
+            this.getRequests().remove(Request.ID_FORMATTER.apply(playerRef.getUuid(), requestType));
+        });
+    }
+
+    @Override
+    public Optional<Request> getInvitationRequestByPlayer(final PlayerRef playerRef) {
+        return RequestType.getByName(RequestType.INVITATION.name()).map(requestType -> this.getRequests().get(Request.ID_FORMATTER.apply(playerRef.getUuid(), requestType)));
     }
 
     @Override
@@ -230,6 +284,21 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean isPillageByClan(final Clan clan) {
         return this.isPillageById(clan.getId());
+    }
+
+    @Override
+    public boolean hasHome() {
+        return this.getHome() != null;
+    }
+
+    @Override
+    public String getHomeLocationString() {
+        final BlockLocation home = this.getHome();
+        if (home == null) {
+            return null;
+        }
+
+        return "(<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(home.getX(), home.getY(), home.getZ());
     }
 
     @Override
