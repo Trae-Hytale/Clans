@@ -57,7 +57,7 @@ public class SetHomeCommand extends AbstractClanSubCommand implements Listener {
 
     private boolean canSetHome(final PlayerRef playerRef, final Clan playerClan, final BlockLocation blockLocation) {
         final Optional<Clan> territoryClanOptional = this.getModule().getManager().getClanByLocation(blockLocation);
-        if (territoryClanOptional.isEmpty() || territoryClanOptional.get().equals(playerClan)) {
+        if (territoryClanOptional.isEmpty() || !(territoryClanOptional.get().equals(playerClan))) {
             UtilMessage.message(playerRef, "Clans", "You can only set home in your own territory!");
             return false;
         }
