@@ -11,13 +11,13 @@ import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.TerritoryUnClaimEvent;
 import me.trae.clans.clan.properties.ClanProperty;
-import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 
 import java.util.Collections;
@@ -26,12 +26,8 @@ import java.util.Optional;
 @Component
 public class UnClaimCommand extends AbstractClanSubCommand implements Listener {
 
-    private final BlockRestoreManager blockRestoreManager;
-
-    public UnClaimCommand(final BlockRestoreManager blockRestoreManager) {
+    public UnClaimCommand() {
         super("unclaim", "Unclaim Territory");
-
-        this.blockRestoreManager = blockRestoreManager;
     }
 
     @Override
@@ -108,7 +104,7 @@ public class UnClaimCommand extends AbstractClanSubCommand implements Listener {
             }
         });
 
-        this.blockRestoreManager.unOutlineChunk(chunk, "Clan:%s".formatted(clan.getName()));
+        this.getModule().getManager().getBlockRestoreManager().unOutlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
         final String chunkString = "(<yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(chunk.getX(), chunk.getZ());
 

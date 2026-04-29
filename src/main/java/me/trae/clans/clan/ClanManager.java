@@ -28,17 +28,21 @@ import me.trae.clans.clan.storages.ClanChunkStorage;
 import me.trae.clans.clan.storages.ClanIdStorage;
 import me.trae.clans.clan.storages.ClanNameStorage;
 import me.trae.clans.clan.storages.ClanPlayerStorage;
+import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.function.Function;
 
 @AllArgsConstructor
 @Getter
 @Service
 public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener {
+
+    public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getName());
 
     private final ClanIdStorage clanIdStorage = new ClanIdStorage();
     private final ClanNameStorage clanNameStorage = new ClanNameStorage();
@@ -48,6 +52,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     private final ClanRepository repository;
 
     private final ClientManager clientManager;
+    private final BlockRestoreManager blockRestoreManager;
 
     private final ClansConfig config;
 
@@ -207,6 +212,10 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public void disbandClan(final Clan clan) {
+        for (final Chunk chunk : clan.getTerritory()) {
+            this.blockRestoreManager.unOutlineChunk(chunk, CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
+        }
+
         for (final Clan targetClan : this.getClans()) {
             targetClan.getAllianceByClan(clan).ifPresent(alliance -> {
                 targetClan.removeAlliance(alliance);

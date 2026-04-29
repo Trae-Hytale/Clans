@@ -11,13 +11,13 @@ import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.TerritoryClaimEvent;
 import me.trae.clans.clan.properties.ClanProperty;
-import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 
 import java.time.Duration;
@@ -27,12 +27,8 @@ import java.util.Optional;
 @Component
 public class ClaimCommand extends AbstractClanSubCommand implements Listener {
 
-    private final BlockRestoreManager blockRestoreManager;
-
-    public ClaimCommand(final BlockRestoreManager blockRestoreManager) {
+    public ClaimCommand() {
         super("claim", "Claim Territory");
-
-        this.blockRestoreManager = blockRestoreManager;
     }
 
     @Override
@@ -100,7 +96,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements Listener {
 
         this.getModule().getManager().getClanChunkStorage().update(chunk, chunk, clan);
 
-        this.blockRestoreManager.outlineChunk(chunk, "Clan:%s".formatted(clan.getName()), "Build_Lightsource_Yellow", Duration.ofMinutes(5).toMillis());
+        this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), "Build_Lightsource_Yellow", Duration.ofMinutes(5).toMillis());
 
         final String chunkString = "(<yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(chunk.getX(), chunk.getZ());
 
