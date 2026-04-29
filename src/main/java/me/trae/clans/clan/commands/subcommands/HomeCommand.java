@@ -18,10 +18,13 @@ import me.trae.core.client.Client;
 import me.trae.core.teleport.TeleportData;
 import me.trae.core.teleport.TeleportManager;
 
+import java.time.Duration;
 import java.util.function.Consumer;
 
 @Component
 public class HomeCommand extends AbstractClanSubCommand implements Listener {
+
+    private static final String COOLDOWN_NAME = "Clan Home Command";
 
     private final TeleportManager teleportManager;
 
@@ -56,7 +59,9 @@ public class HomeCommand extends AbstractClanSubCommand implements Listener {
             return false;
         }
 
-        // Check for cooldown
+        if (this.getModule().getManager().getCooldownManager().isCooling(playerRef, COOLDOWN_NAME, true)) {
+            return false;
+        }
 
         return true;
     }
@@ -74,6 +79,8 @@ public class HomeCommand extends AbstractClanSubCommand implements Listener {
         });
 
         final Consumer<TeleportData> postConsumer = (teleportData -> {
+            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, Duration.ofMinutes(5).toMillis(), true, true);
+
             UtilMessage.message(teleportData.getPlayer(), "Clans", "You have teleported to Clan Home.");
         });
 

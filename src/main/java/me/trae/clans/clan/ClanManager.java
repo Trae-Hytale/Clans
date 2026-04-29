@@ -31,6 +31,7 @@ import me.trae.clans.clan.storages.ClanPlayerStorage;
 import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
+import me.trae.core.cooldown.CooldownManager;
 
 import java.awt.*;
 import java.util.List;
@@ -52,6 +53,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     private final ClanRepository repository;
 
     private final ClientManager clientManager;
+    private final CooldownManager cooldownManager;
     private final BlockRestoreManager blockRestoreManager;
 
     private final ClansConfig config;

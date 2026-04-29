@@ -18,6 +18,7 @@ import me.trae.clans.clan.events.ClanJoinEvent;
 import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.client.Client;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -67,8 +68,9 @@ public class JoinCommand extends AbstractClanSubCommand implements Listener {
             if (targetClan.getInvitationRequestByPlayer(playerRef).isEmpty()) {
                 UtilMessage.message(playerRef, "Clans", "You have not been invited to join %s!".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)));
 
-                // TODO: Need to add a cooldown for the message below
-                this.getModule().getManager().messageClan(targetClan, "Clans", "%s tried to join the clan, but is not invited.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.NEUTRAL, playerRef)), null);
+                if (this.getModule().getManager().getCooldownManager().attempt(playerRef, "CLAN_JOIN_ATTEMPT:%s".formatted(targetClan.getName()), Duration.ofMinutes(5).toMillis(), false)) {
+                    this.getModule().getManager().messageClan(targetClan, "Clans", "%s tried to join the clan, but is not invited.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.NEUTRAL, playerRef)), null);
+                }
                 return false;
             }
 
