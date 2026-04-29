@@ -13,6 +13,7 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.system.CustomEntityEventSystem;
 import io.github.trae.hytale.framework.system.data.SystemContext;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
@@ -32,7 +33,7 @@ public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<Place
     @Nullable
     @Override
     public Query<EntityStore> getQuery() {
-        return Query.and(Player.getComponentType(), PlayerRef.getComponentType());
+        return Player.getComponentType();
     }
 
     @Override
@@ -48,12 +49,17 @@ public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<Place
 
         final Player player = systemContext.getComponent(Player.getComponentType());
 
+        final Optional<PlayerRef> playerRefOptional = UtilPlayer.getPlayerRef(player);
+        if (playerRefOptional.isEmpty()) {
+            return;
+        }
+
+        final PlayerRef playerRef = playerRefOptional.get();
+
         final World world = player.getWorld();
         if (world == null) {
             return;
         }
-
-        final PlayerRef playerRef = systemContext.getComponent(PlayerRef.getComponentType());
 
         final Chunk chunk = Chunk.of(world, event.getTargetBlock().toVector3d());
 

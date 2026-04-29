@@ -14,7 +14,7 @@ import io.github.trae.hytale.framework.utility.UtilColor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.core.death.events.CustomDeathEvent;
-import me.trae.core.death.systems.CustomDeathMessageEvent;
+import me.trae.core.death.events.CustomDeathMessageEvent;
 
 import java.util.Optional;
 
