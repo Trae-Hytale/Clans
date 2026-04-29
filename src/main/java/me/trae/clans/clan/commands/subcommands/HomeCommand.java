@@ -79,7 +79,7 @@ public class HomeCommand extends AbstractClanSubCommand implements Listener {
         });
 
         final Consumer<TeleportData> postConsumer = (teleportData -> {
-            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, Duration.ofMinutes(5).toMillis(), true, true);
+            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, Duration.ofMinutes(1).toMillis(), true, true);
 
             UtilMessage.message(teleportData.getPlayer(), "Clans", "You have teleported to Clan Home.");
         });
