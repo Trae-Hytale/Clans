@@ -1,11 +1,9 @@
 package me.trae.clans.clan.commands.subcommands.abstracts;
 
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilPlayer;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.ClanCommand;
@@ -51,22 +49,10 @@ public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugi
             }
         }
 
-        this.getPlayer(playerRef).ifPresent(player -> {
+        UtilPlayer.getPlayer(playerRef).ifPresent(player -> {
             this.getModule().getManager().getClientManager().getClientByPlayer(playerRef).ifPresent(client -> {
                 this.execute(playerRef, player, client, playerClanOptional.orElse(null), args);
             });
         });
-    }
-
-    private Optional<Player> getPlayer(final PlayerRef playerRef) {
-        final Ref<EntityStore> playerReference = playerRef.getReference();
-        if (playerReference != null) {
-            final Player player = playerReference.getStore().getComponent(playerReference, Player.getComponentType());
-            if (player != null) {
-                return Optional.of(player);
-            }
-        }
-
-        return Optional.empty();
     }
 }

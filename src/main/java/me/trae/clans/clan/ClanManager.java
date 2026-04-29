@@ -1,16 +1,13 @@
 package me.trae.clans.clan;
 
-import com.hypixel.hytale.server.core.event.events.BootEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
+import io.github.trae.di.annotations.method.ApplicationReady;
 import io.github.trae.di.annotations.type.component.Service;
 import io.github.trae.hf.Manager;
 import io.github.trae.hytale.framework.event.Listener;
-import io.github.trae.hytale.framework.event.annotations.EventHandler;
-import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
-import io.github.trae.hytale.framework.utility.UtilTask;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
@@ -37,7 +34,6 @@ import me.trae.core.client.ClientManager;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @AllArgsConstructor
 @Getter
@@ -55,21 +51,11 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     private final ClansConfig config;
 
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onBootEvent(final BootEvent event) {
-        UtilTask.executeLaterSynchronous(() -> {
-            this.flushAllClans();
+    @ApplicationReady
+    public void onApplicationReady() {
+        this.flushAllClans();
 
-            this.repository.findManySynchronously(List.of()).forEach(clan -> {
-                System.out.println("Loaded Clan: " + clan.getName());
-
-                for (final Chunk chunk : clan.getTerritory()) {
-                    System.out.println("Found Chunk: " + chunk.toString());
-                }
-
-                this.addClan(clan);
-            });
-        }, 2, TimeUnit.SECONDS);
+        this.repository.findManySynchronously(List.of()).forEach(this::addClan);
     }
 
     @Override
@@ -311,19 +297,21 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public boolean canHurt(final PlayerRef damagee, final PlayerRef damager) {
-        final Optional<Clan> damagerClanOptional = this.getClanByPlayer(damagee);
-        final Optional<Clan> damageeClanOptional = this.getClanByPlayer(damager);
+        if (damagee != null && damager != null) {
+            final Optional<Clan> damagerClanOptional = this.getClanByPlayer(damagee);
+            final Optional<Clan> damageeClanOptional = this.getClanByPlayer(damager);
 
-        if (damagerClanOptional.isPresent() && damageeClanOptional.isPresent()) {
-            final Clan damagerClan = damagerClanOptional.get();
-            final Clan damageeClan = damageeClanOptional.get();
+            if (damagerClanOptional.isPresent() && damageeClanOptional.isPresent()) {
+                final Clan damagerClan = damagerClanOptional.get();
+                final Clan damageeClan = damageeClanOptional.get();
 
-            if (damagerClan.equals(damageeClan)) {
-                return false;
-            }
+                if (damagerClan.equals(damageeClan)) {
+                    return false;
+                }
 
-            if (damagerClan.isAllianceByClan(damageeClan)) {
-                return false;
+                if (damagerClan.isAllianceByClan(damageeClan)) {
+                    return false;
+                }
             }
         }
 

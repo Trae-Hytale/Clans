@@ -67,7 +67,7 @@ public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<Break
 
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
-        if (!(this.getManager().canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, InteractType.BLOCK_INTERACT))) {
+        if (this.getManager().canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, InteractType.BLOCK_INTERACT)) {
             return;
         }
 
