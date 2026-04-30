@@ -1,10 +1,11 @@
-package me.trae.clans.clan.systems;
+package me.trae.clans.clan.systems.interact;
 
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -24,10 +25,10 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Component
-public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<PlaceBlockEvent> implements Module<ClansPlugin, ClanManager> {
+public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<BreakBlockEvent> implements Module<ClansPlugin, ClanManager> {
 
-    public ClanTerritoryBlockPlaceSystem() {
-        super(PlaceBlockEvent.class);
+    public ClanTerritoryBlockBreakSystem() {
+        super(BreakBlockEvent.class);
     }
 
     @Nullable
@@ -37,13 +38,13 @@ public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<Place
     }
 
     @Override
-    public void onEvent(final PlaceBlockEvent event, final SystemContext<EntityStore> systemContext) {
+    public void onEvent(final BreakBlockEvent event, final SystemContext<EntityStore> systemContext) {
         if (event.isCancelled()) {
             return;
         }
 
-        final ItemStack itemStack = event.getItemInHand();
-        if (itemStack == null || itemStack == ItemStack.EMPTY) {
+        final BlockType blockType = event.getBlockType();
+        if (blockType == BlockType.EMPTY) {
             return;
         }
 
@@ -78,8 +79,8 @@ public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<Place
 
         event.setCancelled(true);
 
-        final String translationKey = itemStack.getItem().getTranslationKey();
+        final String translationKey = Optional.ofNullable(blockType.getItem()).map(Item::getTranslationKey).orElse("unknown");
 
-        UtilMessage.message(playerRef, "Clans", "You cannot place <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
+        UtilMessage.message(playerRef, "Clans", "You cannot break <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
     }
 }

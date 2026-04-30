@@ -1,11 +1,10 @@
-package me.trae.clans.clan.systems;
+package me.trae.clans.clan.systems.interact;
 
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
+import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -20,16 +19,15 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.InteractType;
-import me.trae.core.utility.UtilBlock;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Component
-public class ClanTerritoryBlockUseSystem extends CustomEntityEventSystem<UseBlockEvent.Pre> implements Module<ClansPlugin, ClanManager> {
+public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<PlaceBlockEvent> implements Module<ClansPlugin, ClanManager> {
 
-    public ClanTerritoryBlockUseSystem() {
-        super(UseBlockEvent.Pre.class);
+    public ClanTerritoryBlockPlaceSystem() {
+        super(PlaceBlockEvent.class);
     }
 
     @Nullable
@@ -39,13 +37,13 @@ public class ClanTerritoryBlockUseSystem extends CustomEntityEventSystem<UseBloc
     }
 
     @Override
-    public void onEvent(final UseBlockEvent.Pre event, final SystemContext<EntityStore> systemContext) {
+    public void onEvent(final PlaceBlockEvent event, final SystemContext<EntityStore> systemContext) {
         if (event.isCancelled()) {
             return;
         }
 
-        final BlockType blockType = event.getBlockType();
-        if (blockType == BlockType.EMPTY) {
+        final ItemStack itemStack = event.getItemInHand();
+        if (itemStack == null || itemStack == ItemStack.EMPTY) {
             return;
         }
 
@@ -74,26 +72,14 @@ public class ClanTerritoryBlockUseSystem extends CustomEntityEventSystem<UseBloc
 
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
-        if (this.canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, blockType)) {
+        if (this.getManager().canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, InteractType.BLOCK_INTERACT)) {
             return;
         }
 
         event.setCancelled(true);
 
-        final String translationKey = Optional.ofNullable(blockType.getItem()).map(Item::getTranslationKey).orElse("unknown");
+        final String translationKey = itemStack.getItem().getTranslationKey();
 
-        UtilMessage.message(playerRef, "Clans", "You cannot use <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
-    }
-
-    private boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final BlockType blockType) {
-        if (UtilBlock.isContainer(blockType)) {
-            return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.CONTAINER_INTERACT);
-        }
-
-        if (UtilBlock.isGateway(blockType)) {
-            return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.GATEWAY_INTERACT);
-        }
-
-        return false;
+        UtilMessage.message(playerRef, "Clans", "You cannot place <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
     }
 }
