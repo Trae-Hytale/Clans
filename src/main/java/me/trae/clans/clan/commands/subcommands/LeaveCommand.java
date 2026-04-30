@@ -87,6 +87,8 @@ public class LeaveCommand extends AbstractClanSubCommand implements Listener {
             clan.removeMember(member);
             this.getModule().getManager().getRepository().update(clan, ClanProperty.MEMBERS);
 
+            this.getModule().getManager().getClanPlayerStorage().remove(member.getId());
+
             if (!(clan.isOnline()) && !(event.getPlayerClient().isAdministrating())) {
                 clan.setLastOnline(System.currentTimeMillis());
                 this.getModule().getManager().getRepository().update(clan, ClanProperty.LAST_ONLINE);

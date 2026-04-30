@@ -83,11 +83,15 @@ public class JoinCommand extends AbstractClanSubCommand implements Listener {
         final Clan clan = event.getClan();
         final PlayerRef playerRef = event.getPlayerRef();
 
-        clan.removeInvitationRequest(playerRef);
-        this.getModule().getManager().getRepository().update(clan, ClanProperty.REQUESTS);
+        clan.getInvitationRequestByPlayer(playerRef).ifPresent(request -> {
+            clan.removeRequest(request);
+            this.getModule().getManager().getRepository().update(clan, ClanProperty.REQUESTS);
+        });
 
         clan.addMember(new Member(playerRef, event.getPlayerClient().isAdministrating() ? MemberRole.LEADER : MemberRole.RECRUIT));
         this.getModule().getManager().getRepository().update(clan, ClanProperty.MEMBERS);
+
+        this.getModule().getManager().getClanPlayerStorage().put(playerRef.getUuid(), clan);
 
         UtilMessage.message(playerRef, "Clans", "You joined %s.".formatted(this.getModule().getManager().getClanShortName(ClanRelation.SELF, clan)));
 

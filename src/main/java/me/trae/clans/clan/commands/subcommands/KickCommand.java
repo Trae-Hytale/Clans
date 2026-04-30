@@ -88,6 +88,8 @@ public class KickCommand extends AbstractClanSubCommand implements Listener {
             clan.removeMember(member);
             this.getModule().getManager().getRepository().update(clan, ClanProperty.MEMBERS);
 
+            this.getModule().getManager().getClanPlayerStorage().remove(member.getId());
+
             UtilMessage.message(playerRef, "Clans", "You kicked %s from the Clan.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.NEUTRAL, targetClient.getName())));
             UtilMessage.message(targetClient.getPlayerRef(), "Clans", "%s kicked you from the Clan.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.NEUTRAL, playerRef)));
 

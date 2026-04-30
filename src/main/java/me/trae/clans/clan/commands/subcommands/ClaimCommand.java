@@ -94,7 +94,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements Listener {
         clan.addTerritory(chunk);
         this.getModule().getManager().getRepository().update(clan, ClanProperty.TERRITORY);
 
-        this.getModule().getManager().getClanChunkStorage().update(chunk, chunk, clan);
+        this.getModule().getManager().getClanChunkStorage().put(chunk, clan);
 
         this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), "Build_Lightsource_Yellow", Duration.ofMinutes(5).toMillis());
 

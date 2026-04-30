@@ -39,20 +39,22 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
 
         final String clanName = args[0];
 
-        if (!(this.canCreateClan(playerRef, clanName))) {
+        if (!(this.canCreateClan(playerRef, client, clanName))) {
             return;
         }
 
         UtilEvent.dispatch(new ClanCreateEvent(playerRef, client, clanName));
     }
 
-    private boolean canCreateClan(final PlayerRef playerRef, final String name) {
+    private boolean canCreateClan(final PlayerRef playerRef, final Client client, final String name) {
         if (this.getModule().getSubCommands().containsKey(name.toLowerCase(Locale.ROOT))) {
             UtilMessage.message(playerRef, "Clans", "You cannot use that as your Clan name!");
             return false;
         }
 
-        if (!(name.matches(this.getModule().getManager().getConfig().getCreateCommand().nameRegex()))) {
+        final String cleanName = client.isAdministrating() ? name.replace("_", "") : name;
+
+        if (!(cleanName.matches(this.getModule().getManager().getConfig().getCreateCommand().nameRegex()))) {
             UtilMessage.message(playerRef, "Clans", "You cannot have special characters in your Clan name!");
             return false;
         }
