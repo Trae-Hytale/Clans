@@ -207,8 +207,14 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
-    public void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
+    public void showClanInformation(final PlayerRef playerRef, final Client playerClient, final Clan playerClan, final Clan targetClan) {
         final LinkedHashMap<String, String> informationMap = UtilJava.createMap(new LinkedHashMap<>(), map -> {
+            if (playerClient.isAdministrating()) {
+                map.put("Admin", targetClan.isAdmin() ? "<green>Yes</green>" : "<red>No</red>");
+
+                map.put("Founder", this.getClientManager().getClientByPlayerId(targetClan.getFounder()).map(client -> "<yellow>%s</yellow>".formatted(client.getName())).orElse("null"));
+            }
+
             map.put("Age", "<yellow>%s</yellow>".formatted(UtilTime.getTime(System.currentTimeMillis() - targetClan.getCreatedAt())));
 
             map.put("Territory", "<yellow>%s/%s</yellow>".formatted(targetClan.getTerritory().size(), this.getMaxClaimLimit(targetClan)));

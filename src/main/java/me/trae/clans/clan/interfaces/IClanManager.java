@@ -43,7 +43,7 @@ public interface IClanManager {
 
     ClanRelation getClanRelationByPlayer(final PlayerRef playerRef, final PlayerRef targetPlayerRef);
 
-    void showClanInformation(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan);
+    void showClanInformation(final PlayerRef playerRef, final Client playerClient, final Clan playerClan, final Clan targetClan);
 
     void disbandClan(final Clan clan);
 

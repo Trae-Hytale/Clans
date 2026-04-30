@@ -7,6 +7,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
 import java.util.Optional;
@@ -27,6 +28,13 @@ public class ClanCommand extends PlayerCommand<ClansPlugin, ClanManager> {
 
     @Override
     public void execute(final PlayerRef playerRef, final String[] args) {
+        final Optional<Client> clientOptional = this.getManager().getClientManager().getClientByPlayer(playerRef);
+        if (clientOptional.isEmpty()) {
+            return;
+        }
+
+        final Client client = clientOptional.get();
+
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
         if (args.length == 0) {
@@ -37,13 +45,13 @@ public class ClanCommand extends PlayerCommand<ClansPlugin, ClanManager> {
 
             final Clan playerClan = playerClanOptional.get();
 
-            this.getManager().showClanInformation(playerRef, playerClan, playerClan);
+            this.getManager().showClanInformation(playerRef, client, playerClan, playerClan);
             return;
         }
 
         if (args.length == 1) {
             this.getManager().searchClan(playerRef, args[0], true).ifPresent(targetClan -> {
-                this.getManager().showClanInformation(playerRef, playerClanOptional.orElse(null), targetClan);
+                this.getManager().showClanInformation(playerRef, client, playerClanOptional.orElse(null), targetClan);
             });
         }
     }
