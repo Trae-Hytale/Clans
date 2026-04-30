@@ -68,6 +68,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
         this.name = name;
         this.members.put(playerRef.getUuid(), new Member(playerRef, MemberRole.LEADER));
+        this.founder = playerRef.getUuid();
         this.createdAt = System.currentTimeMillis();
     }
 
