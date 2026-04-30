@@ -19,7 +19,6 @@ import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class DemoteCommand extends AbstractClanSubCommand implements Listener {
@@ -45,33 +44,16 @@ public class DemoteCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        final String targetClientName = args[0];
+        this.getModule().getManager().searchMember(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
+            if (!(this.canDemoteMember(playerRef, client, playerClan, targetClient))) {
+                return;
+            }
 
-        final Optional<Client> targetClientOptional = this.getModule().getManager().getClientManager().getClientByName(targetClientName);
-        if (targetClientOptional.isEmpty()) {
-            UtilMessage.message(player, "Clans", "Could not find Player <yellow>%s</yellow>.".formatted(targetClientName));
-            return;
-        }
-
-        final Client targetClient = targetClientOptional.get();
-
-        if (!(this.canDemoteMember(playerRef, client, playerClan, targetClient))) {
-            return;
-        }
-
-        UtilEvent.dispatch(new MemberDemoteEvent(playerClan, playerRef, targetClient));
+            UtilEvent.dispatch(new MemberDemoteEvent(playerClan, playerRef, targetClient));
+        });
     }
 
     private boolean canDemoteMember(final PlayerRef playerRef, final Client client, final Clan playerClan, final Client targetClient) {
-        if (!(playerClan.isMemberById(targetClient.getId()))) {
-            final Optional<Clan> targetClanOptional = this.getModule().getManager().getClanByPlayerId(targetClient.getId());
-
-            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(playerClan, targetClanOptional.orElse(null));
-
-            UtilMessage.message(playerRef, "Clans", "%s is not in your Clan!".formatted(this.getModule().getManager().getPlayerName(clanRelation, targetClient.getName())));
-            return false;
-        }
-
         if (!(client.isAdministrating())) {
             if (targetClient.equals(client)) {
                 UtilMessage.message(playerRef, "Clans", "You cannot demote yourself!");

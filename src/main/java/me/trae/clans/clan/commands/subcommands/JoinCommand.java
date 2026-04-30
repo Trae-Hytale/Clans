@@ -20,7 +20,6 @@ import me.trae.core.client.Client;
 
 import java.time.Duration;
 import java.util.Collections;
-import java.util.Optional;
 
 @Component
 public class JoinCommand extends AbstractClanSubCommand implements Listener {
@@ -41,21 +40,13 @@ public class JoinCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        final String targetClanName = args[0];
+        this.getModule().getManager().searchClan(playerRef, args[0], true).ifPresent(targetClan -> {
+            if (!(this.canJoinClan(playerRef, client, targetClan))) {
+                return;
+            }
 
-        final Optional<Clan> targetClanOptional = this.getModule().getManager().getClanByName(targetClanName);
-        if (targetClanOptional.isEmpty()) {
-            UtilMessage.message(player, "Clans", "Could not find Clan <yellow>%s</yellow>.".formatted(targetClanName));
-            return;
-        }
-
-        final Clan targetClan = targetClanOptional.get();
-
-        if (!(this.canJoinClan(playerRef, client, targetClan))) {
-            return;
-        }
-
-        UtilEvent.dispatch(new ClanJoinEvent(targetClan, playerRef, client));
+            UtilEvent.dispatch(new ClanJoinEvent(targetClan, playerRef, client));
+        });
     }
 
     private boolean canJoinClan(final PlayerRef playerRef, final Client client, final Clan targetClan) {

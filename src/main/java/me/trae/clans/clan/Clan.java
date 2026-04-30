@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import me.trae.clans.clan.data.*;
 import me.trae.clans.clan.data.enums.MemberRole;
+import me.trae.clans.clan.data.enums.PlayerRequestType;
 import me.trae.clans.clan.data.enums.RelationRequestType;
 import me.trae.clans.clan.data.enums.RequestType;
 import me.trae.clans.clan.data.properties.*;
@@ -124,17 +125,25 @@ public class Clan implements Domain<ClanProperty>, IClan {
     }
 
     @Override
+    public void addRequest(final Request request) {
+        this.getRequests().put(request.getId(), request);
+    }
+
+    @Override
+    public void removeRequest(final Request request) {
+        this.getRequests().remove(request.getId());
+    }
+
+    @Override
     public void addRelationRequest(final Clan clan, final RelationRequestType type) {
         RequestType.getByName(type.name()).ifPresent(requestType -> {
-            this.getRequests().put(Request.ID_FORMATTER.apply(clan.getId(), requestType), new Request(clan.getId(), requestType));
+            this.addRequest(new Request(clan.getId(), requestType));
         });
     }
 
     @Override
     public void removeRelationRequest(final Clan clan, final RelationRequestType type) {
-        RequestType.getByName(type.name()).ifPresent(requestType -> {
-            this.getRequests().remove(Request.ID_FORMATTER.apply(clan.getId(), requestType));
-        });
+        RequestType.getByName(type.name()).flatMap(requestType -> this.getRelationRequestByClan(clan, type)).ifPresent(this::removeRequest);
     }
 
     @Override
@@ -284,6 +293,11 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean isPillageByClan(final Clan clan) {
         return this.isPillageById(clan.getId());
+    }
+
+    @Override
+    public boolean isNeutralByClan(final Clan clan) {
+        return this.getAllianceByClan(clan).isEmpty() && this.getEnemyByClan(clan).isEmpty() && this.getPillageByClan(clan).isEmpty() && clan.getPillageByClan(this).isEmpty();
     }
 
     @Override

@@ -26,12 +26,12 @@ public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugi
         final Optional<Clan> playerClanOptional = this.getModule().getManager().getClanByPlayer(playerRef);
 
         if (this.getRequiredState() == ClanStateRequirement.CLAN_PRESENT && playerClanOptional.isEmpty()) {
-            UtilMessage.message(playerRef, "Clans", "You are not in a Clan.");
+            ClanCommand.CLAN_EMPTY_MESSAGE_CONSUMER.accept(playerRef);
             return;
         }
 
         if (this.getRequiredState() == ClanStateRequirement.CLAN_EMPTY && playerClanOptional.isPresent()) {
-            UtilMessage.message(playerRef, "Clans", "You are already in a Clan.");
+            ClanCommand.CLAN_PRESENT_MESSAGE_CONSUMER.accept(playerRef);
             return;
         }
 

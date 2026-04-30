@@ -268,9 +268,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public void disbandClan(final Clan clan) {
-        for (final Chunk chunk : clan.getTerritory()) {
-            this.blockRestoreManager.unOutlineChunk(chunk, CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
-        }
+        this.blockRestoreManager.unOutlineAllChunks(clan.getTerritory(), CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
         for (final Clan targetClan : this.getClans()) {
             targetClan.getAllianceByClan(clan).ifPresent(alliance -> {

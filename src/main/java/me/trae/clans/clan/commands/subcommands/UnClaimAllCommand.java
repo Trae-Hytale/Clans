@@ -69,9 +69,9 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements Listene
 
         for (final Chunk chunk : chunks) {
             this.getModule().getManager().getClanChunkStorage().remove(chunk);
-
-            this.getModule().getManager().getBlockRestoreManager().unOutlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
         }
+
+        this.getModule().getManager().getBlockRestoreManager().unOutlineAllChunks(chunks, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
         clan.getTerritory().clear();
         this.getModule().getManager().getRepository().update(clan, ClanProperty.TERRITORY);

@@ -19,7 +19,6 @@ import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.client.Client;
 
 import java.util.Collections;
-import java.util.Optional;
 
 @Component
 public class KickCommand extends AbstractClanSubCommand implements Listener {
@@ -45,35 +44,18 @@ public class KickCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        final String targetClientName = args[0];
+        this.getModule().getManager().searchMember(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
+            if (!(this.canKickPlayer(playerRef, client, playerClan, targetClient))) {
+                return;
+            }
 
-        final Optional<Client> targetClientOptional = this.getModule().getManager().getClientManager().getClientByName(targetClientName);
-        if (targetClientOptional.isEmpty()) {
-            UtilMessage.message(player, "Clans", "Could not find Member <yellow>%s</yellow>.".formatted(targetClientName));
-            return;
-        }
-
-        final Client targetClient = targetClientOptional.get();
-
-        if (!(this.canKickPlayer(playerRef, client, playerClan, targetClient))) {
-            return;
-        }
-
-        UtilEvent.dispatch(new MemberKickEvent(playerClan, playerRef, targetClient));
+            UtilEvent.dispatch(new MemberKickEvent(playerClan, playerRef, targetClient));
+        });
     }
 
     private boolean canKickPlayer(final PlayerRef playerRef, final Client client, final Clan playerClan, final Client targetClient) {
         if (targetClient.equals(client)) {
             UtilMessage.message(playerRef, "Clans", "You cannot kick yourself!");
-            return false;
-        }
-
-        if (!(playerClan.isMemberById(targetClient.getId()))) {
-            final Optional<Clan> targetClanOptional = this.getModule().getManager().getClanByPlayerId(targetClient.getId());
-
-            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(playerClan, targetClanOptional.orElse(null));
-
-            UtilMessage.message(playerRef, "Clans", "%s is not in your Clan!".formatted(this.getModule().getManager().getPlayerName(clanRelation, targetClient.getName())));
             return false;
         }
 

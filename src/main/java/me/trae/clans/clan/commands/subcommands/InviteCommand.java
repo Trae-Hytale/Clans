@@ -1,15 +1,14 @@
 package me.trae.clans.clan.commands.subcommands;
 
-import com.hypixel.hytale.server.core.NameMatching;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilPlayer;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
@@ -46,19 +45,13 @@ public class InviteCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        final String targetPlayerName = args[0];
+        UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayerRef -> {
+            if (!(this.canInvitePlayer(playerRef, client, playerClan, targetPlayerRef))) {
+                return;
+            }
 
-        final PlayerRef targetPlayerRef = Universe.get().getPlayerByUsername(targetPlayerName, NameMatching.EXACT_IGNORE_CASE);
-        if (targetPlayerRef == null) {
-            UtilMessage.message(player, "Clans", "Could not find Player <yellow>%s</yellow>.".formatted(targetPlayerName));
-            return;
-        }
-
-        if (!(this.canInvitePlayer(playerRef, client, playerClan, targetPlayerRef))) {
-            return;
-        }
-
-        UtilEvent.dispatch(new ClanInviteEvent(playerClan, playerRef, targetPlayerRef));
+            UtilEvent.dispatch(new ClanInviteEvent(playerClan, playerRef, targetPlayerRef));
+        });
     }
 
     private boolean canInvitePlayer(final PlayerRef playerRef, final Client client, final Clan playerClan, final PlayerRef targetPlayerRef) {

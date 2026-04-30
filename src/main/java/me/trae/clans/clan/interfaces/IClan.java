@@ -25,6 +25,10 @@ public interface IClan {
 
     boolean hasTerritory();
 
+    void addRequest(final Request request);
+
+    void removeRequest(final Request request);
+
     void addRelationRequest(final Clan clan, final RelationRequestType type);
 
     void removeRelationRequest(final Clan clan, final RelationRequestType type);
@@ -86,6 +90,8 @@ public interface IClan {
     boolean isPillageById(final UUID id);
 
     boolean isPillageByClan(final Clan clan);
+
+    boolean isNeutralByClan(final Clan clan);
 
     boolean hasHome();
 
