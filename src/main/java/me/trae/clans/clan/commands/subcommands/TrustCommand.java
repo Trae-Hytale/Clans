@@ -44,7 +44,7 @@ public class TrustCommand extends AbstractClanSubCommand implements Listener {
             return;
         }
 
-        this.getModule().getManager().searchClan(player, args[0], true).ifPresent(targetClan -> {
+        this.getModule().getManager().searchClan(playerRef, args[0], true).ifPresent(targetClan -> {
             if (!(this.canTrustClan(playerRef, client, playerClan, targetClan))) {
                 return;
             }
