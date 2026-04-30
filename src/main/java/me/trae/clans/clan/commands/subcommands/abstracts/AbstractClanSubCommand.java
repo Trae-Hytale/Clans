@@ -10,6 +10,7 @@ import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.commands.subcommands.abstracts.interfaces.IAbstractClanSubCommand;
 import me.trae.clans.clan.data.Member;
+import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
 import java.util.Optional;
@@ -34,26 +35,28 @@ public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugi
             return;
         }
 
-        if (this.isRequiredMemberRoleCheckOnExecute() && this.getRequiredMemberRole() != null) {
-            if (playerClanOptional.isPresent()) {
-                final Clan playerClan = playerClanOptional.get();
+        final Optional<Client> clientOptional = this.getModule().getManager().getClientManager().getClientByPlayer(playerRef);
 
-                final Optional<Member> memberOptional = playerClan.getMemberByPlayer(playerRef);
-                if (memberOptional.isPresent()) {
-                    final Member member = memberOptional.get();
+        if (!(clientOptional.map(Client::isAdministrating).orElse(false))) {
+            if (this.isRequiredMemberRoleCheckOnExecute() && this.getRequiredMemberRole() != null) {
+                if (playerClanOptional.isPresent()) {
+                    final Clan playerClan = playerClanOptional.get();
 
-                    if (!(member.hasRole(this.getRequiredMemberRole()))) {
-                        UtilMessage.message(playerRef, "Clans", "You must be Clan <white>%s</white> to execute this!".formatted(this.getRequiredMemberRole().getName()));
-                        return;
+                    final Optional<Member> memberOptional = playerClan.getMemberByPlayer(playerRef);
+                    if (memberOptional.isPresent()) {
+                        final Member member = memberOptional.get();
+
+                        if (!(member.hasRole(this.getRequiredMemberRole()))) {
+                            UtilMessage.message(playerRef, "Clans", "You must be clan <white>%s</white> to execute this command!".formatted(this.getRequiredMemberRole().getName()));
+                            return;
+                        }
                     }
                 }
             }
         }
 
         UtilPlayer.getPlayer(playerRef).ifPresent(player -> {
-            this.getModule().getManager().getClientManager().getClientByPlayer(playerRef).ifPresent(client -> {
-                this.execute(playerRef, player, client, playerClanOptional.orElse(null), args);
-            });
+            this.execute(playerRef, player, clientOptional.orElse(null), playerClanOptional.orElse(null), args);
         });
     }
 }
