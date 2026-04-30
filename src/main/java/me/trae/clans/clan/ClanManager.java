@@ -304,7 +304,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public String getClanName(final ClanRelation clanRelation, final Clan clan) {
-        return this.getClanFullName(clanRelation, clan);
+        return clan.isAdmin() ? this.getClanShortName(clanRelation, clan) : this.getClanFullName(clanRelation, clan);
     }
 
     @Override
