@@ -1,11 +1,13 @@
 package me.trae.clans.clan.interfaces;
 
+import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.enums.InteractType;
+import me.trae.core.client.Client;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +34,10 @@ public interface IClanManager {
     Optional<Clan> getClanByChunk(final Chunk chunk);
 
     Optional<Clan> getClanByLocation(final Location location);
+
+    Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform);
+
+    Optional<Client> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform);
 
     ClanRelation getClanRelationByClan(final Clan clan, final Clan target);
 

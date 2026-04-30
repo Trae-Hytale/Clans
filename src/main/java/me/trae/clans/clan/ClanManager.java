@@ -1,5 +1,6 @@
 package me.trae.clans.clan;
 
+import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.method.ApplicationReady;
@@ -8,6 +9,7 @@ import io.github.trae.hf.Manager;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilSearch;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
@@ -122,6 +124,58 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     @Override
     public Optional<Clan> getClanByLocation(final Location location) {
         return this.getClanByChunk(location.getChunk());
+    }
+
+    @Override
+    public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+        return UtilSearch.search(
+                this.getClans(),
+                clan -> clan.getName().equalsIgnoreCase(name),
+                clan -> clan.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)),
+                list -> {
+                    if (messageReceiver instanceof final PlayerRef playerRef) {
+                        this.getClientManager().searchClient(playerRef, name, false).flatMap(client -> this.getClanByPlayerId(client.getId())).ifPresent(clientClan -> {
+                            if (list.contains(clientClan)) {
+                                return;
+                            }
+
+                            list.add(clientClan);
+                        });
+                    }
+                },
+                string -> UtilColor.serialize(ChatColor.YELLOW.getColor(), string),
+                clan -> {
+                    ClanRelation clanRelation = ClanRelation.NEUTRAL;
+
+                    if (messageReceiver instanceof final PlayerRef playerRef) {
+                        clanRelation = this.getClanRelationByClan(this.getClanByPlayer(playerRef).orElse(null), clan);
+                    }
+
+                    return UtilColor.serialize(clanRelation.getSuffix(), clan.getDisplayName());
+                },
+                "Clan Search",
+                messageReceiver,
+                name,
+                inform
+        );
+    }
+
+    @Override
+    public Optional<Client> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+        final List<Client> clientList = clan.getMembers().values().stream().map(member -> this.getClientManager().getClientByPlayerId(member.getId()).orElse(null)).toList();
+
+        return UtilSearch.search(
+                clientList,
+                memberClient -> memberClient.getName().equalsIgnoreCase(name),
+                memberClient -> memberClient.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)),
+                null,
+                string -> UtilColor.serialize(ClanRelation.SELF.getSuffix(), string),
+                Client::getName,
+                "Member Search",
+                messageReceiver,
+                name,
+                inform
+        );
     }
 
     @Override
