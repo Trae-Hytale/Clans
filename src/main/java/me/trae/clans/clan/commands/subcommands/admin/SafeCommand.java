@@ -38,7 +38,7 @@ public class SafeCommand extends AbstractClanSubCommand {
         } else {
             playerClan.setSafe(true);
 
-            UtilMessage.message(playerRef, "Clans", "%s is no now a Safe Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.SELF, playerClan)));
+            UtilMessage.message(playerRef, "Clans", "%s is now a Safe Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.SELF, playerClan)));
         }
 
         this.getModule().getManager().getRepository().update(playerClan, ClanProperty.SAFE);
