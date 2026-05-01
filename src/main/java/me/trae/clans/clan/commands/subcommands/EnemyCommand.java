@@ -98,6 +98,6 @@ public class EnemyCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You waged war with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ENEMY, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has waged war with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.ENEMY, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has waged war with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ENEMY, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has waged war with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ENEMY, playerClan)), null);
     }
 }

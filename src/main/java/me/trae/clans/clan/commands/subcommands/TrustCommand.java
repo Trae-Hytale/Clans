@@ -110,7 +110,7 @@ public class TrustCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You requested to trust with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested to trust with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested to trust with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has requested to trust with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
     }
 
     private void acceptTrust(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
@@ -119,14 +119,14 @@ public class TrustCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You accepted to trust with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted to trust with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted to trust with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has accepted to trust with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, playerClan)), null);
     }
 
     private void forceTrust(final Clan playerClan, final Clan targetClan) {
         this.handleTrust(playerClan, targetClan);
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "You are now trusted with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, targetClan)), null);
-        this.getModule().getManager().messageClan(playerClan, "Clans", "You are now trusted with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "You are now trusted with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.TRUSTED_ALLIANCE, playerClan)), null);
     }
 
     private void handleTrust(final Clan playerClan, final Clan targetClan) {

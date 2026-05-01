@@ -121,7 +121,7 @@ public class AllyCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You requested an alliance with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested an alliance with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested an alliance with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has requested an alliance with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
     }
 
     private void acceptAlliance(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
@@ -130,14 +130,14 @@ public class AllyCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You accepted an alliance with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted an alliance with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted an alliance with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has accepted an alliance with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
     }
 
     private void forceAlliance(final Clan playerClan, final Clan targetClan) {
         this.handleAlliance(playerClan, targetClan);
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "You are now allies with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, targetClan)), null);
-        this.getModule().getManager().messageClan(playerClan, "Clans", "You are now allies with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "You are now allies with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.ALLIANCE, playerClan)), null);
     }
 
     private void handleAlliance(final Clan playerClan, final Clan targetClan) {

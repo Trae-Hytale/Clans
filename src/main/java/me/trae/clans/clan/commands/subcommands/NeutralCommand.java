@@ -115,7 +115,7 @@ public class NeutralCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You requested neutrality with %s.".formatted(this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(playerClan, targetClan), targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested neutrality with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(playerClan, targetClan), targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has requested neutrality with your Clan.".formatted(this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(targetClan, playerClan), playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has requested neutrality with your Clan.".formatted(this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(targetClan, playerClan), playerClan)), null);
     }
 
     private void acceptNeutrality(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
@@ -124,14 +124,14 @@ public class NeutralCommand extends AbstractClanSubCommand implements Listener {
         UtilMessage.message(playerRef, "Clans", "You accepted neutrality with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)));
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted neutrality with %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)), Collections.singletonList(playerRef.getUuid()));
-        this.getModule().getManager().messageClan(playerClan, "Clans", "%s has accepted neutrality with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "%s has accepted neutrality with your Clan.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
     }
 
     private void forceNeutrality(final Clan playerClan, final Clan targetClan) {
         this.handleNeutral(playerClan, targetClan);
 
         this.getModule().getManager().messageClan(playerClan, "Clans", "You are now neutral with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)), null);
-        this.getModule().getManager().messageClan(playerClan, "Clans", "You are now neutral with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
+        this.getModule().getManager().messageClan(targetClan, "Clans", "You are now neutral with %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, playerClan)), null);
     }
 
     private void handleNeutral(final Clan playerClan, final Clan targetClan) {
