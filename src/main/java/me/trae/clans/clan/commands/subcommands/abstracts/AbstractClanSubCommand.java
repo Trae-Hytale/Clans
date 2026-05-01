@@ -17,8 +17,12 @@ import java.util.Optional;
 
 public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugin, ClanCommand> implements IAbstractClanSubCommand {
 
+    public AbstractClanSubCommand(final String name, final String description, final Rank requiredRank) {
+        super(name, description, requiredRank);
+    }
+
     public AbstractClanSubCommand(final String name, final String description) {
-        super(name, description, Rank.DEFAULT);
+        this(name, description, Rank.DEFAULT);
     }
 
     @Override

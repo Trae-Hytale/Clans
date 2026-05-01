@@ -13,6 +13,14 @@ public interface IClan {
 
     boolean isOnline();
 
+    boolean isSpawn();
+
+    boolean isShops();
+
+    boolean isFields();
+
+    boolean isOutskirts();
+
     String getType();
 
     String getDisplayName();

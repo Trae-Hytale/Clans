@@ -39,7 +39,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
     private BlockLocation home;
     private UUID founder;
-    private boolean admin;
+    private boolean admin, safe;
     private long createdAt, lastOnline;
 
     public Clan(final DomainData<ClanProperty> domainData) {
@@ -57,10 +57,11 @@ public class Clan implements Domain<ClanProperty>, IClan {
         this.pillages.putAll(domainData.<PillageProperty, Pillage>getSubDomainMap(ClanProperty.PILLAGES, Pillage::new));
 
         this.home = BlockLocation.deserialize(domainData.getMap(String.class, Object.class, ClanProperty.HOME));
-        this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER);
-        this.admin = domainData.get(Boolean.class, ClanProperty.ADMIN);
-        this.createdAt = domainData.get(Long.class, ClanProperty.CREATED_AT);
-        this.lastOnline = domainData.get(Long.class, ClanProperty.LAST_ONLINE);
+        this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER, null);
+        this.admin = domainData.get(Boolean.class, ClanProperty.ADMIN, false);
+        this.safe = domainData.get(Boolean.class, ClanProperty.SAFE, false);
+        this.createdAt = domainData.get(Long.class, ClanProperty.CREATED_AT, 0L);
+        this.lastOnline = domainData.get(Long.class, ClanProperty.LAST_ONLINE, 0L);
     }
 
     public Clan(final PlayerRef playerRef, final String name) {
@@ -85,6 +86,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
             case HOME -> BlockLocation.serialize(this.getHome());
             case FOUNDER -> this.getFounder();
             case ADMIN -> this.isAdmin();
+            case SAFE -> this.isSafe();
             case CREATED_AT -> this.getCreatedAt();
             case LAST_ONLINE -> this.getLastOnline();
         };
@@ -93,6 +95,26 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean isOnline() {
         return this.getMembers().values().stream().anyMatch(Member::isOnline);
+    }
+
+    @Override
+    public boolean isSpawn() {
+        return this.isAdmin() && this.getName().toLowerCase(Locale.ROOT).contains("spawn");
+    }
+
+    @Override
+    public boolean isShops() {
+        return this.isAdmin() && this.getName().toLowerCase(Locale.ROOT).contains("shops");
+    }
+
+    @Override
+    public boolean isFields() {
+        return this.isAdmin() && this.getName().toLowerCase(Locale.ROOT).contains("fields");
+    }
+
+    @Override
+    public boolean isOutskirts() {
+        return this.isAdmin() && this.getName().toLowerCase(Locale.ROOT).contains("outskirts");
     }
 
     @Override

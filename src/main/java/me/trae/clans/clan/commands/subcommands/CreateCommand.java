@@ -15,6 +15,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirem
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.ClanCreateEvent;
 import me.trae.core.client.Client;
+import me.trae.core.client.enums.Rank;
 
 import java.util.Locale;
 
@@ -87,7 +88,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
 
         final Clan clan = new Clan(playerRef, event.getName());
 
-        if (event.getPlayerClient().isAdministrating()) {
+        if (event.getPlayerClient().isAdministrating() && event.getPlayerClient().hasRank(Rank.OWNER)) {
             clan.setAdmin(true);
         }
 
