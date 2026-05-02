@@ -5,7 +5,7 @@ import io.github.trae.database.repository.AbstractRepository;
 import io.github.trae.database.repository.annotations.Repository;
 import me.trae.clans.clan.properties.ClanProperty;
 
-@Repository(databaseName = "ClansAU", collectionName = "Clans")
+@Repository(databaseName = "Clans", collectionName = "Clans")
 public class ClanRepository extends AbstractRepository<Clan, ClanProperty> {
 
     public ClanRepository(final DatabaseDriver databaseDriver) {
