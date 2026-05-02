@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.core.chat.enums.CoreChatChannel;
 import me.trae.core.chat.events.ChatReceiveEvent;
 import me.trae.core.chat.events.abstracts.AbstractChatEvent;
 
@@ -24,6 +25,10 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
             return;
         }
 
+        if (!(event.getChannel().equals(CoreChatChannel.GLOBAL_CHAT))) {
+            return;
+        }
+
         final PlayerRef sender = event.getSender();
 
         this.getManager().getClientManager().getClientByPlayer(sender).ifPresent(client -> this.getManager().getClanByPlayer(sender).ifPresent(clan -> {
@@ -31,7 +36,12 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
 
             final ClanRelation clanRelation = this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(recipient).orElse(null), clan);
 
-            event.setFormat(Message.join(client.getRank().getPrefix(), Message.raw(clan.getDisplayName()).color(clanRelation.getPrefix()), Message.raw(" "), AbstractChatEvent.USERNAME_FORMAT.apply(client.getName(), clanRelation.getSuffix()), AbstractChatEvent.SEPARATOR, AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent())));
+            final Message rankPrefix = client.getRank().getPrefix();
+            final Message clanName = Message.raw(clan.getDisplayName()).color(clanRelation.getPrefix());
+            final Message username = AbstractChatEvent.USERNAME_FORMAT.apply(client.getName(), clanRelation.getSuffix());
+            final Message content = AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent());
+
+            event.setFormat(Message.join(rankPrefix, clanName, Message.raw(" "), username, AbstractChatEvent.SEPARATOR, content));
         }));
     }
 }
