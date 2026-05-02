@@ -1,6 +1,7 @@
 package me.trae.clans.gamer;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.github.trae.database.constants.Constants;
 import me.trae.clans.gamer.properties.GamerProperty;
 import me.trae.core.framework.gamer.AbstractGamer;
 
@@ -18,6 +19,6 @@ public class Gamer extends AbstractGamer<GamerProperty> {
 
     @Override
     public Object getValueByProperty(final GamerProperty gamerProperty) {
-        return null;
+        return Constants.EMPTY_PROPERTY;
     }
 }
