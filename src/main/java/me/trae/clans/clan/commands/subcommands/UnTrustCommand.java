@@ -10,6 +10,8 @@ import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
+import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.ClanUnTrustEvent;
 import me.trae.clans.clan.properties.ClanProperty;
@@ -22,6 +24,16 @@ public class UnTrustCommand extends AbstractClanSubCommand implements Listener {
 
     public UnTrustCommand() {
         super("untrust", "Untrust a Clan");
+    }
+
+    @Override
+    public ClanStateRequirement getRequiredState() {
+        return ClanStateRequirement.CLAN_PRESENT;
+    }
+
+    @Override
+    public MemberRole getRequiredMemberRole() {
+        return MemberRole.ADMIN;
     }
 
     @Override
