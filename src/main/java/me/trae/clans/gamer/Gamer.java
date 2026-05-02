@@ -1,5 +1,6 @@
 package me.trae.clans.gamer;
 
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import me.trae.clans.gamer.properties.GamerProperty;
 import me.trae.core.framework.gamer.AbstractGamer;
 
@@ -9,6 +10,10 @@ public class Gamer extends AbstractGamer<GamerProperty> {
 
     public Gamer(final UUID id) {
         super(id);
+    }
+
+    public Gamer(final PlayerRef playerRef) {
+        super(playerRef);
     }
 
     @Override
