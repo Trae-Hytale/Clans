@@ -45,7 +45,7 @@ import java.util.function.Function;
 @Service
 public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener {
 
-    public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getName());
+    public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getId().toString());
 
     private final ClanIdStorage clanIdStorage = new ClanIdStorage();
     private final ClanNameStorage clanNameStorage = new ClanNameStorage();
