@@ -18,4 +18,11 @@ public enum ClanRelation {
     PILLAGE(ChatColor.DARK_PURPLE.getColor(), ChatColor.LIGHT_PURPLE.getColor());
 
     private final Color prefix, suffix;
+
+    public static boolean isTeammate(final ClanRelation clanRelation) {
+        return switch (clanRelation) {
+            case SELF, ALLIANCE, TRUSTED_ALLIANCE -> true;
+            default -> false;
+        };
+    }
 }

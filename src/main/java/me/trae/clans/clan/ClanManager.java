@@ -67,7 +67,14 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     public void onApplicationReady() {
         this.flushAllClans();
 
-        this.repository.findManySynchronously(List.of()).forEach(this::addClan);
+        int count = 0;
+
+        for (final Clan clan : this.repository.findManySynchronously(List.of())) {
+            this.addClan(clan);
+            count++;
+        }
+
+        UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Clans!".formatted(count));
     }
 
     @Override

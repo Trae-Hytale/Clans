@@ -37,17 +37,19 @@ public class DisbandCommand extends AbstractClanSubCommand implements Listener {
 
     @Override
     public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
-        if (!(this.canDisbandClan(playerRef, playerClan))) {
+        if (!(this.canDisbandClan(playerRef, client, playerClan))) {
             return;
         }
 
         UtilEvent.dispatch(new ClanDisbandEvent(playerClan, playerRef));
     }
 
-    private boolean canDisbandClan(final PlayerRef playerRef, final Clan clan) {
-        if (this.getModule().getManager().getClanByChunk(UtilChunk.getChunkByPlayerRef(playerRef)).map(clan::isEnemyByClan).orElse(false)) {
-            UtilMessage.message(playerRef, "Clans", "You cannot disband the clan while in enemy territory!");
-            return false;
+    private boolean canDisbandClan(final PlayerRef playerRef, final Client client, final Clan clan) {
+        if (!(client.isAdministrating())) {
+            if (this.getModule().getManager().getClanByChunk(UtilChunk.getChunkByPlayerRef(playerRef)).map(clan::isEnemyByClan).orElse(false)) {
+                UtilMessage.message(playerRef, "Clans", "You cannot disband the clan while in enemy territory!");
+                return false;
+            }
         }
 
         return true;
