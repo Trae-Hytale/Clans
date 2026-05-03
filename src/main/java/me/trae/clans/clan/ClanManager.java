@@ -23,6 +23,7 @@ import me.trae.clans.clan.configs.ClansConfig;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.enums.ClansChatChannel;
 import me.trae.clans.clan.enums.InteractType;
 import me.trae.clans.clan.interfaces.IClanManager;
 import me.trae.clans.clan.properties.ClanProperty;
@@ -34,6 +35,7 @@ import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
 import me.trae.core.cooldown.CooldownManager;
+import me.trae.core.gamer.GamerManager;
 
 import java.awt.*;
 import java.util.List;
@@ -55,6 +57,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     private final ClanRepository repository;
 
     private final ClientManager clientManager;
+    private final GamerManager coreGamerManager;
     private final CooldownManager cooldownManager;
     private final BlockRestoreManager blockRestoreManager;
 
@@ -273,7 +276,29 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
+    public void removeChatChannel(final PlayerRef playerRef) {
+        if (playerRef == null) {
+            return;
+        }
+
+        this.coreGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
+            for (final ClansChatChannel chatChannel : ClansChatChannel.values()) {
+                if (!(gamer.getChatChannel().equals(chatChannel))) {
+                    continue;
+                }
+
+                gamer.resetChatChannel();
+                break;
+            }
+        });
+    }
+
+    @Override
     public void disbandClan(final Clan clan) {
+        for (final Member member : clan.getMembers().values()) {
+            this.removeChatChannel(member.getPlayerRef());
+        }
+
         this.blockRestoreManager.unOutlineAllChunks(clan.getTerritory(), CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
         for (final Clan targetClan : this.getClans()) {

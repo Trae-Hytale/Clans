@@ -7,6 +7,7 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
@@ -39,7 +40,7 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
             final Message rankPrefix = client.getRank().getPrefix();
             final Message clanName = Message.raw(clan.getDisplayName()).color(clanRelation.getPrefix());
             final Message username = AbstractChatEvent.USERNAME_FORMAT.apply(client.getName(), clanRelation.getSuffix());
-            final Message content = AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent());
+            final Message content = AbstractChatEvent.CONTENT_FORMAT.apply(event.getContent(), ChatColor.WHITE.getColor());
 
             event.setFormat(Message.join(rankPrefix, clanName, Message.raw(" "), username, AbstractChatEvent.SEPARATOR, content));
         }));

@@ -45,6 +45,8 @@ public interface IClanManager {
 
     void showClanInformation(final PlayerRef playerRef, final Client playerClient, final Clan playerClan, final Clan targetClan);
 
+    void removeChatChannel(final PlayerRef playerRef);
+
     void disbandClan(final Clan clan);
 
     void messageClan(final Clan clan, final String prefix, final String message, final List<UUID> ignored);

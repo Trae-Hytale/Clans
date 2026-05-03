@@ -94,7 +94,7 @@ public class LeaveCommand extends AbstractClanSubCommand implements Listener {
                 this.getModule().getManager().getRepository().update(clan, ClanProperty.LAST_ONLINE);
             }
 
-            // TODO: Handle Remove Clan Chat for Player
+            this.getModule().getManager().removeChatChannel(playerRef);
 
             UtilMessage.message(playerRef, "Clans", "You left %s.".formatted(this.getModule().getManager().getClanShortName(ClanRelation.NEUTRAL, clan)));
 
