@@ -63,6 +63,8 @@ public interface IClanManager {
 
     int getMaxClaimLimit(final Clan clan);
 
+    boolean isTerritoryFull(final Clan clan);
+
     int getMaxSquadLimit(final Clan clan);
 
     boolean isSquadFull(final Clan clan);

@@ -57,6 +57,8 @@ public class ClaimCommand extends AbstractClanSubCommand implements Listener {
         UtilEvent.dispatch(new TerritoryClaimEvent(playerClan, playerRef, chunk));
     }
 
+    // TODO: Remove this below when Player#getUuid is not deprecated
+    @SuppressWarnings("removal")
     private boolean canClaimChunk(final PlayerRef playerRef, final Client client, final Clan playerClan, final Chunk chunk) {
         final Optional<Clan> territoryClanOptional = this.getModule().getManager().getClanByChunk(chunk);
         if (territoryClanOptional.isPresent()) {
@@ -74,6 +76,49 @@ public class ClaimCommand extends AbstractClanSubCommand implements Listener {
         if (!(client.isAdministrating())) {
             if (!(chunk.getWorldName().equals(this.getModule().getManager().getConfig().getTerritory().allowedWorldName()))) {
                 UtilMessage.message(playerRef, "Clans", "You cannot claim land in this world!");
+                return false;
+            }
+
+            if (this.getModule().getManager().isTerritoryFull(playerClan)) {
+                UtilMessage.message(playerRef, "Clans", "You cannot claim any more land!");
+                return false;
+            }
+
+            for (final Player nearbyPlayer : chunk.getEntitiesByType(Player.class)) {
+                final Optional<Clan> nearbyPlayerClanOptional = this.getModule().getManager().getClanByPlayerId(nearbyPlayer.getUuid());
+                if (nearbyPlayerClanOptional.isPresent()) {
+                    final Clan nearbyPlayerClan = nearbyPlayerClanOptional.get();
+
+                    if (nearbyPlayerClan.equals(playerClan) || nearbyPlayerClan.isAllianceByClan(playerClan) || this.getModule().getManager().getClientManager().getClientByPlayerId(nearbyPlayer.getUuid()).map(Client::isAdministrating).orElse(false)) {
+                        continue;
+                    }
+
+                    UtilMessage.message(playerRef, "Clans", "You cannot claim land containing enemies!");
+                    return false;
+                }
+            }
+
+            boolean territoryConnected = false;
+
+            for (final Chunk nearbyChunk : chunk.getNearbyChunks(1, true)) {
+                final Optional<Clan> nearbyChunkClanOptional = this.getModule().getManager().getClanByChunk(nearbyChunk);
+                if (nearbyChunkClanOptional.isEmpty()) {
+                    continue;
+                }
+
+                final Clan nearbyChunkClan = nearbyChunkClanOptional.get();
+
+                if (nearbyChunkClan.equals(playerClan)) {
+                    territoryConnected = true;
+                    continue;
+                }
+
+                UtilMessage.message(playerRef, "Clans", "You cannot claim land next to enemy territory!");
+                return false;
+            }
+
+            if (playerClan.hasTerritory() && !(territoryConnected)) {
+                UtilMessage.message(playerRef, "Clans", "You can only claim next to your own territory!");
                 return false;
             }
         }

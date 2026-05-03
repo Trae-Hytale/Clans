@@ -72,7 +72,7 @@ public class UnClaimCommand extends AbstractClanSubCommand implements Listener {
             }
 
             if (!(territoryClan.equals(playerClan))) {
-                UtilMessage.message(playerRef, "Clans", "This Territory is not owned by your clan!");
+                UtilMessage.message(playerRef, "Clans", "This Territory is not owned by your Clan!");
                 return false;
             }
         }

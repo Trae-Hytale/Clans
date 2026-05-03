@@ -367,7 +367,16 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public int getMaxClaimLimit(final Clan clan) {
-        return Math.min(this.config.getTerritory().maxClaimLimit(), clan.getMembers().size());
+        final int territoryCount = clan.getMembers().size();
+
+        return Math.min(this.config.getTerritory().maxClaimLimit(), territoryCount);
+    }
+
+    @Override
+    public boolean isTerritoryFull(final Clan clan) {
+        final int territoryCount = clan.getMembers().size();
+
+        return clan.getTerritory().size() >= territoryCount;
     }
 
     @Override

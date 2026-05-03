@@ -61,7 +61,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
         }
 
         if (this.getModule().getManager().getClanByName(name).isPresent()) {
-            UtilMessage.message(playerRef, "Clans", "Clan name is already used by another Clan!");
+            UtilMessage.message(playerRef, "Clans", "Clan name is already used by another clan!");
             return false;
         }
 
