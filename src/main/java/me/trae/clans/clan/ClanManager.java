@@ -353,12 +353,24 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
 
     @Override
     public String getClanFullName(final ClanRelation clanRelation, final Clan clan) {
-        return UtilColor.serialize(clanRelation.getSuffix(), "%s %s".formatted(clan.getType(), clan.getDisplayName()));
+        Color color = clanRelation.getSuffix();
+
+        if (clan.isAdmin() && !(clan.isOutskirts()) && clanRelation != ClanRelation.SELF) {
+            color = ChatColor.WHITE.getColor();
+        }
+
+        return UtilColor.serialize(color, "%s %s".formatted(clan.getType(), clan.getDisplayName()));
     }
 
     @Override
     public String getClanShortName(final ClanRelation clanRelation, final Clan clan) {
-        return UtilColor.serialize(clanRelation.getSuffix(), clan.getDisplayName());
+        Color color = clanRelation.getSuffix();
+
+        if (clan.isAdmin() && !(clan.isOutskirts()) && clanRelation != ClanRelation.SELF) {
+            color = ChatColor.WHITE.getColor();
+        }
+
+        return UtilColor.serialize(color, clan.getDisplayName());
     }
 
     @Override
