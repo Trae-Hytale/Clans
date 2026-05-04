@@ -2,12 +2,20 @@ package me.trae.clans.gamer;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.database.constants.Constants;
+import io.github.trae.utilities.UtilString;
+import lombok.Getter;
+import lombok.Setter;
+import me.trae.clans.gamer.interfaces.IGamer;
 import me.trae.clans.gamer.properties.GamerProperty;
 import me.trae.core.framework.gamer.AbstractGamer;
 
 import java.util.UUID;
 
-public class Gamer extends AbstractGamer<GamerProperty> {
+@Getter
+@Setter
+public class Gamer extends AbstractGamer<GamerProperty> implements IGamer {
+
+    private int coins;
 
     public Gamer(final UUID id) {
         super(id);
@@ -20,5 +28,10 @@ public class Gamer extends AbstractGamer<GamerProperty> {
     @Override
     public Object getValueByProperty(final GamerProperty gamerProperty) {
         return Constants.EMPTY_PROPERTY;
+    }
+
+    @Override
+    public String getFormattedCoins() {
+        return UtilString.formatToDollarByInteger(this.getCoins());
     }
 }
