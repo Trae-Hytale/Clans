@@ -1,5 +1,6 @@
 package me.trae.clans.clan;
 
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -11,6 +12,7 @@ import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilSearch;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
+import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
 import io.github.trae.utilities.UtilJava;
@@ -20,7 +22,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.configs.ClansConfig;
+import me.trae.clans.clan.data.Enemy;
 import me.trae.clans.clan.data.Member;
+import me.trae.clans.clan.data.Pillage;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.enums.ClansChatChannel;
@@ -46,6 +50,8 @@ import java.util.function.Function;
 @Getter
 @Service
 public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener {
+
+    public static final String WILDERNESS_NAME = "Wilderness";
 
     public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getId().toString());
 
@@ -363,6 +369,93 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     @Override
     public String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef) {
         return this.getPlayerName(clanRelation, playerRef.getUsername());
+    }
+
+    @Override
+    public Message getTerritoryClanNameForChat(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation) {
+        String name = "Wilderness";
+        Color color = ChatColor.YELLOW.getColor();
+        Message suffix = null;
+
+        if (territoryClan != null) {
+            name = territoryClan.getDisplayName();
+            color = this.getClanRelationByClan(playerClan, territoryClan).getSuffix();
+
+            if (territoryClan.isAdmin()) {
+                if (!(territoryClan.isOutskirts())) {
+                    color = ChatColor.WHITE.getColor();
+                }
+
+                if (territoryClan.isSafe()) {
+                    suffix = Message.raw("Safe").color(ChatColor.AQUA.getColor());
+                }
+            } else if (playerClan.isTrustedAllianceByClan(territoryClan)) {
+                suffix = Message.raw("Trusted").color(ChatColor.YELLOW.getColor());
+            } else if (playerClan.isEnemyByClan(territoryClan)) {
+                final Optional<Enemy> playerClanEnemyOptional = playerClan.getEnemyByClan(territoryClan);
+                final Optional<Enemy> territoryClanEnemyOptional = territoryClan.getEnemyByClan(playerClan);
+
+                if (playerClanEnemyOptional.isPresent() && territoryClanEnemyOptional.isPresent()) {
+                    final Message playerClanEnemyPoints = Message.raw(String.valueOf(playerClanEnemyOptional.get().getPoints())).color(ChatColor.GREEN.getColor());
+                    final Message territoryClanEnemyPoints = Message.raw(String.valueOf(territoryClanEnemyOptional.get().getPoints())).color(ChatColor.RED.getColor());
+
+                    suffix = Message.join(playerClanEnemyPoints, Message.raw(":").color(ChatColor.GRAY.getColor()), territoryClanEnemyPoints);
+                }
+            } else if (playerClan.isPillageByClan(territoryClan)) {
+                final Optional<Pillage> pillageOptional = playerClan.getPillageByClan(territoryClan);
+                if (pillageOptional.isPresent()) {
+                    final long remaining = UtilTime.getRemaining(pillageOptional.get().getCreatedAt(), this.config.getPillage().duration());
+
+                    suffix = Message.raw(UtilTime.getTime(remaining));
+                }
+            }
+        }
+
+        final Message message = Message.raw(name).color(color);
+
+        if (suffix != null) {
+            message.insert(Message.raw(" (").color(ChatColor.GRAY.getColor())).insert(suffix).insert(Message.raw(")").color(ChatColor.GRAY.getColor()));
+        }
+
+        return message;
+    }
+
+    @Override
+    public Message getTerritoryClanNameForTitle(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation) {
+        String name = "Wilderness";
+        Color color = ChatColor.YELLOW.getColor();
+
+        if (territoryClan != null) {
+            name = territoryClan.getDisplayName();
+            color = this.getClanRelationByClan(playerClan, territoryClan).getSuffix();
+
+            if (territoryClan.isAdmin()) {
+                if (!(territoryClan.isOutskirts())) {
+                    color = ChatColor.WHITE.getColor();
+                }
+            }
+        }
+
+        return Message.raw(name).color(color);
+    }
+
+    @Override
+    public Message getTerritoryClanNameForSidebar(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation) {
+        String name = "Wilderness";
+        Color color = ChatColor.GRAY.getColor();
+
+        if (territoryClan != null) {
+            name = territoryClan.getDisplayName();
+            color = this.getClanRelationByClan(playerClan, territoryClan).getSuffix();
+
+            if (territoryClan.isAdmin()) {
+                if (!(territoryClan.isOutskirts())) {
+                    color = ChatColor.WHITE.getColor();
+                }
+            }
+        }
+
+        return Message.raw(name).color(color);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package me.trae.clans.clan.interfaces;
 
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.receiver.IMessageReceiver;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
 import me.trae.clans.clan.Clan;
@@ -60,6 +62,12 @@ public interface IClanManager {
     String getPlayerName(final ClanRelation clanRelation, final String playerName);
 
     String getPlayerName(final ClanRelation clanRelation, final PlayerRef playerRef);
+
+    Message getTerritoryClanNameForChat(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation);
+
+    Message getTerritoryClanNameForTitle(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation);
+
+    Message getTerritoryClanNameForSidebar(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation);
 
     int getMaxClaimLimit(final Clan clan);
 
