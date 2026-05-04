@@ -15,7 +15,6 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.data.Member;
-import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.map.interfaces.IMapManager;
 
 import java.awt.*;
