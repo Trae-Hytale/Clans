@@ -63,7 +63,7 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
             list.add(Message.empty());
 
             list.add(Message.raw("Clan").color(ChatColor.YELLOW.getColor()).bold(true));
-            list.add(playerClanOptional.map(clan -> Message.raw(clan.getDisplayName()).color(ClanRelation.SELF.getPrefix())).orElse(Message.raw("No clan")));
+            list.add(playerClanOptional.map(clan -> Message.raw(clan.getDisplayName()).color(ClanRelation.SELF.getSuffix())).orElse(Message.raw("No clan")));
 
             list.add(Message.empty());
 

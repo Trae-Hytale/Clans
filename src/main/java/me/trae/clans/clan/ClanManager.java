@@ -389,24 +389,26 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                 if (territoryClan.isSafe()) {
                     suffix = Message.raw("Safe").color(ChatColor.AQUA.getColor());
                 }
-            } else if (playerClan.isTrustedAllianceByClan(territoryClan)) {
-                suffix = Message.raw("Trusted").color(ChatColor.YELLOW.getColor());
-            } else if (playerClan.isEnemyByClan(territoryClan)) {
-                final Optional<Enemy> playerClanEnemyOptional = playerClan.getEnemyByClan(territoryClan);
-                final Optional<Enemy> territoryClanEnemyOptional = territoryClan.getEnemyByClan(playerClan);
+            } else if (playerClan != null) {
+                if (playerClan.isTrustedAllianceByClan(territoryClan)) {
+                    suffix = Message.raw("Trusted").color(ChatColor.YELLOW.getColor());
+                } else if (playerClan.isEnemyByClan(territoryClan)) {
+                    final Optional<Enemy> playerClanEnemyOptional = playerClan.getEnemyByClan(territoryClan);
+                    final Optional<Enemy> territoryClanEnemyOptional = territoryClan.getEnemyByClan(playerClan);
 
-                if (playerClanEnemyOptional.isPresent() && territoryClanEnemyOptional.isPresent()) {
-                    final Message playerClanEnemyPoints = Message.raw(String.valueOf(playerClanEnemyOptional.get().getPoints())).color(ChatColor.GREEN.getColor());
-                    final Message territoryClanEnemyPoints = Message.raw(String.valueOf(territoryClanEnemyOptional.get().getPoints())).color(ChatColor.RED.getColor());
+                    if (playerClanEnemyOptional.isPresent() && territoryClanEnemyOptional.isPresent()) {
+                        final Message playerClanEnemyPoints = Message.raw(String.valueOf(playerClanEnemyOptional.get().getPoints())).color(ChatColor.GREEN.getColor());
+                        final Message territoryClanEnemyPoints = Message.raw(String.valueOf(territoryClanEnemyOptional.get().getPoints())).color(ChatColor.RED.getColor());
 
-                    suffix = Message.join(playerClanEnemyPoints, Message.raw(":").color(ChatColor.GRAY.getColor()), territoryClanEnemyPoints);
-                }
-            } else if (playerClan.isPillageByClan(territoryClan)) {
-                final Optional<Pillage> pillageOptional = playerClan.getPillageByClan(territoryClan);
-                if (pillageOptional.isPresent()) {
-                    final long remaining = UtilTime.getRemaining(pillageOptional.get().getCreatedAt(), this.config.getPillage().duration());
+                        suffix = Message.join(playerClanEnemyPoints, Message.raw(":").color(ChatColor.GRAY.getColor()), territoryClanEnemyPoints);
+                    }
+                } else if (playerClan.isPillageByClan(territoryClan)) {
+                    final Optional<Pillage> pillageOptional = playerClan.getPillageByClan(territoryClan);
+                    if (pillageOptional.isPresent()) {
+                        final long remaining = UtilTime.getRemaining(pillageOptional.get().getCreatedAt(), this.config.getPillage().duration());
 
-                    suffix = Message.raw(UtilTime.getTime(remaining));
+                        suffix = Message.raw(UtilTime.getTime(remaining));
+                    }
                 }
             }
         }
