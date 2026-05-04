@@ -29,7 +29,7 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
 
     private final GamerManager clansGamerManager;
 
-    @EventHandler(priority = EventPriority.HIGHEST)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onSidebarCreate(final SidebarCreateEvent event) {
         if (event.isCancelled()) {
             return;

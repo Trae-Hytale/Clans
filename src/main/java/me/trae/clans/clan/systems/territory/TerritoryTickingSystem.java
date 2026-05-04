@@ -12,6 +12,7 @@ import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
+import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.system.CustomEntityTickingSystem;
 import io.github.trae.hytale.framework.system.data.SystemContext;
 import io.github.trae.hytale.framework.utility.UtilEvent;
@@ -107,7 +108,7 @@ public class TerritoryTickingSystem extends CustomEntityTickingSystem implements
         return message;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerDisconnect(final PlayerDisconnectEvent event) {
         this.playerLastTerritoryMap.remove(event.getPlayerRef().getUuid());
     }
