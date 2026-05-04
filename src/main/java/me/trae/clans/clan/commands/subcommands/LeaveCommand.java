@@ -52,6 +52,11 @@ public class LeaveCommand extends AbstractClanSubCommand implements Listener {
 
     private boolean canLeaveClan(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan) {
         if (!(client.isAdministrating())) {
+            if (playerClan.isAdmin()) {
+                UtilMessage.message(playerRef, "Clans", "You cannot leave an Admin Clan without administrating!");
+                return false;
+            }
+
             if (playerClan.getMembers().size() > 1 && playerClan.getMemberByPlayer(playerRef).map(member -> member.hasRole(MemberRole.LEADER)).orElse(false)) {
                 UtilMessage.message(playerRef, "Clans", "You must pass Leadership before leaving the Clan!");
                 return false;
