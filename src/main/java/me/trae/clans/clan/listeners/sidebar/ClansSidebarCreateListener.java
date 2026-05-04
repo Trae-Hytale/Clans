@@ -60,8 +60,6 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
         event.setTitle(Message.raw("Clans").color(ChatColor.GOLD.getColor()).bold(true));
 
         event.setLines(UtilJava.createCollection(new ArrayList<>(), list -> {
-            list.add(Message.empty());
-
             list.add(Message.raw("Clan").color(ChatColor.YELLOW.getColor()).bold(true));
             list.add(playerClanOptional.map(clan -> Message.raw(clan.getDisplayName()).color(ClanRelation.SELF.getSuffix())).orElse(Message.raw("No clan")));
 
