@@ -12,6 +12,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.CreateCommandConfig;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.ClanCreateEvent;
 import me.trae.core.client.Client;
@@ -22,8 +23,12 @@ import java.util.Locale;
 @Component
 public class CreateCommand extends AbstractClanSubCommand implements Listener {
 
-    public CreateCommand() {
+    private final CreateCommandConfig createCommandConfig;
+
+    public CreateCommand(final CreateCommandConfig createCommandConfig) {
         super("create", "Create a Clan");
+
+        this.createCommandConfig = createCommandConfig;
     }
 
     @Override
@@ -55,7 +60,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
 
         final String cleanName = client.isAdministrating() ? name.replace("_", "") : name;
 
-        if (!(cleanName.matches(this.getModule().getManager().getConfig().getCreateCommand().nameRegex()))) {
+        if (!(cleanName.matches(this.createCommandConfig.getNameRegex()))) {
             UtilMessage.message(playerRef, "Clans", "You cannot have special characters in your Clan name!");
             return false;
         }
@@ -65,14 +70,16 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
             return false;
         }
 
-        if (name.length() > this.getModule().getManager().getConfig().getCreateCommand().maxNameLength()) {
-            UtilMessage.message(playerRef, "Clans", "Clan name is too long. Maximum Length is <yellow>%s</yellow>!".formatted(this.getModule().getManager().getConfig().getCreateCommand().maxNameLength()));
+        if (name.length() > this.createCommandConfig.getMaximumNameLength()) {
+            UtilMessage.message(playerRef, "Clans", "Clan name is too long. Maximum Length is <yellow>%s</yellow>!".formatted(this.createCommandConfig.getMaximumNameLength()));
             return false;
         }
 
-        if (name.length() < this.getModule().getManager().getConfig().getCreateCommand().minNameLength()) {
-            UtilMessage.message(playerRef, "Clans", "Clan name is too short. Minimum Length is <yellow>%s</yellow>!".formatted(this.getModule().getManager().getConfig().getCreateCommand().minNameLength()));
-            return false;
+        if (!(client.isAdministrating())) {
+            if (name.length() < this.createCommandConfig.getMinimumNameLength()) {
+                UtilMessage.message(playerRef, "Clans", "Clan name is too short. Minimum Length is <yellow>%s</yellow>!".formatted(this.createCommandConfig.getMinimumNameLength()));
+                return false;
+            }
         }
 
         return true;

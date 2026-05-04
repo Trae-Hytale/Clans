@@ -12,6 +12,7 @@ import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.LeaveCommandConfig;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.MemberLeaveEvent;
@@ -23,11 +24,13 @@ import java.util.Optional;
 @Component
 public class LeaveCommand extends AbstractClanSubCommand implements Listener {
 
+    private final LeaveCommandConfig leaveCommandConfig;
     private final DisbandCommand disbandCommand;
 
-    public LeaveCommand(final DisbandCommand disbandCommand) {
+    public LeaveCommand(final LeaveCommandConfig leaveCommandConfig, final DisbandCommand disbandCommand) {
         super("leave", "Leave the Clan");
 
+        this.leaveCommandConfig = leaveCommandConfig;
         this.disbandCommand = disbandCommand;
     }
 
@@ -70,7 +73,7 @@ public class LeaveCommand extends AbstractClanSubCommand implements Listener {
                 }
             }
 
-            if (this.getModule().getManager().isBeingPillaged(playerClan)) {
+            if (this.leaveCommandConfig.isPillageCheck() && this.getModule().getManager().isBeingPillaged(playerClan)) {
                 UtilMessage.message(playerRef, "Clans", "You cannot leave the clan while being conquered by another clan!");
                 return false;
             }

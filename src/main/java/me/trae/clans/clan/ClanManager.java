@@ -21,7 +21,9 @@ import io.github.trae.utilities.UtilTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.trae.clans.ClansPlugin;
-import me.trae.clans.clan.configs.ClansConfig;
+import me.trae.clans.clan.configs.PillageConfig;
+import me.trae.clans.clan.configs.SquadConfig;
+import me.trae.clans.clan.configs.TerritoryConfig;
 import me.trae.clans.clan.data.Enemy;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.Pillage;
@@ -67,7 +69,9 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     private final CooldownManager cooldownManager;
     private final BlockRestoreManager blockRestoreManager;
 
-    private final ClansConfig config;
+    private final PillageConfig pillageConfig;
+    private final SquadConfig squadConfig;
+    private final TerritoryConfig territoryConfig;
 
     @ApplicationReady
     public void onApplicationReady() {
@@ -417,7 +421,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                 } else if (playerClan.isPillageByClan(territoryClan)) {
                     final Optional<Pillage> pillageOptional = playerClan.getPillageByClan(territoryClan);
                     if (pillageOptional.isPresent()) {
-                        final long remaining = UtilTime.getRemaining(pillageOptional.get().getCreatedAt(), this.config.getPillage().duration());
+                        final long remaining = UtilTime.getRemaining(pillageOptional.get().getCreatedAt(), this.pillageConfig.getDuration());
 
                         suffix = Message.raw(UtilTime.getTime(remaining));
                     }
@@ -487,7 +491,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     public int getMaxClaimLimit(final Clan clan) {
         final int territoryCount = clan.getMembers().size();
 
-        return Math.min(this.config.getTerritory().maxClaimLimit(), territoryCount);
+        return Math.min(this.territoryConfig.getMaxClaimLimit(), territoryCount);
     }
 
     @Override
@@ -501,14 +505,14 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     public int getMaxSquadLimit(final Clan clan) {
         final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
 
-        return Math.min(this.config.getSquad().maxLimit(), squadCount);
+        return Math.min(this.squadConfig.getMaxLimit(), squadCount);
     }
 
     @Override
     public boolean isSquadFull(final Clan clan) {
         final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
 
-        return squadCount >= this.config.getSquad().maxLimit();
+        return squadCount >= this.squadConfig.getMaxLimit();
     }
 
     @Override

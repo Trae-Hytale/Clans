@@ -11,6 +11,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.KickCommandConfig;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
@@ -23,8 +24,12 @@ import java.util.Collections;
 @Component
 public class KickCommand extends AbstractClanSubCommand implements Listener {
 
-    public KickCommand() {
+    private final KickCommandConfig kickCommandConfig;
+
+    public KickCommand(final KickCommandConfig kickCommandConfig) {
         super("kick", "Kick a Member from the Clan");
+
+        this.kickCommandConfig = kickCommandConfig;
     }
 
     @Override
@@ -65,7 +70,7 @@ public class KickCommand extends AbstractClanSubCommand implements Listener {
                 return false;
             }
 
-            if (this.getModule().getManager().isBeingPillaged(playerClan)) {
+            if (this.kickCommandConfig.isPillageCheck() && this.getModule().getManager().isBeingPillaged(playerClan)) {
                 UtilMessage.message(playerRef, "Clans", "You cannot kick a member while being conquered by another clan!");
                 return false;
             }

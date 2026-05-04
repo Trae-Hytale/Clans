@@ -66,7 +66,7 @@ public class UnClaimCommand extends AbstractClanSubCommand implements Listener {
         final Clan territoryClan = territoryClanOptional.get();
 
         if (!(client.isAdministrating())) {
-            if (!(chunk.getWorldName().equals(this.getModule().getManager().getConfig().getTerritory().allowedWorldName()))) {
+            if (!(chunk.getWorldName().equals(this.getModule().getManager().getTerritoryConfig().getAllowedWorldName()))) {
                 UtilMessage.message(playerRef, "Clans", "You cannot unclaim land in this world!");
                 return false;
             }

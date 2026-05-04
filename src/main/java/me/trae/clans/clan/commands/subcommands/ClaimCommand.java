@@ -74,7 +74,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements Listener {
         }
 
         if (!(client.isAdministrating())) {
-            if (!(chunk.getWorldName().equals(this.getModule().getManager().getConfig().getTerritory().allowedWorldName()))) {
+            if (!(chunk.getWorldName().equals(this.getModule().getManager().getTerritoryConfig().getAllowedWorldName()))) {
                 UtilMessage.message(playerRef, "Clans", "You cannot claim land in this world!");
                 return false;
             }
