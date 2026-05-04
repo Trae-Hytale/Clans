@@ -473,6 +473,17 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     }
 
     @Override
+    public Color getClanMapColor(final Clan playerClan, final Clan territoryClan) {
+        Color color = this.getClanRelationByClan(playerClan, territoryClan).getSuffix();
+
+        if (territoryClan.isAdmin()) {
+            color = ChatColor.WHITE.getColor();
+        }
+
+        return color;
+    }
+
+    @Override
     public int getMaxClaimLimit(final Clan clan) {
         final int territoryCount = clan.getMembers().size();
 

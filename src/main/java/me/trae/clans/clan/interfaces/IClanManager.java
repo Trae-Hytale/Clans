@@ -11,6 +11,7 @@ import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.enums.InteractType;
 import me.trae.core.client.Client;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -68,6 +69,8 @@ public interface IClanManager {
     Message getTerritoryClanNameForTitle(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation);
 
     Message getTerritoryClanNameForSidebar(final Clan playerClan, final Clan territoryClan, final BlockLocation blockLocation);
+
+    Color getClanMapColor(final Clan playerClan, final Clan territoryClan);
 
     int getMaxClaimLimit(final Clan clan);
 

@@ -4,13 +4,14 @@ import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
-import me.trae.clans.clan.enums.ClanRelation;
+
+import java.awt.*;
 
 public interface IMapManager {
 
-    MapImage getCachedOverlay(final int chunkX, final int chunkZ, final ClanRelation clanRelation);
+    MapImage getCachedOverlay(final int chunkX, final int chunkZ, final Color color);
 
-    void cacheOverlay(final int chunkX, final int chunkZ, final ClanRelation clanRelation, final MapImage mapImage);
+    void cacheOverlay(final int chunkX, final int chunkZ, final Color color, final MapImage mapImage);
 
     void invalidateChunk(final Chunk chunk);
 

@@ -18,6 +18,7 @@ import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.map.interfaces.IMapManager;
 
+import java.awt.*;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -25,25 +26,24 @@ import java.util.concurrent.ConcurrentHashMap;
 @Service
 public class MapManager implements Manager<ClansPlugin>, IMapManager {
 
-    private static final int RELATION_COUNT = ClanRelation.values().length;
-
-    private final ConcurrentHashMap<Long, MapImage[]> overlayCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Long, ConcurrentHashMap<Integer, MapImage>> overlayCache = new ConcurrentHashMap<>();
 
     @Getter
     private final ClanManager clanManager;
 
-    public MapImage getCachedOverlay(final int chunkX, final int chunkZ, final ClanRelation clanRelation) {
-        final MapImage[] cached = this.overlayCache.get(ChunkUtil.indexChunk(chunkX, chunkZ));
+    @Override
+    public MapImage getCachedOverlay(final int chunkX, final int chunkZ, final Color color) {
+        final ConcurrentHashMap<Integer, MapImage> cached = this.overlayCache.get(ChunkUtil.indexChunk(chunkX, chunkZ));
         if (cached == null) {
             return null;
         }
 
-        return cached[clanRelation.ordinal()];
+        return cached.get(color.getRGB() & 0xFFFFFF);
     }
 
     @Override
-    public void cacheOverlay(final int chunkX, final int chunkZ, final ClanRelation clanRelation, final MapImage mapImage) {
-        this.overlayCache.computeIfAbsent(ChunkUtil.indexChunk(chunkX, chunkZ), key -> new MapImage[RELATION_COUNT])[clanRelation.ordinal()] = mapImage;
+    public void cacheOverlay(final int chunkX, final int chunkZ, final Color color, final MapImage mapImage) {
+        this.overlayCache.computeIfAbsent(ChunkUtil.indexChunk(chunkX, chunkZ), __ -> new ConcurrentHashMap<>()).put(color.getRGB() & 0xFFFFFF, mapImage);
     }
 
     @Override

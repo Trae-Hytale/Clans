@@ -60,9 +60,9 @@ public class MapOverlayPacketFilter implements Module<ClansPlugin, MapManager>, 
                         continue;
                     }
 
-                    final ClanRelation clanRelation = clanManager.getClanRelationByClan(playerClan, territoryClan);
+                    final Color color = clanManager.getClanMapColor(playerClan, territoryClan);
 
-                    final MapImage cachedMapImage = this.getManager().getCachedOverlay(mapChunk.chunkX, mapChunk.chunkZ, clanRelation);
+                    final MapImage cachedMapImage = this.getManager().getCachedOverlay(mapChunk.chunkX, mapChunk.chunkZ, color);
                     if (cachedMapImage != null) {
                         updateWorldMap.chunks[chunkIndex] = new MapChunk(mapChunk.chunkX, mapChunk.chunkZ, cachedMapImage);
                         continue;
@@ -75,9 +75,9 @@ public class MapOverlayPacketFilter implements Module<ClansPlugin, MapManager>, 
                             clanManager.getClanByChunk(new Chunk(worldName, mapChunk.chunkX - 1, mapChunk.chunkZ)).orElse(null),
                     };
 
-                    final MapImage overlaidMapImage = this.applyOverlay(mapChunk.image, clanRelation.getSuffix().getRGB() & 0xFFFFFF, territoryClan, neighborClans);
+                    final MapImage overlaidMapImage = this.applyOverlay(mapChunk.image, color, territoryClan, neighborClans);
 
-                    this.getManager().cacheOverlay(mapChunk.chunkX, mapChunk.chunkZ, clanRelation, overlaidMapImage);
+                    this.getManager().cacheOverlay(mapChunk.chunkX, mapChunk.chunkZ, color, overlaidMapImage);
 
                     updateWorldMap.chunks[chunkIndex] = new MapChunk(mapChunk.chunkX, mapChunk.chunkZ, overlaidMapImage);
                 }
@@ -103,7 +103,9 @@ public class MapOverlayPacketFilter implements Module<ClansPlugin, MapManager>, 
         return null;
     }
 
-    private MapImage applyOverlay(final MapImage originalMapImage, final int colorRgb, final Clan territoryClan, final Clan[] neighborClans) {
+    private MapImage applyOverlay(final MapImage originalMapImage, final Color color, final Clan territoryClan, final Clan[] neighborClans) {
+        final int colorRgb = color.getRGB() & 0xFFFFFF;
+
         final int width = originalMapImage.width;
         final int height = originalMapImage.height;
 
