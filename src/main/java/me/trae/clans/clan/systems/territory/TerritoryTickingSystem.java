@@ -88,9 +88,11 @@ public class TerritoryTickingSystem extends CustomEntityTickingSystem implements
 
         territoryClanOptional.ifPresent(clan -> UtilEvent.dispatch(new TerritoryEnterEvent(playerRef, clan)));
 
-        this.getManager().getClanById(previousTerritoryKey).ifPresent(clan -> {
-            UtilEvent.dispatch(new TerritoryExitEvent(playerRef, clan));
-        });
+        if (previousTerritoryKey != null) {
+            this.getManager().getClanById(previousTerritoryKey).ifPresent(clan -> {
+                UtilEvent.dispatch(new TerritoryExitEvent(playerRef, clan));
+            });
+        }
     }
 
     private Message getTerritoryName(final Clan playerClan, final Clan territoryClan) {
