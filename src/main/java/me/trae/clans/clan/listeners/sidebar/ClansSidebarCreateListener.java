@@ -56,6 +56,9 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
 
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
+        event.setIdentifier("CLANS");
+        event.setPriority(1);
+
         event.setTitle(Message.raw("Clans").color(ChatColor.GOLD.getColor()).bold(true));
 
         event.setLines(UtilJava.createCollection(new ArrayList<>(), list -> {
