@@ -1,8 +1,8 @@
 package me.trae.clans.clan.listeners.sidebar;
 
 import com.hypixel.hytale.server.core.Message;
-import com.hypixel.hytale.server.core.entity.Entity;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
@@ -10,7 +10,6 @@ import io.github.trae.hytale.framework.event.Listener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.sidebar.events.SidebarCreateEvent;
-import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.utilities.UtilJava;
@@ -46,7 +45,7 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
 
         final PlayerRef playerRef = event.getPlayerRef();
 
-        final World world = UtilPlayer.getPlayer(playerRef).map(Entity::getWorld).orElse(null);
+        final World world = Optional.ofNullable(playerRef.getWorldUuid()).map(worldUuid -> Universe.get().getWorld(worldUuid)).orElse(null);
         if (world == null) {
             return;
         }
