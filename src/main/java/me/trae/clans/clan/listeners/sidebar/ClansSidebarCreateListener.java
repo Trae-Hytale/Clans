@@ -65,14 +65,20 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
             list.add(Message.raw("Clan").color(ChatColor.YELLOW.getColor()).bold(true));
             list.add(playerClanOptional.map(clan -> Message.raw(clan.getDisplayName()).color(ClanRelation.SELF.getSuffix())).orElse(Message.raw("No clan")));
 
-            list.add(Message.empty());
+            if (this.getManager().getEnergyConfig().isEnabled()) {
+                playerClanOptional.ifPresent(clan -> {
+                    list.add(Message.empty());
+                    list.add(Message.raw("Clan Energy").color(ChatColor.YELLOW.getColor()).bold(true));
+                    list.add(Message.raw(clan.getFormattedEnergyRemaining()));
+                });
+            }
 
+            list.add(Message.empty());
             list.add(Message.raw("Territory").color(ChatColor.YELLOW.getColor()).bold(true));
             list.add(this.getManager().getTerritoryClanNameForSidebar(playerClanOptional.orElse(null), territoryClanOptional.orElse(null), blockLocation));
 
             this.clansGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
                 list.add(Message.empty());
-
                 list.add(Message.raw("Coins").color(ChatColor.YELLOW.getColor()).bold(true));
                 list.add(Message.raw(gamer.getFormattedCoins()).color(ChatColor.GOLD.getColor()));
             });

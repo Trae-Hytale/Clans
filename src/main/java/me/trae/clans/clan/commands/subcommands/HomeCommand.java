@@ -12,7 +12,7 @@ import io.github.trae.utilities.UtilTime;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
-import me.trae.clans.clan.events.ClanHomeEvent;
+import me.trae.clans.clan.events.clan.ClanHomeEvent;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
 import me.trae.core.client.Client;
 import me.trae.core.teleport.TeleportData;

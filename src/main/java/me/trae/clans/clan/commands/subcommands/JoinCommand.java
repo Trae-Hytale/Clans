@@ -14,7 +14,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirem
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
-import me.trae.clans.clan.events.ClanJoinEvent;
+import me.trae.clans.clan.events.clan.ClanJoinEvent;
 import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.client.Client;
 

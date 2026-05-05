@@ -7,7 +7,12 @@ import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
-import me.trae.clans.clan.events.*;
+import me.trae.clans.clan.events.clan.*;
+import me.trae.clans.clan.events.member.MemberKickEvent;
+import me.trae.clans.clan.events.member.MemberLeaveEvent;
+import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
+import me.trae.clans.clan.events.territory.TerritoryUnClaimAllEvent;
+import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.map.MapManager;
 
 @Component

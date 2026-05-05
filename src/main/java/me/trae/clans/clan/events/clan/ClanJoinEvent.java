@@ -1,4 +1,4 @@
-package me.trae.clans.clan.events;
+package me.trae.clans.clan.events.clan;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.event.types.CustomCancellableEvent;
@@ -9,7 +9,7 @@ import me.trae.core.client.Client;
 
 @AllArgsConstructor
 @Getter
-public class MemberLeaveEvent extends CustomCancellableEvent {
+public class ClanJoinEvent extends CustomCancellableEvent {
 
     private final Clan clan;
     private final PlayerRef playerRef;

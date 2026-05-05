@@ -1,16 +1,15 @@
-package me.trae.clans.clan.events;
+package me.trae.clans.clan.events.clan;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.event.types.CustomCancellableEvent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.trae.core.client.Client;
+import me.trae.clans.clan.Clan;
 
 @AllArgsConstructor
 @Getter
-public class ClanCreateEvent extends CustomCancellableEvent {
+public class ClanDeleteHomeEvent extends CustomCancellableEvent {
 
+    private final Clan clan;
     private final PlayerRef playerRef;
-    private final Client playerClient;
-    private final String name;
 }

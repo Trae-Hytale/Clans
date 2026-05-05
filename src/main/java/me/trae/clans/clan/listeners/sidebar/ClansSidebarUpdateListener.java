@@ -14,7 +14,13 @@ import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.data.Member;
-import me.trae.clans.clan.events.*;
+import me.trae.clans.clan.events.clan.*;
+import me.trae.clans.clan.events.member.MemberKickEvent;
+import me.trae.clans.clan.events.member.MemberLeaveEvent;
+import me.trae.clans.clan.events.territory.TerritoryChangeEvent;
+import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
+import me.trae.clans.clan.events.territory.TerritoryUnClaimAllEvent;
+import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.gamer.events.GamerCoinsUpdateEvent;
 
 @Component

@@ -24,9 +24,9 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.ClanRelation;
-import me.trae.clans.clan.events.TerritoryChangeEvent;
-import me.trae.clans.clan.events.TerritoryEnterEvent;
-import me.trae.clans.clan.events.TerritoryExitEvent;
+import me.trae.clans.clan.events.territory.TerritoryChangeEvent;
+import me.trae.clans.clan.events.territory.TerritoryEnterEvent;
+import me.trae.clans.clan.events.territory.TerritoryExitEvent;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
