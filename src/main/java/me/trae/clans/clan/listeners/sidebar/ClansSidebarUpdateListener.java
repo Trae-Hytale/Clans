@@ -15,6 +15,8 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.events.clan.*;
+import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
+import me.trae.clans.clan.events.energy.ClanEnergyGainEvent;
 import me.trae.clans.clan.events.member.MemberKickEvent;
 import me.trae.clans.clan.events.member.MemberLeaveEvent;
 import me.trae.clans.clan.events.territory.TerritoryChangeEvent;
@@ -38,6 +40,32 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
     @EventHandler(priority = EventPriority.MONITOR)
     public void onTerritoryChange(final TerritoryChangeEvent event) {
         this.update(event.getPlayerRef());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onClanEnergyGain(final ClanEnergyGainEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (!(event.hasAmount())) {
+            return;
+        }
+
+        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onClanEnergyDrain(final ClanEnergyDrainEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        if (!(event.hasAmount())) {
+            return;
+        }
+
+        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

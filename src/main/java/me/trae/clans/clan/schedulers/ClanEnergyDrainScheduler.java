@@ -17,7 +17,6 @@ import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.configs.EnergyConfig;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
-import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.config.events.ConfigReloadEvent;
 
 import java.util.ArrayList;
@@ -40,16 +39,13 @@ public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager
                 continue;
             }
 
-            final ClanEnergyDrainEvent clanEnergyDrainEvent = UtilEvent.supply(new ClanEnergyDrainEvent(clan, clan.getEnergyDepletion()));
-
-            if (clanEnergyDrainEvent.isCancelled()) {
-                continue;
-            }
-
             final long beforeEnergy = clan.getEnergy();
 
-            clan.takeEnergy(clanEnergyDrainEvent.getAmount());
-            this.getManager().getRepository().update(clan, ClanProperty.ENERGY);
+            final ClanEnergyDrainEvent clanEnergyDrainEvent = UtilEvent.supply(new ClanEnergyDrainEvent(clan, clan.getEnergyDepletion()));
+
+            if (clanEnergyDrainEvent.isCancelled() || !(clanEnergyDrainEvent.hasAmount())) {
+                continue;
+            }
 
             final long afterEnergy = clan.getEnergy();
 

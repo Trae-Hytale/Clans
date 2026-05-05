@@ -5,11 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.events.energy.interfaces.IEnergyEvent;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class ClanEnergyGainEvent extends CustomCancellableEvent {
+public class ClanEnergyGainEvent extends CustomCancellableEvent implements IEnergyEvent {
 
     private final Clan clan;
 
