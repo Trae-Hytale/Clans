@@ -26,6 +26,11 @@ public class SafeCommand extends AbstractClanSubCommand {
 
     @Override
     public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
+        if (!(client.isAdministrating())) {
+            UtilMessage.message(playerRef, "Clans", "You must be administrating to toggle Safe Mode!");
+            return;
+        }
+
         if (!(playerClan.isAdmin())) {
             UtilMessage.message(playerRef, "Clans", "%s is not an Admin Clan!".formatted(this.getModule().getManager().getClanFullName(ClanRelation.SELF, playerClan)));
             return;
