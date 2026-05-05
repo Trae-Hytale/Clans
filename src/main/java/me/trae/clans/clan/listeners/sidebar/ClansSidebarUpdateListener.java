@@ -52,7 +52,7 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -65,7 +65,7 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -142,9 +142,7 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
         }
 
         for (final Chunk chunk : event.getChunks()) {
-            for (final Player player : chunk.getEntitiesByType(Player.class)) {
-                UtilPlayer.getPlayerRef(player).ifPresent(this::update);
-            }
+            chunk.getEntitiesByType(Player.class).forEach(player -> UtilPlayer.getPlayerRef(player).ifPresent(this::update));
         }
     }
 
@@ -154,8 +152,8 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
-        event.getTargetClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+        event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -164,8 +162,8 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
-        event.getTargetClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+        event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -174,8 +172,8 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
-        event.getTargetClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+        event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -184,8 +182,8 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
-        event.getTargetClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+        event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -194,7 +192,7 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.getClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
-        event.getTargetClan().getMembers().values().stream().map(Member::getPlayerRef).forEach(this::update);
+        event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+        event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
     }
 }

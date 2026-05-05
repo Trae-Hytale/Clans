@@ -69,7 +69,7 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
                 playerClanOptional.ifPresent(clan -> {
                     list.add(Message.empty());
                     list.add(Message.raw("Clan Energy").color(ChatColor.YELLOW.getColor()).bold(true));
-                    list.add(Message.raw(clan.getFormattedEnergyRemaining()));
+                    list.add(Message.raw(clan.getFormattedEnergyRemaining()).color(ChatColor.GREEN.getColor()));
                 });
             }
 

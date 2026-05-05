@@ -78,8 +78,8 @@ public class SetHomeCommand extends AbstractClanSubCommand implements Listener {
         clan.setHome(blockLocation);
         this.getModule().getManager().getRepository().update(clan, ClanProperty.HOME);
 
-        UtilMessage.message(playerRef, "Clans", "You set the Clan Home at %s.".formatted(clan.getHomeLocationString()));
+        UtilMessage.message(playerRef, "Clans", "You set the Clan Home at %s.".formatted(clan.getFormattedHomeLocation()));
 
-        this.getModule().getManager().messageClan(clan, "Clans", "%s has set the Clan Home at %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), clan.getHomeLocationString()), Collections.singletonList(playerRef.getUuid()));
+        this.getModule().getManager().messageClan(clan, "Clans", "%s has set the Clan Home at %s.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef), clan.getFormattedHomeLocation()), Collections.singletonList(playerRef.getUuid()));
     }
 }

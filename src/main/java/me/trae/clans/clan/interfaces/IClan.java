@@ -103,7 +103,7 @@ public interface IClan {
 
     boolean hasHome();
 
-    String getHomeLocationString();
+    String getFormattedHomeLocation();
 
     void addEnergy(final long energy);
 

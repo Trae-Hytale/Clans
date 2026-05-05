@@ -47,7 +47,7 @@ public class TerritoryTickingSystem extends CustomEntityTickingSystem implements
     }
 
     @Override
-    public void onTick(final float v, final SystemContext<EntityStore> systemContext) {
+    public void onTick(final float dt, final SystemContext<EntityStore> systemContext) {
         final PlayerRef playerRef = systemContext.getComponent(PlayerRef.getComponentType());
         if (playerRef == null) {
             return;

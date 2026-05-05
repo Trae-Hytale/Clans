@@ -334,7 +334,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
     }
 
     @Override
-    public String getHomeLocationString() {
+    public String getFormattedHomeLocation() {
         final BlockLocation home = this.getHome();
         if (home == null) {
             return null;

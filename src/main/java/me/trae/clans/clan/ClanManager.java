@@ -245,6 +245,10 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
                 map.put("Energy", "<green>%s</green>".formatted(targetClan.getFormattedEnergyRemaining()));
             }
 
+            if (targetClan.equals(playerClan)) {
+                map.put("Home", targetClan.hasHome() ? targetClan.getFormattedHomeLocation() : "<red>Not set</red>");
+            }
+
             map.put("Allies", String.join("<gray>, ", UtilJava.createCollection(new ArrayList<String>(), list -> {
                 for (final UUID id : targetClan.getAlliances().keySet()) {
                     this.getClanById(id).ifPresent(allianceClan -> {
