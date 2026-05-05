@@ -104,4 +104,14 @@ public interface IClan {
     boolean hasHome();
 
     String getHomeLocationString();
+
+    void addEnergy(final long energy);
+
+    void takeEnergy(final long energy);
+
+    long getEnergyDepletion();
+
+    boolean canDepleteEnergy();
+
+    String getFormattedEnergyRemaining();
 }

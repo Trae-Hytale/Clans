@@ -21,6 +21,7 @@ import io.github.trae.utilities.UtilTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.clan.configs.EnergyConfig;
 import me.trae.clans.clan.configs.PillageConfig;
 import me.trae.clans.clan.configs.SquadConfig;
 import me.trae.clans.clan.configs.TerritoryConfig;
@@ -69,6 +70,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
     private final CooldownManager cooldownManager;
     private final BlockRestoreManager blockRestoreManager;
 
+    private final EnergyConfig energyConfig;
     private final PillageConfig pillageConfig;
     private final SquadConfig squadConfig;
     private final TerritoryConfig territoryConfig;
@@ -238,6 +240,10 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener
             map.put("Age", "<yellow>%s</yellow>".formatted(UtilTime.getTime(System.currentTimeMillis() - targetClan.getCreatedAt())));
 
             map.put("Territory", "<yellow>%s/%s</yellow>".formatted(targetClan.getTerritory().size(), this.getMaxClaimLimit(targetClan)));
+
+            if (this.energyConfig.isEnabled()) {
+                map.put("Energy", "<green>%s</green>".formatted(targetClan.getFormattedEnergyRemaining()));
+            }
 
             map.put("Allies", String.join("<gray>, ", UtilJava.createCollection(new ArrayList<String>(), list -> {
                 for (final UUID id : targetClan.getAlliances().keySet()) {

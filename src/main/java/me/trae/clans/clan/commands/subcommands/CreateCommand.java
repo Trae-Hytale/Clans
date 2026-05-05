@@ -14,7 +14,7 @@ import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
 import me.trae.clans.clan.commands.subcommands.configs.CreateCommandConfig;
 import me.trae.clans.clan.enums.ClanRelation;
-import me.trae.clans.clan.events.ClanCreateEvent;
+import me.trae.clans.clan.events.clan.ClanCreateEvent;
 import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
@@ -93,7 +93,7 @@ public class CreateCommand extends AbstractClanSubCommand implements Listener {
 
         final PlayerRef playerRef = event.getPlayerRef();
 
-        final Clan clan = new Clan(playerRef, event.getName());
+        final Clan clan = new Clan(playerRef, event.getName(), this.getModule().getManager().getEnergyConfig().getDefaultEnergy());
 
         if (event.getPlayerClient().isAdministrating() && event.getPlayerClient().hasRank(Rank.OWNER)) {
             clan.setAdmin(true);

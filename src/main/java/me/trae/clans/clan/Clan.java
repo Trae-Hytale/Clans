@@ -5,6 +5,7 @@ import io.github.trae.database.domain.data.DomainData;
 import io.github.trae.database.domain.models.Domain;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
+import io.github.trae.utilities.UtilTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import me.trae.clans.clan.interfaces.IClan;
 import me.trae.clans.clan.properties.ClanProperty;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 @Getter
@@ -40,7 +42,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
     private BlockLocation home;
     private UUID founder;
     private boolean admin, safe;
-    private long createdAt, lastOnline;
+    private long createdAt, lastOnline, energy;
 
     public Clan(final DomainData<ClanProperty> domainData) {
         this(domainData.getIdentifier());
@@ -62,15 +64,17 @@ public class Clan implements Domain<ClanProperty>, IClan {
         this.safe = domainData.get(Boolean.class, ClanProperty.SAFE, false);
         this.createdAt = domainData.get(Long.class, ClanProperty.CREATED_AT, 0L);
         this.lastOnline = domainData.get(Long.class, ClanProperty.LAST_ONLINE, 0L);
+        this.energy = domainData.get(Long.class, ClanProperty.ENERGY, 0L);
     }
 
-    public Clan(final PlayerRef playerRef, final String name) {
+    public Clan(final PlayerRef playerRef, final String name, final long defaultEnergy) {
         this(UUID.randomUUID());
 
         this.name = name;
         this.members.put(playerRef.getUuid(), new Member(playerRef, MemberRole.LEADER));
         this.founder = playerRef.getUuid();
         this.createdAt = System.currentTimeMillis();
+        this.energy = defaultEnergy;
     }
 
     @Override
@@ -89,6 +93,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
             case SAFE -> this.isSafe();
             case CREATED_AT -> this.getCreatedAt();
             case LAST_ONLINE -> this.getLastOnline();
+            case ENERGY -> this.getEnergy();
         };
     }
 
@@ -336,6 +341,35 @@ public class Clan implements Domain<ClanProperty>, IClan {
         }
 
         return "(<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(home.getX(), home.getY(), home.getZ());
+    }
+
+    @Override
+    public void addEnergy(final long energy) {
+        this.setEnergy(Math.min(Long.MAX_VALUE, this.getEnergy() + energy));
+    }
+
+    @Override
+    public void takeEnergy(final long energy) {
+        this.setEnergy(Math.max(0L, this.getEnergy() - energy));
+    }
+
+    @Override
+    public long getEnergyDepletion() {
+        return TimeUnit.MINUTES.toMillis(1) * this.getTerritory().size();
+    }
+
+    @Override
+    public boolean canDepleteEnergy() {
+        return !(this.isAdmin()) && this.hasTerritory();
+    }
+
+    @Override
+    public String getFormattedEnergyRemaining() {
+        if (!(this.canDepleteEnergy())) {
+            return "Unlimited";
+        }
+
+        return UtilTime.getTime(this.getEnergy() / this.getTerritory().size());
     }
 
     @Override
