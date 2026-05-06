@@ -2,6 +2,7 @@ package me.trae.clans.clan.listeners.sidebar;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
@@ -13,6 +14,7 @@ import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
+import me.trae.clans.clan.configs.EnergyConfig;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.events.clan.*;
 import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
@@ -24,12 +26,20 @@ import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
 import me.trae.clans.clan.events.territory.TerritoryUnClaimAllEvent;
 import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.gamer.events.GamerCoinsUpdateEvent;
+import me.trae.core.config.events.ConfigReloadEvent;
 
 @Component
 public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private void update(final PlayerRef playerRef) {
         UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onConfigReload(final ConfigReloadEvent event) {
+        if (event.getClasses().contains(EnergyConfig.class)) {
+            Universe.get().getPlayers().forEach(this::update);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

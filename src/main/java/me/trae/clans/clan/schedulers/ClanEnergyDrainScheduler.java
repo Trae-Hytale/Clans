@@ -16,6 +16,7 @@ import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.configs.EnergyConfig;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.clans.clan.events.energy.ClanEnergyDisbandEvent;
 import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
 import me.trae.core.config.events.ConfigReloadEvent;
 
@@ -52,7 +53,9 @@ public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager
             if (beforeEnergy > 0L && afterEnergy <= 0L) {
                 this.getManager().messageClan(clan, "Clans", "<red>Your Clan has ran out of energy!</red>", null);
 
-                this.getManager().disbandClan(clan);
+                if (UtilEvent.supply(new ClanEnergyDisbandEvent(clan)).isCancelled()) {
+                    continue;
+                }
 
                 for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
                     final ClanRelation clanRelation = this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);

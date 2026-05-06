@@ -5,7 +5,7 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.wrappers.Chunk;
+import io.github.trae.hytale.framework.utility.UtilPlayer;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.events.clan.*;
 import me.trae.clans.clan.events.member.MemberKickEvent;
@@ -14,6 +14,8 @@ import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
 import me.trae.clans.clan.events.territory.TerritoryUnClaimAllEvent;
 import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.map.MapManager;
+
+import java.util.Collections;
 
 @Component
 public class MapUpdateListener implements Module<ClansPlugin, MapManager>, EventListener {
@@ -24,7 +26,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshPlayerClaimedChunks(event.getPlayerRef(), event.getClan());
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -33,7 +35,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshPlayerClaimedChunks(event.getPlayerRef(), event.getClan());
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -42,7 +44,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshPlayerClaimedChunks(event.getPlayerRef(), event.getClan());
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -51,8 +53,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshClanMembersMap(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getClan());
+        this.getManager().refreshChunksForWorld(event.getClan().getTerritory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -61,7 +62,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateChunk(event.getChunk());
+        this.getManager().refreshChunksForWorld(Collections.singletonList(event.getChunk()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -70,7 +71,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateChunk(event.getChunk());
+        this.getManager().refreshChunksForWorld(Collections.singletonList(event.getChunk()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -79,9 +80,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        for (final Chunk chunk : event.getChunks()) {
-            this.getManager().invalidateChunk(chunk);
-        }
+        this.getManager().refreshChunksForWorld(event.getChunks());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

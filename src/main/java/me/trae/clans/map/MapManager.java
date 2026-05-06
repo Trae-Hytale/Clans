@@ -2,6 +2,7 @@ package me.trae.clans.map;
 
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Service;
@@ -18,6 +19,9 @@ import me.trae.clans.clan.data.Member;
 import me.trae.clans.map.interfaces.IMapManager;
 
 import java.awt.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -69,53 +73,68 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
     @Override
     public void refreshClanMembersMap(final Clan clan) {
         for (final Member member : clan.getMembers().values()) {
-            final PlayerRef playerRef = member.getPlayerRef();
-            if (playerRef != null) {
-                this.refreshPlayerClaimedChunks(playerRef, clan);
-            }
+            this.refreshPlayerClaimedChunks(member.getPlayer(), clan);
         }
     }
 
     @Override
     public void refreshClanMembersMapAgainst(final Clan clan, final Clan targetClan) {
         for (final Member member : clan.getMembers().values()) {
-            final PlayerRef playerRef = member.getPlayerRef();
-            if (playerRef != null) {
-                this.refreshPlayerClaimedChunks(playerRef, targetClan);
-            }
+            this.refreshPlayerClaimedChunks(member.getPlayer(), targetClan);
         }
     }
 
     @Override
-    public void refreshPlayerClaimedChunks(final PlayerRef playerRef, final Clan clan) {
-        if (playerRef == null || clan == null) {
+    public void refreshPlayerClaimedChunks(final Player player, final Clan clan) {
+        if (player == null || clan == null) {
             return;
         }
 
-        UtilPlayer.getPlayer(playerRef).ifPresent(player -> {
-            final World world = player.getWorld();
-            if (world == null) {
-                return;
+        final World world = player.getWorld();
+        if (world == null) {
+            return;
+        }
+
+        world.execute(() -> {
+            final LongOpenHashSet chunkIndices = new LongOpenHashSet();
+
+            this.collectTerritoryIndices(clan, chunkIndices);
+
+            for (final UUID allianceId : clan.getAlliances().keySet()) {
+                this.clanManager.getClanById(allianceId).ifPresent(allyClan -> this.collectTerritoryIndices(allyClan, chunkIndices));
             }
 
-            world.execute(() -> {
-                final LongOpenHashSet chunkIndices = new LongOpenHashSet();
+            for (final UUID enemyId : clan.getEnemies().keySet()) {
+                this.clanManager.getClanById(enemyId).ifPresent(enemyClan -> this.collectTerritoryIndices(enemyClan, chunkIndices));
+            }
 
-                this.collectTerritoryIndices(clan, chunkIndices);
-
-                for (final UUID allianceId : clan.getAlliances().keySet()) {
-                    this.clanManager.getClanById(allianceId).ifPresent(allyClan -> this.collectTerritoryIndices(allyClan, chunkIndices));
-                }
-
-                for (final UUID enemyId : clan.getEnemies().keySet()) {
-                    this.clanManager.getClanById(enemyId).ifPresent(enemyClan -> this.collectTerritoryIndices(enemyClan, chunkIndices));
-                }
-
-                if (!(chunkIndices.isEmpty())) {
-                    player.getWorldMapTracker().clearChunks(chunkIndices);
-                }
-            });
+            if (!(chunkIndices.isEmpty())) {
+                player.getWorldMapTracker().clearChunks(chunkIndices);
+            }
         });
+    }
+
+    @Override
+    public void refreshChunksForWorld(final List<Chunk> chunkList) {
+        if (chunkList.isEmpty()) {
+            return;
+        }
+
+        final Map<World, LongOpenHashSet> chunkIndicesByWorld = new HashMap<>();
+
+        for (final Chunk chunk : chunkList) {
+            this.invalidateChunk(chunk);
+
+            chunkIndicesByWorld.computeIfAbsent(chunk.getWorld(), __ -> new LongOpenHashSet()).add(ChunkUtil.indexChunk(chunk.getX(), chunk.getZ()));
+        }
+
+        for (final Map.Entry<World, LongOpenHashSet> entry : chunkIndicesByWorld.entrySet()) {
+            final LongOpenHashSet chunkIndices = entry.getValue();
+
+            for (final PlayerRef playerRef : entry.getKey().getPlayerRefs()) {
+                UtilPlayer.getPlayer(playerRef).ifPresent(player -> player.getWorldMapTracker().clearChunks(chunkIndices));
+            }
+        }
     }
 
     private void collectTerritoryIndices(final Clan clan, final LongOpenHashSet chunkIndicesSet) {
