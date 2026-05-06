@@ -86,7 +86,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
             count++;
         }
 
-        UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Clans!".formatted(count));
+        UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Clans.".formatted(count));
     }
 
     @Override
