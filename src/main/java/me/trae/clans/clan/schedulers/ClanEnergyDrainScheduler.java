@@ -5,7 +5,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.method.Scheduler;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager>, Listener {
+public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private List<Long> lastAlertIntervals;
 

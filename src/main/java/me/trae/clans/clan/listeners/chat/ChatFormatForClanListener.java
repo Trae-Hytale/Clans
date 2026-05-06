@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
@@ -18,7 +18,7 @@ import me.trae.core.chat.events.abstracts.AbstractChatEvent;
 
 @AllArgsConstructor
 @Component
-public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManager>, Listener {
+public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onChatReceive(final ChatReceiveEvent event) {

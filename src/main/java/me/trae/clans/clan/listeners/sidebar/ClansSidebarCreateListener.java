@@ -6,7 +6,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.sidebar.events.SidebarCreateEvent;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 @AllArgsConstructor
 @Component
-public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManager>, Listener {
+public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private final GamerManager clansGamerManager;
 

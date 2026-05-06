@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import me.trae.clans.ClansPlugin;
@@ -18,7 +18,7 @@ import me.trae.core.death.events.CustomDeathMessageEvent;
 import java.util.Optional;
 
 @Component
-public class DeathMessageForClanListener implements Module<ClansPlugin, ClanManager>, Listener {
+public class DeathMessageForClanListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onCustomDeathMessage(final CustomDeathMessageEvent event) {

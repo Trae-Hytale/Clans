@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Component;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @Component
-public class ClaimCommand extends AbstractClanSubCommand implements Listener {
+public class ClaimCommand extends AbstractClanSubCommand implements EventListener {
 
     public ClaimCommand() {
         super("claim", "Claim Territory");

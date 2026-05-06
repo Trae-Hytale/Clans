@@ -2,7 +2,7 @@ package me.trae.clans.map.listeners;
 
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.wrappers.Chunk;
@@ -16,7 +16,7 @@ import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.map.MapManager;
 
 @Component
-public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Listener {
+public class MapUpdateListener implements Module<ClansPlugin, MapManager>, EventListener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onClanJoin(final ClanJoinEvent event) {

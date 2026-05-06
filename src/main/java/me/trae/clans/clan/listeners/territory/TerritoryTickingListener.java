@@ -1,6 +1,5 @@
-package me.trae.clans.clan.systems.territory;
+package me.trae.clans.clan.listeners.territory;
 
-import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.event.events.player.PlayerDisconnectEvent;
@@ -10,11 +9,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.system.CustomEntityTickingSystem;
-import io.github.trae.hytale.framework.system.data.SystemContext;
+import io.github.trae.hytale.framework.system.SystemListener;
+import io.github.trae.hytale.framework.system.annotations.TickSystemHandler;
+import io.github.trae.hytale.framework.system.data.TickingSystemContext;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
@@ -23,37 +23,29 @@ import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
-import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.territory.TerritoryChangeEvent;
 import me.trae.clans.clan.events.territory.TerritoryEnterEvent;
 import me.trae.clans.clan.events.territory.TerritoryExitEvent;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class TerritoryTickingSystem extends CustomEntityTickingSystem implements Module<ClansPlugin, ClanManager>, Listener {
+public class TerritoryTickingListener implements Module<ClansPlugin, ClanManager>, SystemListener, EventListener {
 
     private static final UUID WILDERNESS_ID = new UUID(0L, 0L);
 
     private final ConcurrentHashMap<UUID, UUID> playerLastTerritoryMap = new ConcurrentHashMap<>();
 
-    @Nullable
-    @Override
-    public Query<EntityStore> getQuery() {
-        return PlayerRef.getComponentType();
-    }
-
-    @Override
-    public void onTick(final float dt, final SystemContext<EntityStore> systemContext) {
-        final PlayerRef playerRef = systemContext.getComponent(PlayerRef.getComponentType());
+    @TickSystemHandler(query = PlayerRef.class)
+    public void onTick(final TickingSystemContext<EntityStore> context) {
+        final PlayerRef playerRef = context.getComponent(PlayerRef.getComponentType());
         if (playerRef == null) {
             return;
         }
 
-        final Player player = systemContext.getComponent(Player.getComponentType());
+        final Player player = context.getComponent(Player.getComponentType());
         if (player == null) {
             return;
         }
@@ -94,18 +86,6 @@ public class TerritoryTickingSystem extends CustomEntityTickingSystem implements
                 UtilEvent.dispatch(new TerritoryExitEvent(playerRef, clan));
             });
         }
-    }
-
-    private Message getTerritoryName(final Clan playerClan, final Clan territoryClan) {
-        Message message = Message.raw("Wilderness").color(ChatColor.YELLOW.getColor());
-
-        if (territoryClan != null) {
-            final ClanRelation clanRelation = this.getManager().getClanRelationByClan(playerClan, territoryClan);
-
-            message = Message.raw(territoryClan.getDisplayName()).color(clanRelation.getSuffix());
-        }
-
-        return message;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

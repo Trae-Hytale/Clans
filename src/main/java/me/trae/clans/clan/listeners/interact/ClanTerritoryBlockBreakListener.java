@@ -1,17 +1,18 @@
-package me.trae.clans.clan.systems.interact;
+package me.trae.clans.clan.listeners.interact;
 
-import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
+import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
+import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.PlaceBlockEvent;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.system.CustomEntityEventSystem;
-import io.github.trae.hytale.framework.system.data.SystemContext;
+import io.github.trae.hytale.framework.system.SystemListener;
+import io.github.trae.hytale.framework.system.annotations.EventSystemHandler;
+import io.github.trae.hytale.framework.system.data.EventSystemContext;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
@@ -20,34 +21,25 @@ import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.InteractType;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Component
-public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<PlaceBlockEvent> implements Module<ClansPlugin, ClanManager> {
+public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, ClanManager>, SystemListener {
 
-    public ClanTerritoryBlockPlaceSystem() {
-        super(PlaceBlockEvent.class);
-    }
+    @EventSystemHandler(query = Player.class)
+    public void onBreakBlock(final EventSystemContext<EntityStore, BreakBlockEvent> context) {
+        final BreakBlockEvent event = context.getEvent();
 
-    @Nullable
-    @Override
-    public Query<EntityStore> getQuery() {
-        return Player.getComponentType();
-    }
-
-    @Override
-    public void onEvent(final PlaceBlockEvent event, final SystemContext<EntityStore> systemContext) {
         if (event.isCancelled()) {
             return;
         }
 
-        final ItemStack itemStack = event.getItemInHand();
-        if (itemStack == null || itemStack == ItemStack.EMPTY) {
+        final BlockType blockType = event.getBlockType();
+        if (blockType == BlockType.EMPTY) {
             return;
         }
 
-        final Player player = systemContext.getComponent(Player.getComponentType());
+        final Player player = context.getComponent(Player.getComponentType());
 
         final Optional<PlayerRef> playerRefOptional = UtilPlayer.getPlayerRef(player);
         if (playerRefOptional.isEmpty()) {
@@ -78,8 +70,8 @@ public class ClanTerritoryBlockPlaceSystem extends CustomEntityEventSystem<Place
 
         event.setCancelled(true);
 
-        final String translationKey = itemStack.getItem().getTranslationKey();
+        final String translationKey = Optional.ofNullable(blockType.getItem()).map(Item::getTranslationKey).orElse("unknown");
 
-        UtilMessage.message(playerRef, "Clans", "You cannot place <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
+        UtilMessage.message(playerRef, "Clans", "You cannot break <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
     }
 }

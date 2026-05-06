@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.command.PlayerCommand;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class ClanChatCommand extends PlayerCommand<ClansPlugin, ClanManager> implements Listener {
+public class ClanChatCommand extends PlayerCommand<ClansPlugin, ClanManager> implements EventListener {
 
     private static final ClansChatChannel CHAT_CHANNEL = ClansChatChannel.CLAN_CHAT;
 

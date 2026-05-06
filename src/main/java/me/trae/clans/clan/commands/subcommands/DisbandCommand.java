@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilChunk;
@@ -19,7 +19,7 @@ import me.trae.clans.clan.events.clan.ClanDisbandEvent;
 import me.trae.core.client.Client;
 
 @Component
-public class DisbandCommand extends AbstractClanSubCommand implements Listener {
+public class DisbandCommand extends AbstractClanSubCommand implements EventListener {
 
     public DisbandCommand() {
         super("disband", "Disband the Clan");

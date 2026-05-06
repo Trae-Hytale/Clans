@@ -7,7 +7,7 @@ import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.method.ApplicationReady;
 import io.github.trae.di.annotations.type.component.Service;
 import io.github.trae.hf.Manager;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilSearch;
@@ -52,7 +52,7 @@ import java.util.function.Function;
 @AllArgsConstructor
 @Getter
 @Service
-public class ClanManager implements Manager<ClansPlugin>, IClanManager, Listener {
+public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventListener {
 
     public static final String WILDERNESS_NAME = "Wilderness";
 

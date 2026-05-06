@@ -1,18 +1,18 @@
-package me.trae.clans.clan.systems.interact;
+package me.trae.clans.clan.listeners.interact;
 
-import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
+import com.hypixel.hytale.server.core.event.events.ecs.UseBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.system.CustomEntityEventSystem;
-import io.github.trae.hytale.framework.system.data.SystemContext;
+import io.github.trae.hytale.framework.system.SystemListener;
+import io.github.trae.hytale.framework.system.annotations.EventSystemHandler;
+import io.github.trae.hytale.framework.system.data.EventSystemContext;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
@@ -20,25 +20,17 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.InteractType;
+import me.trae.core.utility.UtilBlock;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 @Component
-public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<BreakBlockEvent> implements Module<ClansPlugin, ClanManager> {
+public class ClanTerritoryBlockUseListener implements Module<ClansPlugin, ClanManager>, SystemListener {
 
-    public ClanTerritoryBlockBreakSystem() {
-        super(BreakBlockEvent.class);
-    }
+    @EventSystemHandler(query = Player.class)
+    public void onPreUseBlock(final EventSystemContext<EntityStore, UseBlockEvent.Pre> context) {
+        final UseBlockEvent.Pre event = context.getEvent();
 
-    @Nullable
-    @Override
-    public Query<EntityStore> getQuery() {
-        return Player.getComponentType();
-    }
-
-    @Override
-    public void onEvent(final BreakBlockEvent event, final SystemContext<EntityStore> systemContext) {
         if (event.isCancelled()) {
             return;
         }
@@ -48,7 +40,7 @@ public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<Break
             return;
         }
 
-        final Player player = systemContext.getComponent(Player.getComponentType());
+        final Player player = context.getComponent(Player.getComponentType());
 
         final Optional<PlayerRef> playerRefOptional = UtilPlayer.getPlayerRef(player);
         if (playerRefOptional.isEmpty()) {
@@ -73,7 +65,7 @@ public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<Break
 
         final Optional<Clan> playerClanOptional = this.getManager().getClanByPlayer(playerRef);
 
-        if (this.getManager().canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, InteractType.BLOCK_INTERACT)) {
+        if (this.canInteract(playerRef, playerClanOptional.orElse(null), territoryClan, blockType)) {
             return;
         }
 
@@ -81,6 +73,19 @@ public class ClanTerritoryBlockBreakSystem extends CustomEntityEventSystem<Break
 
         final String translationKey = Optional.ofNullable(blockType.getItem()).map(Item::getTranslationKey).orElse("unknown");
 
-        UtilMessage.message(playerRef, "Clans", "You cannot break <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
+        UtilMessage.message(playerRef, "Clans", "You cannot use <green>%s</green> in %s.".formatted(Message.translation(translationKey).getAnsiMessage(), this.getManager().getClanName(this.getManager().getClanRelationByClan(playerClanOptional.orElse(null), territoryClan), territoryClan)));
+
+    }
+
+    private boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final BlockType blockType) {
+        if (UtilBlock.isContainer(blockType)) {
+            return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.CONTAINER_INTERACT);
+        }
+
+        if (UtilBlock.isGateway(blockType)) {
+            return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.GATEWAY_INTERACT);
+        }
+
+        return false;
     }
 }

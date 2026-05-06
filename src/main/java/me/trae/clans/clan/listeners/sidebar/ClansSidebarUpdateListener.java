@@ -4,7 +4,7 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.Listener;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.sidebar.events.SidebarUpdateEvent;
@@ -26,7 +26,7 @@ import me.trae.clans.clan.events.territory.TerritoryUnClaimEvent;
 import me.trae.clans.gamer.events.GamerCoinsUpdateEvent;
 
 @Component
-public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManager>, Listener {
+public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private void update(final PlayerRef playerRef) {
         UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
