@@ -18,7 +18,7 @@ import java.util.Optional;
 @Component
 public class ClanRelationDamageListener implements Module<ClansPlugin, ClanManager>, Listener {
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onCustomDamage(final CustomDamageEvent event) {
         if (event.isCancelled()) {
             return;
