@@ -11,6 +11,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.commands.subcommands.configs.HomeCommandConfig;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
@@ -39,16 +40,13 @@ public class ClanHomeTeleportFromSpawnListener implements Module<ClansPlugin, Cl
             return;
         }
 
-        this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
-            if (!(territoryClan.isSpawn())) {
-                if (this.homeCommandConfig.isOnlyTeleportFromSpawn()) {
-                    event.setCancelled(true);
-                    UtilMessage.message(playerRef, "Clans", "You can only teleport to Clan Home from <white>Spawn</white>!");
-                }
-                return;
-            }
-
+        if (this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).map(Clan::isSpawn).orElse(false)) {
             clanHomeTeleportData.setDuration(0L);
-        });
+        } else {
+            if (this.homeCommandConfig.isOnlyTeleportFromSpawn()) {
+                event.setCancelled(true);
+                UtilMessage.message(playerRef, "Clans", "You can only teleport to Clan Home from <white>Spawn</white>!");
+            }
+        }
     }
 }
