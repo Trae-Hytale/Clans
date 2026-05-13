@@ -9,13 +9,21 @@ import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.wrappers.Chunk;
+import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.clans.clan.commands.subcommands.configs.HomeCommandConfig;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
 import me.trae.core.teleport.events.PlayerPreTeleportEvent;
 
+import java.util.Optional;
+
+@AllArgsConstructor
 @Component
 public class ClanHomeTeleportDurationFromWildernessListener implements Module<ClansPlugin, ClanManager>, EventListener {
+
+    private final HomeCommandConfig homeCommandConfig;
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerPreTeleport(final PlayerPreTeleportEvent event) {
@@ -36,10 +44,9 @@ public class ClanHomeTeleportDurationFromWildernessListener implements Module<Cl
 
         final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
 
-        if (this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).isPresent()) {
-            return;
+        final Optional<Clan> territoryClanOptional = this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition()));
+        if (territoryClanOptional.isEmpty() || !(territoryClanOptional.map(clan -> clan.isMemberByPlayer(playerRef)).orElse(false))) {
+            clanHomeTeleportData.setDuration(this.homeCommandConfig.getWildernessTeleportDuration());
         }
-
-        clanHomeTeleportData.setDuration(30_000L);
     }
 }

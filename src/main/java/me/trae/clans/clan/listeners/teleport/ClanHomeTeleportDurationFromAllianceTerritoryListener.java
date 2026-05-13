@@ -1,5 +1,6 @@
 package me.trae.clans.clan.listeners.teleport;
 
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Component;
@@ -17,17 +18,13 @@ import me.trae.core.teleport.events.PlayerPreTeleportEvent;
 
 @AllArgsConstructor
 @Component
-public class ClanHomeTeleportDurationFromSpawnListener implements Module<ClansPlugin, ClanManager>, EventListener {
+public class ClanHomeTeleportDurationFromAllianceTerritoryListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private final HomeCommandConfig homeCommandConfig;
 
-    @EventHandler(priority = EventPriority.HIGH)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerPreTeleport(final PlayerPreTeleportEvent event) {
         if (event.isCancelled()) {
-            return;
-        }
-
-        if (!(this.homeCommandConfig.isInstantSpawnTeleport())) {
             return;
         }
 
@@ -35,19 +32,23 @@ public class ClanHomeTeleportDurationFromSpawnListener implements Module<ClansPl
             return;
         }
 
-        final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
+        final Player player = clanHomeTeleportData.getPlayer();
 
-        final World world = clanHomeTeleportData.getPlayer().getWorld();
+        final World world = player.getWorld();
         if (world == null) {
             return;
         }
 
-        this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
-            if (!(territoryClan.isSpawn())) {
-                return;
-            }
+        final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
 
-            clanHomeTeleportData.setDuration(0L);
+        this.getManager().getClanByPlayer(playerRef).ifPresent(playerClan -> {
+            this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
+                if (!(playerClan.isAllianceByClan(territoryClan))) {
+                    return;
+                }
+
+                clanHomeTeleportData.setDuration(this.homeCommandConfig.getAllianceTeleportDuration());
+            });
         });
     }
 }

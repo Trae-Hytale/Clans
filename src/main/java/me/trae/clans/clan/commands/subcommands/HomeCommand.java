@@ -12,23 +12,24 @@ import io.github.trae.utilities.UtilTime;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.HomeCommandConfig;
 import me.trae.clans.clan.events.clan.ClanHomeEvent;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
 import me.trae.core.client.Client;
 import me.trae.core.teleport.TeleportManager;
-
-import java.time.Duration;
 
 @Component
 public class HomeCommand extends AbstractClanSubCommand implements EventListener {
 
     private static final String COOLDOWN_NAME = "Clan Home Command";
 
+    private final HomeCommandConfig homeCommandConfig;
     private final TeleportManager teleportManager;
 
-    public HomeCommand(final TeleportManager teleportManager) {
+    public HomeCommand(final HomeCommandConfig homeCommandConfig, final TeleportManager teleportManager) {
         super("home", "Teleport to Clan Home");
 
+        this.homeCommandConfig = homeCommandConfig;
         this.teleportManager = teleportManager;
     }
 
@@ -81,7 +82,7 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
         });
 
         clanHomeTeleportData.setPostConsumer(teleportData -> {
-            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, Duration.ofMinutes(5).toMillis(), true, true);
+            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, this.homeCommandConfig.getCooldown(), true, true);
 
             UtilMessage.message(teleportData.getPlayerRef(), "Clans", "You have teleported to Clan Home.");
         });
