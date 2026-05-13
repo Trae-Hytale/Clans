@@ -8,17 +8,14 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
 import me.trae.core.teleport.events.PlayerPreTeleportEvent;
 
-import java.util.Optional;
-
 @Component
-public class ClanHomeTeleportDurationFromSpawn implements Module<ClansPlugin, ClanManager>, EventListener {
+public class ClanHomeTeleportDurationFromWildernessListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerPreTeleport(final PlayerPreTeleportEvent event) {
@@ -37,23 +34,12 @@ public class ClanHomeTeleportDurationFromSpawn implements Module<ClansPlugin, Cl
             return;
         }
 
-        final Optional<PlayerRef> playerRefOptional = UtilPlayer.getPlayerRef(player);
-        if (playerRefOptional.isEmpty()) {
+        final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
+
+        if (this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).isPresent()) {
             return;
         }
 
-        final PlayerRef playerRef = playerRefOptional.get();
-
-        this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
-            if (!(territoryClan.isAdmin())) {
-                return;
-            }
-
-            if (!(territoryClan.getName().toLowerCase().contains("spawn"))) {
-                return;
-            }
-
-            clanHomeTeleportData.setDuration(0L);
-        });
+        clanHomeTeleportData.setDuration(30_000L);
     }
 }

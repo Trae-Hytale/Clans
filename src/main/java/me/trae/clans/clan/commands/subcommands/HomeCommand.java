@@ -15,11 +15,9 @@ import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirem
 import me.trae.clans.clan.events.clan.ClanHomeEvent;
 import me.trae.clans.clan.teleport.ClanHomeTeleportData;
 import me.trae.core.client.Client;
-import me.trae.core.teleport.TeleportData;
 import me.trae.core.teleport.TeleportManager;
 
 import java.time.Duration;
-import java.util.function.Consumer;
 
 @Component
 public class HomeCommand extends AbstractClanSubCommand implements EventListener {
@@ -41,26 +39,28 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
 
     @Override
     public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
-        if (!(this.canTeleportHome(playerRef, player, client, playerClan))) {
+        if (!(this.canTeleportHome(playerRef, client, playerClan))) {
             return;
         }
 
         UtilEvent.dispatch(new ClanHomeEvent(playerClan, playerRef, player, playerClan.getHome()));
     }
 
-    private boolean canTeleportHome(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan) {
+    private boolean canTeleportHome(final PlayerRef playerRef, final Client client, final Clan playerClan) {
         if (!(playerClan.hasHome())) {
             UtilMessage.message(playerRef, "Clans", "Your Clan does not have a home set!");
             return false;
         }
 
-        if (this.teleportManager.getTeleportByPlayer(player).map(teleportData -> teleportData instanceof ClanHomeTeleportData).orElse(false)) {
-            UtilMessage.message(player, "Clans", "You are already teleporting to Clan Home!");
-            return false;
-        }
+        if (!(client.isAdministrating())) {
+            if (this.teleportManager.getTeleportByPlayerRef(playerRef).map(teleportData -> teleportData instanceof ClanHomeTeleportData).orElse(false)) {
+                UtilMessage.message(playerRef, "Clans", "You are already teleporting to Clan Home!");
+                return false;
+            }
 
-        if (this.getModule().getManager().getCooldownManager().isCooling(playerRef, COOLDOWN_NAME, true)) {
-            return false;
+            if (this.getModule().getManager().getCooldownManager().isCooling(playerRef, COOLDOWN_NAME, true)) {
+                return false;
+            }
         }
 
         return true;
@@ -72,18 +72,20 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
             return;
         }
 
-        final Consumer<TeleportData> preConsumer = (teleportData -> {
+        final ClanHomeTeleportData clanHomeTeleportData = new ClanHomeTeleportData(event.getClan(), event.getPlayerRef(), event.getPlayer(), event.getBlockLocation(), 0L);
+
+        clanHomeTeleportData.setPreConsumer(teleportData -> {
             if (!(teleportData.isInstant())) {
-                UtilMessage.message(teleportData.getPlayer(), "Clans", "You will be teleported to Clan Home in <green>%s</green>.".formatted(UtilTime.getTime(teleportData.getDuration())));
+                UtilMessage.message(teleportData.getPlayerRef(), "Clans", "You will be teleported to Clan Home in <green>%s</green>.".formatted(UtilTime.getTime(teleportData.getDuration())));
             }
         });
 
-        final Consumer<TeleportData> postConsumer = (teleportData -> {
+        clanHomeTeleportData.setPostConsumer(teleportData -> {
             this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, Duration.ofMinutes(5).toMillis(), true, true);
 
-            UtilMessage.message(teleportData.getPlayer(), "Clans", "You have teleported to Clan Home.");
+            UtilMessage.message(teleportData.getPlayerRef(), "Clans", "You have teleported to Clan Home.");
         });
 
-        this.teleportManager.teleport(new ClanHomeTeleportData(event.getClan(), event.getPlayer(), event.getBlockLocation(), 0L, preConsumer, postConsumer));
+        this.teleportManager.teleport(clanHomeTeleportData);
     }
 }
