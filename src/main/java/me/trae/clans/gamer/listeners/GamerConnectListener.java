@@ -14,6 +14,9 @@ public class GamerConnectListener implements Module<ClansPlugin, GamerManager>, 
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConnect(final PlayerConnectEvent event) {
-        this.getManager().handlePlayerConnect(event.getPlayerRef());
+        this.getManager().handlePlayerConnect(event.getPlayerRef(), newGamer -> {
+            // Set default coins from config for new gamer on registration
+            newGamer.setCoins(this.getManager().getGamerConfig().getDefaultCoins());
+        });
     }
 }
