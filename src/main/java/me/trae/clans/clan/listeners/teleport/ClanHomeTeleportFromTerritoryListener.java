@@ -18,7 +18,7 @@ import me.trae.core.teleport.events.PlayerPreTeleportEvent;
 
 @AllArgsConstructor
 @Component
-public class ClanHomeTeleportDurationFromAllianceTerritoryListener implements Module<ClansPlugin, ClanManager>, EventListener {
+public class ClanHomeTeleportFromTerritoryListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private final HomeCommandConfig homeCommandConfig;
 
@@ -43,11 +43,25 @@ public class ClanHomeTeleportDurationFromAllianceTerritoryListener implements Mo
 
         this.getManager().getClanByPlayer(playerRef).ifPresent(playerClan -> {
             this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
-                if (!(playerClan.isAllianceByClan(territoryClan))) {
+                if (territoryClan.equals(playerClan)) {
+                    if (this.homeCommandConfig.getSelfTerritoryTeleportDuration() >= 0L) {
+                        clanHomeTeleportData.setDuration(this.homeCommandConfig.getSelfTerritoryTeleportDuration());
+                    }
                     return;
                 }
 
-                clanHomeTeleportData.setDuration(this.homeCommandConfig.getAllianceTeleportDuration());
+                if (territoryClan.isAllianceByClan(playerClan)) {
+                    if (this.homeCommandConfig.getAllianceTerritoryTeleportDuration() >= 0L) {
+                        clanHomeTeleportData.setDuration(this.homeCommandConfig.getAllianceTerritoryTeleportDuration());
+                    }
+                    return;
+                }
+
+                if (playerClan.isPillageByClan(territoryClan)) {
+                    if (this.homeCommandConfig.getPillageTerritoryTeleportDuration() >= 0L) {
+                        clanHomeTeleportData.setDuration(this.homeCommandConfig.getPillageTerritoryTeleportDuration());
+                    }
+                }
             });
         });
     }

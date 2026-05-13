@@ -73,7 +73,7 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
             return;
         }
 
-        final ClanHomeTeleportData clanHomeTeleportData = new ClanHomeTeleportData(event.getClan(), event.getPlayerRef(), event.getPlayer(), event.getBlockLocation(), 0L);
+        final ClanHomeTeleportData clanHomeTeleportData = new ClanHomeTeleportData(event.getClan(), event.getPlayerRef(), event.getPlayer(), event.getBlockLocation(), this.homeCommandConfig.getWildernessTeleportDuration());
 
         clanHomeTeleportData.setPreConsumer(teleportData -> {
             if (!(teleportData.isInstant())) {

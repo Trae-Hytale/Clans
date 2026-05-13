@@ -18,7 +18,9 @@ public class HomeCommandConfig {
     private long cooldown = Duration.ofMinutes(5).toMillis();
 
     private long wildernessTeleportDuration = Duration.ofSeconds(30).toMillis();
-    private long allianceTeleportDuration = Duration.ofSeconds(15).toMillis();
+    private long selfTerritoryTeleportDuration = 0L;
+    private long allianceTerritoryTeleportDuration = Duration.ofSeconds(15).toMillis();
+    private long pillageTerritoryTeleportDuration = this.wildernessTeleportDuration;
 
-    private boolean instantSpawnTeleport = true;
+    private boolean onlyTeleportFromSpawn = false;
 }

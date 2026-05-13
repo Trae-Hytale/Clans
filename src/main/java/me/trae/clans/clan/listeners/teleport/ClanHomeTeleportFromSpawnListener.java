@@ -7,6 +7,7 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
@@ -17,17 +18,13 @@ import me.trae.core.teleport.events.PlayerPreTeleportEvent;
 
 @AllArgsConstructor
 @Component
-public class ClanHomeTeleportDurationFromSpawnListener implements Module<ClansPlugin, ClanManager>, EventListener {
+public class ClanHomeTeleportFromSpawnListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     private final HomeCommandConfig homeCommandConfig;
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerPreTeleport(final PlayerPreTeleportEvent event) {
         if (event.isCancelled()) {
-            return;
-        }
-
-        if (!(this.homeCommandConfig.isInstantSpawnTeleport())) {
             return;
         }
 
@@ -44,6 +41,10 @@ public class ClanHomeTeleportDurationFromSpawnListener implements Module<ClansPl
 
         this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).ifPresent(territoryClan -> {
             if (!(territoryClan.isSpawn())) {
+                if (this.homeCommandConfig.isOnlyTeleportFromSpawn()) {
+                    event.setCancelled(true);
+                    UtilMessage.message(playerRef, "Clans", "You can only teleport to Clan Home from <white>Spawn</white>!");
+                }
                 return;
             }
 
