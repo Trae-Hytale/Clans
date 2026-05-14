@@ -1,0 +1,161 @@
+package me.trae.clans.economy.commands;
+
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.di.annotations.type.component.Service;
+import io.github.trae.hytale.framework.command.PlayerCommand;
+import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
+import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.UtilPlayer;
+import io.github.trae.utilities.UtilString;
+import me.trae.clans.ClansPlugin;
+import me.trae.clans.economy.EconomyManager;
+import me.trae.core.client.enums.Rank;
+
+@Service
+public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
+
+    public EconomyCommand() {
+        super("economy", "Economy management", Rank.DEFAULT);
+
+        this.addAliases("eco", "coins", "money", "balance", "bal");
+    }
+
+    @Override
+    public void execute(final PlayerRef playerRef, final String[] args) {
+        this.getManager().getGamerManager().getGamerByPlayer(playerRef).ifPresent(gamer -> {
+            UtilMessage.message(playerRef, "Economy", "You have <gold>%s</gold>.".formatted(gamer.getFormattedCoins()));
+        });
+    }
+
+    @Component
+    private static class SetCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+
+        public SetCommand() {
+            super("set", "Set Coins for a Player", Rank.ADMIN);
+        }
+
+        @Override
+        public void execute(final PlayerRef playerRef, final String[] args) {
+            if (args.length == 0) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Player.");
+                return;
+            }
+
+            if (args.length == 1) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Amount.");
+                return;
+            }
+
+            final Integer amount = this.getModule().getManager().getAmount(args[1]);
+            if (amount == null) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a valid Amount.");
+                return;
+            }
+
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
+                this.getModule().getManager().setCoins(targetPlayer, amount);
+
+                UtilMessage.message(playerRef, "Economy", "You have updated the coins for <yellow>%s</yellow> to <gold>%s</gold>.".formatted(targetPlayer.getUsername(), UtilString.formatToDollarByInteger(amount)));
+                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> has updated your coins to <gold>%s</gold>.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+            });
+        }
+    }
+
+    @Component
+    private static class GiveCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+
+        public GiveCommand() {
+            super("give", "Give Coins to a Player", Rank.ADMIN);
+        }
+
+        @Override
+        public void execute(final PlayerRef playerRef, final String[] args) {
+            if (args.length == 0) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Player.");
+                return;
+            }
+
+            if (args.length == 1) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Amount.");
+                return;
+            }
+
+            final Integer amount = this.getModule().getManager().getAmount(args[1]);
+            if (amount == null) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a valid Amount.");
+                return;
+            }
+
+            if (amount <= 0) {
+                UtilMessage.message(playerRef, "Economy", "Amount must be greater than Zero.");
+                return;
+            }
+
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
+                this.getModule().getManager().giveCoins(targetPlayer, amount);
+
+                UtilMessage.message(playerRef, "Economy", "You gave <gold>%s</gold> to <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayer.getUsername()));
+                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> gave <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+            });
+        }
+    }
+
+    @Component
+    private static class TakeCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+
+        public TakeCommand() {
+            super("take", "Take Coins from a Player", Rank.ADMIN);
+        }
+
+        @Override
+        public void execute(final PlayerRef playerRef, final String[] args) {
+            if (args.length == 0) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Player.");
+                return;
+            }
+
+            if (args.length == 1) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Amount.");
+                return;
+            }
+
+            final Integer amount = this.getModule().getManager().getAmount(args[1]);
+            if (amount == null) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a valid Amount.");
+                return;
+            }
+
+            if (amount <= 0) {
+                UtilMessage.message(playerRef, "Economy", "Amount must be greater than Zero.");
+                return;
+            }
+
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
+                this.getModule().getManager().takeCoins(targetPlayer, amount);
+
+                UtilMessage.message(playerRef, "Economy", "You took <gold>%s</gold> from <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayer.getUsername()));
+                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> took <gold>%s</gold> from you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+            });
+        }
+    }
+
+    @Component
+    private static class SendCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+
+        private final PayCommand payCommand;
+
+        public SendCommand(final PayCommand payCommand) {
+            super("send", "Send Coins to a Player", Rank.DEFAULT);
+
+            this.addAliases("pay", "transfer");
+
+            this.payCommand = payCommand;
+        }
+
+        @Override
+        public void execute(final PlayerRef playerRef, final String[] args) {
+            this.payCommand.execute(playerRef, args);
+        }
+    }
+}
