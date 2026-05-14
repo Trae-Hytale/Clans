@@ -50,11 +50,6 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
     }
 
     @Override
-    public void invalidateChunk(final Chunk chunk) {
-        this.invalidateChunk(chunk.getX(), chunk.getZ());
-    }
-
-    @Override
     public void invalidateChunk(final int chunkX, final int chunkZ) {
         this.overlayCache.remove(ChunkUtil.indexChunk(chunkX, chunkZ));
         this.overlayCache.remove(ChunkUtil.indexChunk(chunkX, chunkZ + 1));
@@ -64,28 +59,12 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
     }
 
     @Override
-    public void invalidateClanTerritory(final Clan clan) {
-        for (final Chunk chunk : clan.getTerritory()) {
-            this.invalidateChunk(chunk);
-        }
+    public void invalidateChunk(final Chunk chunk) {
+        this.invalidateChunk(chunk.getX(), chunk.getZ());
     }
 
     @Override
-    public void refreshClanMembersMap(final Clan clan) {
-        for (final Member member : clan.getMembers().values()) {
-            this.refreshPlayerClaimedChunks(member.getPlayer(), clan);
-        }
-    }
-
-    @Override
-    public void refreshClanMembersMapAgainst(final Clan clan, final Clan targetClan) {
-        for (final Member member : clan.getMembers().values()) {
-            this.refreshPlayerClaimedChunks(member.getPlayer(), targetClan);
-        }
-    }
-
-    @Override
-    public void refreshPlayerClaimedChunks(final Player player, final Clan clan) {
+    public void refreshPlayer(final Player player, final Clan clan) {
         if (player == null || clan == null) {
             return;
         }
@@ -108,6 +87,14 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
                 this.clanManager.getClanById(enemyId).ifPresent(enemyClan -> this.collectTerritoryIndices(enemyClan, chunkIndices));
             }
 
+            for (final UUID pillageId : clan.getPillages().keySet()) {
+                this.clanManager.getClanById(pillageId).ifPresent(pillageClan -> this.collectTerritoryIndices(pillageClan, chunkIndices));
+            }
+
+            for (final UUID pillagerId : clan.getPillagers()) {
+                this.clanManager.getClanById(pillagerId).ifPresent(pillagerClan -> this.collectTerritoryIndices(pillagerClan, chunkIndices));
+            }
+
             if (!(chunkIndices.isEmpty())) {
                 player.getWorldMapTracker().clearChunks(chunkIndices);
             }
@@ -115,7 +102,31 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
     }
 
     @Override
-    public void refreshChunksForWorld(final List<Chunk> chunkList) {
+    public void refreshClan(final Clan clan, final Clan targetClan) {
+        for (final Member member : clan.getMembers().values()) {
+            final Player player = member.getPlayer();
+            if (player == null) {
+                continue;
+            }
+
+            final World world = player.getWorld();
+            if (world == null) {
+                continue;
+            }
+
+            world.execute(() -> {
+                final LongOpenHashSet chunkIndices = new LongOpenHashSet();
+                this.collectTerritoryIndices(targetClan, chunkIndices);
+
+                if (!(chunkIndices.isEmpty())) {
+                    player.getWorldMapTracker().clearChunks(chunkIndices);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void refreshChunks(final List<Chunk> chunkList) {
         if (chunkList.isEmpty()) {
             return;
         }
@@ -124,7 +135,6 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
 
         for (final Chunk chunk : chunkList) {
             this.invalidateChunk(chunk);
-
             chunkIndicesByWorld.computeIfAbsent(chunk.getWorld(), __ -> new LongOpenHashSet()).add(ChunkUtil.indexChunk(chunk.getX(), chunk.getZ()));
         }
 

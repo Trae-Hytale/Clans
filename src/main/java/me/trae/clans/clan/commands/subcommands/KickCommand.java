@@ -70,7 +70,7 @@ public class KickCommand extends AbstractClanSubCommand implements EventListener
                 return false;
             }
 
-            if (this.kickCommandConfig.isPillageCheck() && this.getModule().getManager().isBeingPillaged(playerClan)) {
+            if (this.kickCommandConfig.isPillageCheck() && playerClan.isBeingPillaged()) {
                 UtilMessage.message(playerRef, "Clans", "You cannot kick a member while being conquered by another clan!");
                 return false;
             }

@@ -17,6 +17,7 @@ public class ClanHomeTeleportData extends TeleportData {
 
         this.setCancelOnMovement(true);
         this.setCancelOnDamage(true);
+        this.setCancelOnBlockInteraction(true);
 
         this.clan = clan;
     }

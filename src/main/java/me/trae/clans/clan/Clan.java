@@ -39,6 +39,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
     private final LinkedHashMap<UUID, Enemy> enemies = new LinkedHashMap<>();
     private final LinkedHashMap<UUID, Pillage> pillages = new LinkedHashMap<>();
 
+    private final List<UUID> pillagers = new ArrayList<>();
+
     private BlockLocation home;
     private UUID founder;
     private boolean admin, safe;
@@ -57,6 +59,8 @@ public class Clan implements Domain<ClanProperty>, IClan {
         this.alliances.putAll(domainData.<AllianceProperty, Alliance>getSubDomainMap(ClanProperty.ALLIANCES, Alliance::new));
         this.enemies.putAll(domainData.<EnemyProperty, Enemy>getSubDomainMap(ClanProperty.ENEMIES, Enemy::new));
         this.pillages.putAll(domainData.<PillageProperty, Pillage>getSubDomainMap(ClanProperty.PILLAGES, Pillage::new));
+
+        this.pillagers.addAll(domainData.getList(UUID.class, ClanProperty.PILLAGERS));
 
         this.home = BlockLocation.deserialize(domainData.getMap(String.class, Object.class, ClanProperty.HOME));
         this.founder = domainData.get(UUID.class, ClanProperty.FOUNDER, null);
@@ -87,6 +91,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
             case ALLIANCES -> this.getAlliances();
             case ENEMIES -> this.getEnemies();
             case PILLAGES -> this.getPillages();
+            case PILLAGERS -> this.getPillagers();
             case HOME -> BlockLocation.serialize(this.getHome());
             case FOUNDER -> this.getFounder();
             case ADMIN -> this.isAdmin();
@@ -321,6 +326,16 @@ public class Clan implements Domain<ClanProperty>, IClan {
     @Override
     public boolean isPillageByClan(final Clan clan) {
         return this.isPillageById(clan.getId());
+    }
+
+    @Override
+    public boolean isBeingPillagedByClan(final Clan clan) {
+        return this.getPillagers().contains(clan.getId());
+    }
+
+    @Override
+    public boolean isBeingPillaged() {
+        return !(this.getPillagers().isEmpty());
     }
 
     @Override

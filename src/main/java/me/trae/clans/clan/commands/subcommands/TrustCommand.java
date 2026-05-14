@@ -130,15 +130,17 @@ public class TrustCommand extends AbstractClanSubCommand implements EventListene
     }
 
     private void handleTrust(final Clan playerClan, final Clan targetClan) {
-        playerClan.getRelationRequestByClan(targetClan, RelationRequestType.TRUST).ifPresent(request -> {
-            playerClan.removeRelationRequest(targetClan, RelationRequestType.TRUST);
-            this.getModule().getManager().getRepository().update(playerClan, ClanProperty.REQUESTS);
-        });
+        for (final RelationRequestType relationRequestType : RelationRequestType.values()) {
+            playerClan.getRelationRequestByClan(targetClan, relationRequestType).ifPresent(request -> {
+                playerClan.removeRelationRequest(targetClan, relationRequestType);
+                this.getModule().getManager().getRepository().update(playerClan, ClanProperty.REQUESTS);
+            });
 
-        targetClan.getRelationRequestByClan(playerClan, RelationRequestType.TRUST).ifPresent(request -> {
-            targetClan.removeRelationRequest(playerClan, RelationRequestType.TRUST);
-            this.getModule().getManager().getRepository().update(targetClan, ClanProperty.REQUESTS);
-        });
+            targetClan.getRelationRequestByClan(playerClan, relationRequestType).ifPresent(request -> {
+                targetClan.removeRelationRequest(playerClan, relationRequestType);
+                this.getModule().getManager().getRepository().update(targetClan, ClanProperty.REQUESTS);
+            });
+        }
 
         playerClan.getAllianceByClan(targetClan).ifPresent(alliance -> {
             alliance.setTrusted(true);

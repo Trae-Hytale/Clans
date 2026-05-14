@@ -135,15 +135,17 @@ public class NeutralCommand extends AbstractClanSubCommand implements EventListe
     }
 
     private void handleNeutral(final Clan playerClan, final Clan targetClan) {
-        playerClan.getRelationRequestByClan(targetClan, RelationRequestType.NEUTRAL).ifPresent(request -> {
-            playerClan.removeRelationRequest(targetClan, RelationRequestType.NEUTRAL);
-            this.getModule().getManager().getRepository().update(playerClan, ClanProperty.REQUESTS);
-        });
+        for (final RelationRequestType relationRequestType : RelationRequestType.values()) {
+            playerClan.getRelationRequestByClan(targetClan, relationRequestType).ifPresent(request -> {
+                playerClan.removeRelationRequest(targetClan, relationRequestType);
+                this.getModule().getManager().getRepository().update(playerClan, ClanProperty.REQUESTS);
+            });
 
-        targetClan.getRelationRequestByClan(playerClan, RelationRequestType.NEUTRAL).ifPresent(request -> {
-            targetClan.removeRelationRequest(playerClan, RelationRequestType.NEUTRAL);
-            this.getModule().getManager().getRepository().update(targetClan, ClanProperty.REQUESTS);
-        });
+            targetClan.getRelationRequestByClan(playerClan, relationRequestType).ifPresent(request -> {
+                targetClan.removeRelationRequest(playerClan, relationRequestType);
+                this.getModule().getManager().getRepository().update(targetClan, ClanProperty.REQUESTS);
+            });
+        }
 
         playerClan.getAllianceByClan(targetClan).ifPresent(alliance -> {
             playerClan.removeAlliance(alliance);

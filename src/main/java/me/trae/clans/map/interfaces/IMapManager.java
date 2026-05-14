@@ -14,17 +14,13 @@ public interface IMapManager {
 
     void cacheOverlay(final int chunkX, final int chunkZ, final Color color, final MapImage mapImage);
 
-    void invalidateChunk(final Chunk chunk);
-
     void invalidateChunk(final int chunkX, final int chunkZ);
 
-    void invalidateClanTerritory(final Clan clan);
+    void invalidateChunk(final Chunk chunk);
 
-    void refreshClanMembersMap(final Clan clan);
+    void refreshPlayer(final Player player, final Clan clan);
 
-    void refreshClanMembersMapAgainst(final Clan clan, final Clan targetClan);
+    void refreshClan(final Clan clan, final Clan targetClan);
 
-    void refreshPlayerClaimedChunks(final Player player, final Clan clan);
-
-    void refreshChunksForWorld(final List<Chunk> chunkList);
+    void refreshChunks(final List<Chunk> chunkList);
 }

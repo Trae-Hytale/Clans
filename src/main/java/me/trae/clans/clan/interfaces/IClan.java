@@ -99,6 +99,10 @@ public interface IClan {
 
     boolean isPillageByClan(final Clan clan);
 
+    boolean isBeingPillagedByClan(final Clan clan);
+
+    boolean isBeingPillaged();
+
     boolean isNeutralByClan(final Clan clan);
 
     boolean hasHome();

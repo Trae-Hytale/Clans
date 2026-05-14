@@ -26,7 +26,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayer(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -35,7 +35,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayer(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -44,7 +44,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayerClaimedChunks(player, event.getClan()));
+        UtilPlayer.getPlayer(event.getPlayerRef()).ifPresent(player -> this.getManager().refreshPlayer(player, event.getClan()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -53,7 +53,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshChunksForWorld(event.getClan().getTerritory());
+        this.getManager().refreshChunks(event.getClan().getTerritory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -62,7 +62,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshChunksForWorld(Collections.singletonList(event.getChunk()));
+        this.getManager().refreshChunks(Collections.singletonList(event.getChunk()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -71,7 +71,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshChunksForWorld(Collections.singletonList(event.getChunk()));
+        this.getManager().refreshChunks(Collections.singletonList(event.getChunk()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -80,7 +80,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshChunksForWorld(event.getChunks());
+        this.getManager().refreshChunks(event.getChunks());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -89,11 +89,8 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateClanTerritory(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getTargetClan());
-
-        this.getManager().refreshClanMembersMapAgainst(event.getClan(), event.getTargetClan());
-        this.getManager().refreshClanMembersMapAgainst(event.getTargetClan(), event.getClan());
+        this.getManager().refreshClan(event.getClan(), event.getTargetClan());
+        this.getManager().refreshClan(event.getTargetClan(), event.getClan());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -102,11 +99,8 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateClanTerritory(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getTargetClan());
-
-        this.getManager().refreshClanMembersMapAgainst(event.getClan(), event.getTargetClan());
-        this.getManager().refreshClanMembersMapAgainst(event.getTargetClan(), event.getClan());
+        this.getManager().refreshClan(event.getClan(), event.getTargetClan());
+        this.getManager().refreshClan(event.getTargetClan(), event.getClan());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -115,11 +109,8 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateClanTerritory(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getTargetClan());
-
-        this.getManager().refreshClanMembersMapAgainst(event.getClan(), event.getTargetClan());
-        this.getManager().refreshClanMembersMapAgainst(event.getTargetClan(), event.getClan());
+        this.getManager().refreshClan(event.getClan(), event.getTargetClan());
+        this.getManager().refreshClan(event.getTargetClan(), event.getClan());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -128,11 +119,8 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateClanTerritory(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getTargetClan());
-
-        this.getManager().refreshClanMembersMapAgainst(event.getClan(), event.getTargetClan());
-        this.getManager().refreshClanMembersMapAgainst(event.getTargetClan(), event.getClan());
+        this.getManager().refreshClan(event.getClan(), event.getTargetClan());
+        this.getManager().refreshClan(event.getTargetClan(), event.getClan());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -141,10 +129,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().invalidateClanTerritory(event.getClan());
-        this.getManager().invalidateClanTerritory(event.getTargetClan());
-
-        this.getManager().refreshClanMembersMapAgainst(event.getClan(), event.getTargetClan());
-        this.getManager().refreshClanMembersMapAgainst(event.getTargetClan(), event.getClan());
+        this.getManager().refreshClan(event.getClan(), event.getTargetClan());
+        this.getManager().refreshClan(event.getTargetClan(), event.getClan());
     }
 }

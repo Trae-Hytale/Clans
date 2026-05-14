@@ -1,4 +1,4 @@
-package me.trae.clans.clan.configs;
+package me.trae.clans.pillage.configs;
 
 import io.github.trae.di.configuration.annotations.Configuration;
 import lombok.AllArgsConstructor;

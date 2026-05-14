@@ -22,7 +22,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.configs.EnergyConfig;
-import me.trae.clans.clan.configs.PillageConfig;
 import me.trae.clans.clan.configs.SquadConfig;
 import me.trae.clans.clan.configs.TerritoryConfig;
 import me.trae.clans.clan.data.Enemy;
@@ -38,6 +37,7 @@ import me.trae.clans.clan.storages.ClanChunkStorage;
 import me.trae.clans.clan.storages.ClanIdStorage;
 import me.trae.clans.clan.storages.ClanNameStorage;
 import me.trae.clans.clan.storages.ClanPlayerStorage;
+import me.trae.clans.pillage.configs.PillageConfig;
 import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
@@ -53,8 +53,6 @@ import java.util.function.Function;
 @Getter
 @Service
 public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventListener {
-
-    public static final String WILDERNESS_NAME = "Wilderness";
 
     public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getId().toString());
 
@@ -523,11 +521,6 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
         final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
 
         return squadCount >= this.squadConfig.getMaxLimit();
-    }
-
-    @Override
-    public boolean isBeingPillaged(final Clan clan) {
-        return this.getClans().stream().anyMatch(targetClan -> targetClan.isPillageByClan(clan));
     }
 
     @Override

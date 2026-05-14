@@ -80,8 +80,6 @@ public interface IClanManager {
 
     boolean isSquadFull(final Clan clan);
 
-    boolean isBeingPillaged(final Clan clan);
-
     boolean canInteract(final PlayerRef playerRef, final Clan playerClan, final Clan territoryClan, final InteractType interactType);
 
     boolean canHurt(final PlayerRef damager, final PlayerRef damagee);

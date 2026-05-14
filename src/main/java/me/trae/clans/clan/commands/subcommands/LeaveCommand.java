@@ -73,7 +73,7 @@ public class LeaveCommand extends AbstractClanSubCommand implements EventListene
                 }
             }
 
-            if (this.leaveCommandConfig.isPillageCheck() && this.getModule().getManager().isBeingPillaged(playerClan)) {
+            if (this.leaveCommandConfig.isPillageCheck() && playerClan.isBeingPillaged()) {
                 UtilMessage.message(playerRef, "Clans", "You cannot leave the clan while being conquered by another clan!");
                 return false;
             }
