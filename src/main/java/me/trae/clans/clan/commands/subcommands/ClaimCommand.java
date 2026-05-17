@@ -89,7 +89,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements EventListene
                 if (nearbyPlayerClanOptional.isPresent()) {
                     final Clan nearbyPlayerClan = nearbyPlayerClanOptional.get();
 
-                    if (nearbyPlayerClan.equals(playerClan) || nearbyPlayerClan.isAllianceByClan(playerClan) || this.getModule().getManager().getClientManager().getClientByPlayerId(nearbyPlayer.getUuid()).map(Client::isAdministrating).orElse(false)) {
+                    if (nearbyPlayerClan.equals(playerClan) || nearbyPlayerClan.isAllianceByClan(playerClan) || this.getModule().getManager().getClientManager().getClientById(nearbyPlayer.getUuid()).map(Client::isAdministrating).orElse(false)) {
                         continue;
                     }
 

@@ -41,7 +41,7 @@ public class ClanRequestScheduler implements Module<ClansPlugin, ClanManager>, S
     private void inform(final Clan clan, final Request request) {
         switch (request.getType()) {
             case INVITATION -> {
-                this.getManager().getClientManager().getClientByPlayerId(request.getTargetId()).ifPresent(targetClient -> {
+                this.getManager().getClientManager().getClientById(request.getTargetId()).ifPresent(targetClient -> {
                     this.getManager().messageClan(clan, "Clans", "The invitation request sent to %s has expired.".formatted(this.getManager().getPlayerName(this.getManager().getClanRelationByClan(clan, this.getManager().getClanByPlayerId(targetClient.getId()).orElse(null)), targetClient.getName())), null);
 
                     UtilMessage.message(targetClient.getPlayerRef(), "Clans", "The invitation request sent from %s has expired.".formatted(this.getManager().getClanFullName(this.getManager().getClanRelationByClan(this.getManager().getClanByPlayer(targetClient.getPlayerRef()).orElse(null), clan), clan)));

@@ -7,16 +7,20 @@ import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.gamer.Gamer;
 import me.trae.clans.gamer.GamerManager;
+
+import java.util.function.Consumer;
 
 @Component
 public class GamerConnectListener implements Module<ClansPlugin, GamerManager>, EventListener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConnect(final PlayerConnectEvent event) {
-        this.getManager().handlePlayerConnect(event.getPlayerRef(), newGamer -> {
-            // Set default coins from config for new gamer on registration
-            newGamer.setCoins(this.getManager().getGamerConfig().getDefaultCoins());
-        });
+        final Consumer<Gamer> newGamerConsumer = gamer -> {
+            gamer.setCoins(this.getManager().getGamerConfig().getDefaultCoins());
+        };
+
+        this.getManager().handlePlayerConnect(event.getPlayerRef(), newGamerConsumer, null);
     }
 }

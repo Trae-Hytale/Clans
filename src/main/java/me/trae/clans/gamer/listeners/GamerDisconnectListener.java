@@ -14,6 +14,6 @@ public class GamerDisconnectListener implements Module<ClansPlugin, GamerManager
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDisconnect(final PlayerDisconnectEvent event) {
-        this.getManager().handlePlayerDisconnect(event.getPlayerRef());
+        this.getManager().handlePlayerDisconnect(event.getPlayerRef(), null);
     }
 }

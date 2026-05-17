@@ -182,7 +182,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
 
     @Override
     public Optional<Client> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform) {
-        final List<Client> clientList = clan.getMembers().values().stream().map(member -> this.getClientManager().getClientByPlayerId(member.getId()).orElse(null)).toList();
+        final List<Client> clientList = clan.getMembers().values().stream().map(member -> this.getClientManager().getClientById(member.getId()).orElse(null)).toList();
 
         return UtilSearch.search(
                 clientList,
@@ -232,7 +232,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
             if (playerClient.isAdministrating()) {
                 map.put("Admin", targetClan.isAdmin() ? "<green>Yes</green>" : "<red>No</red>");
 
-                map.put("Founder", this.getClientManager().getClientByPlayerId(targetClan.getFounder()).map(client -> "<yellow>%s</yellow>".formatted(client.getName())).orElse("null"));
+                map.put("Founder", this.getClientManager().getClientById(targetClan.getFounder()).map(client -> "<yellow>%s</yellow>".formatted(client.getName())).orElse("null"));
             }
 
             map.put("Age", "<yellow>%s</yellow>".formatted(UtilTime.getTime(System.currentTimeMillis() - targetClan.getCreatedAt())));
