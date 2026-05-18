@@ -4,15 +4,13 @@ import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.event.events.ecs.BreakBlockEvent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.system.SystemListener;
-import io.github.trae.hytale.framework.system.annotations.EventSystemHandler;
-import io.github.trae.hytale.framework.system.data.EventSystemContext;
+import io.github.trae.hytale.framework.event.EventListener;
+import io.github.trae.hytale.framework.event.annotations.EventHandler;
+import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
@@ -20,16 +18,15 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.InteractType;
+import me.trae.core.event.BlockBreakEvent;
 
 import java.util.Optional;
 
 @Component
-public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, ClanManager>, SystemListener {
+public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
-    @EventSystemHandler(query = Player.class)
-    public void onBreakBlock(final EventSystemContext<EntityStore, BreakBlockEvent> context) {
-        final BreakBlockEvent event = context.getEvent();
-
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onBlockBreak(final BlockBreakEvent event) {
         if (event.isCancelled()) {
             return;
         }
@@ -39,7 +36,7 @@ public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, Clan
             return;
         }
 
-        final Player player = context.getComponent(Player.getComponentType());
+        final Player player = event.getPlayer();
 
         final Optional<PlayerRef> playerRefOptional = UtilPlayer.getPlayerRef(player);
         if (playerRefOptional.isEmpty()) {
@@ -48,7 +45,7 @@ public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, Clan
 
         final PlayerRef playerRef = playerRefOptional.get();
 
-        final World world = player.getWorld();
+        final World world = event.getWorld();
         if (world == null) {
             return;
         }
