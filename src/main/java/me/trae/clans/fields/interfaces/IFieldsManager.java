@@ -5,9 +5,14 @@ import me.trae.clans.fields.FieldsBlock;
 import me.trae.clans.fields.enums.FieldsBlockType;
 import me.trae.core.blockrestore.BlockRestore;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IFieldsManager {
+
+    List<FieldsBlock> getFieldsBlockList();
+
+    void flushAllFieldsBlocks();
 
     void addFieldsBlock(final FieldsBlock fieldsBlock);
 

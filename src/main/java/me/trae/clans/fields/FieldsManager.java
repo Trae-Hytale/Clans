@@ -1,7 +1,9 @@
 package me.trae.clans.fields;
 
+import io.github.trae.di.annotations.method.ApplicationReady;
 import io.github.trae.di.annotations.type.component.Service;
 import io.github.trae.hf.Manager;
+import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +18,7 @@ import me.trae.core.blockrestore.BlockRestore;
 import me.trae.core.blockrestore.BlockRestoreManager;
 import me.trae.core.client.ClientManager;
 
+import java.util.List;
 import java.util.Optional;
 
 @AllArgsConstructor
@@ -34,6 +37,30 @@ public class FieldsManager implements Manager<ClansPlugin>, IFieldsManager {
     private final BlockRestoreManager blockRestoreManager;
     private final ClientManager clientManager;
     private final ClanManager clanManager;
+
+    @ApplicationReady
+    public void onApplicationReady() {
+        this.flushAllFieldsBlocks();
+
+        int count = 0;
+
+        for (final FieldsBlock fieldsBlock : this.repository.findManySynchronously(List.of())) {
+            this.addFieldsBlock(fieldsBlock);
+            count++;
+        }
+
+        UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Fields Blocks.".formatted(count));
+    }
+
+    @Override
+    public List<FieldsBlock> getFieldsBlockList() {
+        return this.fieldsBlockIdStorage.getValues();
+    }
+
+    @Override
+    public void flushAllFieldsBlocks() {
+        this.fieldsBlockIdStorage.flush();
+    }
 
     @Override
     public void addFieldsBlock(final FieldsBlock fieldsBlock) {
