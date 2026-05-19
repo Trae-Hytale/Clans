@@ -62,7 +62,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
             return;
         }
 
-        this.getManager().refreshChunks(Collections.singletonList(event.getChunk()));
+        this.getManager().refreshChunks(event.getClan().getTerritory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -72,6 +72,7 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
         }
 
         this.getManager().refreshChunks(Collections.singletonList(event.getChunk()));
+        this.getManager().refreshChunks(event.getClan().getTerritory());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
