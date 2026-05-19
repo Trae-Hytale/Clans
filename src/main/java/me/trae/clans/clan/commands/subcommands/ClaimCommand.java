@@ -78,11 +78,16 @@ public class ClaimCommand extends AbstractClanSubCommand implements EventListene
                 UtilMessage.message(playerRef, "Clans", "You cannot claim land in this world!");
                 return false;
             }
+        }
 
+        if (!(client.isAdministrating()) && playerClan.isAdmin()) {
             if (this.getModule().getManager().isTerritoryFull(playerClan)) {
                 UtilMessage.message(playerRef, "Clans", "You cannot claim any more land!");
                 return false;
             }
+        }
+
+        if (!(client.isAdministrating())) {
 
             for (final Player nearbyPlayer : chunk.getEntitiesByType(Player.class)) {
                 final Optional<Clan> nearbyPlayerClanOptional = this.getModule().getManager().getClanByPlayerId(nearbyPlayer.getUuid());
