@@ -13,7 +13,6 @@ import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
-import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.fields.FieldsManager;
@@ -75,8 +74,6 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
                     if (itemEntityStoreHolder != null) {
                         event.getContext().getCommandBuffer().addEntity(itemEntityStoreHolder, AddReason.SPAWN);
                     }
-
-                    UtilMessage.message(playerRef, "Fields", "You received <green>%sx</green> of <green>%s</green>.".formatted(fieldsItem.getQuantity(), fieldsItem.getId()));
                 }
             });
         });
