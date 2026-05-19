@@ -3,6 +3,8 @@ package me.trae.clans.clan;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.database.domain.data.DomainData;
 import io.github.trae.database.domain.models.Domain;
+import io.github.trae.hytale.framework.utility.UtilLocation;
+import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.utilities.UtilTime;
@@ -355,7 +357,7 @@ public class Clan implements Domain<ClanProperty>, IClan {
             return null;
         }
 
-        return "(<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(home.getX(), home.getY(), home.getZ());
+        return "(%s)".formatted(UtilLocation.formatLocation(home, ChatColor.YELLOW.getColor()));
     }
 
     @Override

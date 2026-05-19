@@ -7,8 +7,10 @@ import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.UtilChunk;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
@@ -148,7 +150,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements EventListene
 
         this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), "Build_Lightsource_Yellow", Duration.ofMinutes(5).toMillis());
 
-        final String chunkString = "(<yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(chunk.getX(), chunk.getZ());
+        final String chunkString = "(%s)".formatted(UtilChunk.formatChunk(chunk, ChatColor.YELLOW.getColor()));
 
         UtilMessage.message(playerRef, "Clans", "You claimed territory at %s.".formatted(chunkString));
 
