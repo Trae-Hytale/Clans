@@ -5,6 +5,7 @@ import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
+import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilMessage;
@@ -16,8 +17,6 @@ import me.trae.clans.fields.enums.FieldsBlockType;
 import me.trae.core.client.Client;
 import me.trae.core.event.BlockBreakEvent;
 import me.trae.core.event.BlockPlaceEvent;
-
-import java.util.EventListener;
 
 @Component
 public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsManager>, EventListener {
@@ -44,7 +43,7 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), playerRef.getTransform().getPosition().toVector3i());
+        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), event.getTargetBlock());
 
         if (!(this.getManager().isFields(blockLocation))) {
             return;
@@ -84,7 +83,7 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), playerRef.getTransform().getPosition().toVector3i());
+        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), event.getTargetBlock());
 
         if (!(this.getManager().isFields(blockLocation))) {
             return;

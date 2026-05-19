@@ -13,19 +13,25 @@ import java.util.Optional;
 @Getter
 public enum FieldsBlockType {
 
-    DIAMOND_ORE("", List.of()),
-    GOLD_ORE("", List.of()),
-    IRON_ORE("", List.of()),
-    TREASURE_CHEST("", List.of());
+    COPPER_ORE(List.of("Ore_Copper_Stone", "Ore_Copper_Shale", "Ore_Copper_Sandstone")),
+    IRON_ORE(List.of("Ore_Iron_Basalt", "Ore_Iron_Sandstone", "Ore_Iron_Shale", "Ore_Iron_Slate", "Ore_Iron_Stone", "Ore_Iron_Volcanic")),
+    GOLD_ORE(List.of("Ore_Gold_Basalt", "Ore_Gold_Calcite", "Ore_Gold_Sandstone", "Ore_Gold_Shale", "Ore_Gold_Stone", "Ore_Gold_Volcanic")),
+    THORIUM_ORE(List.of("Ore_Thorium_Sandstone", "Ore_Thorium_Mud")),
+    COBALT_ORE(List.of("Ore_Cobalt_Shale", "Ore_Cobalt_Slate")),
+    SILVER_ORE(List.of("Ore_Silver_Basalt", "Ore_Silver_Sandstone", "Ore_Silver_Shale", "Ore_Silver_Slate", "Ore_Silver_Stone", "Ore_Silver_Volcanic")),
+    ADAMANTITE_ORE(List.of("Ore_Adamantite_Magma")),
+    MITHRIL_ORE(List.of("Ore_Mithril_Stone")),
+    TREASURE_CHEST(List.of("Furniture_Dungeon_Chest_Epic"));
 
-    private final String blockId;
-    private final List<String> droppedItemIds;
+    private final List<String> blockIds;
 
     private static final Map<String, FieldsBlockType> BY_ID_MAP = new HashMap<>();
 
     static {
         for (final FieldsBlockType fieldsBlockType : values()) {
-            BY_ID_MAP.put(fieldsBlockType.getBlockId(), fieldsBlockType);
+            for (final String blockId : fieldsBlockType.getBlockIds()) {
+                BY_ID_MAP.put(blockId, fieldsBlockType);
+            }
         }
     }
 

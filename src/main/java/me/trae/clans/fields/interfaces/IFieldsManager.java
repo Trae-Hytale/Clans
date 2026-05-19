@@ -2,6 +2,7 @@ package me.trae.clans.fields.interfaces;
 
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import me.trae.clans.fields.FieldsBlock;
+import me.trae.clans.fields.data.FieldsItem;
 import me.trae.clans.fields.enums.FieldsBlockType;
 import me.trae.core.blockrestore.BlockRestore;
 
@@ -20,9 +21,15 @@ public interface IFieldsManager {
 
     Optional<FieldsBlock> getFieldsBlockByLocation(final BlockLocation blockLocation);
 
+    List<FieldsBlock> getBrokenFieldsBlockList();
+
+    List<FieldsBlock> getRemainingFieldsBlockList();
+
     boolean isFields(final BlockLocation blockLocation);
 
     BlockRestore createBlockRestore(final FieldsBlock fieldsBlock, final FieldsBlockType fieldsBlockType);
 
     void reset();
+
+    List<FieldsItem> getDroppedFieldsItemList(final FieldsBlockType fieldsBlockType);
 }
