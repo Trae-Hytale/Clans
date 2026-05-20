@@ -4,7 +4,7 @@ import io.github.trae.di.annotations.type.component.Service;
 import lombok.Getter;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.gamer.configs.GamerConfig;
-import me.trae.core.framework.gamer.AbstractGamerManager;
+import me.trae.core.framework.shared.gamer.AbstractGamerManager;
 
 @Getter
 @Service

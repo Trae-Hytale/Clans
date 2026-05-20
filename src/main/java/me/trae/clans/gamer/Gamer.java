@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import me.trae.clans.gamer.interfaces.IGamer;
 import me.trae.clans.gamer.properties.GamerProperty;
-import me.trae.core.framework.gamer.AbstractGamer;
+import me.trae.core.framework.shared.gamer.AbstractGamer;
 
 import java.util.UUID;
 
