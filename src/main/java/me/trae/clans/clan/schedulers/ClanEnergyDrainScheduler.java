@@ -18,7 +18,7 @@ import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.energy.ClanEnergyDisbandEvent;
 import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
 import me.trae.core.config.events.ConfigReloadEvent;
-import me.trae.core.framework.scheduler.SubScheduler;
+import me.trae.core.framework.impl.SubScheduler;
 
 import java.util.ArrayList;
 import java.util.List;

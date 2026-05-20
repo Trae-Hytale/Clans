@@ -7,7 +7,7 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.data.Pillage;
 import me.trae.clans.pillage.PillageManager;
-import me.trae.core.framework.scheduler.SubScheduler;
+import me.trae.core.framework.impl.SubScheduler;
 
 import java.util.List;
 

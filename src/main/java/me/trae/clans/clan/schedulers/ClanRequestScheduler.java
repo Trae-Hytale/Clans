@@ -9,7 +9,7 @@ import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.data.Request;
 import me.trae.clans.clan.properties.ClanProperty;
-import me.trae.core.framework.scheduler.SubScheduler;
+import me.trae.core.framework.impl.SubScheduler;
 
 import java.time.Duration;
 import java.util.List;

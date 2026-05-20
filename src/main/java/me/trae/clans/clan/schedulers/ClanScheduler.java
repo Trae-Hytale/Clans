@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
-import me.trae.core.framework.scheduler.SubScheduler;
+import me.trae.core.framework.impl.SubScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
