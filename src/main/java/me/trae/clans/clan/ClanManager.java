@@ -84,6 +84,8 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
             count++;
         }
 
+        this.repository.setLoaded(true);
+
         UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Clans.".formatted(count));
     }
 
@@ -232,7 +234,7 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
             if (playerClient.isAdministrating()) {
                 map.put("Admin", targetClan.isAdmin() ? "<green>Yes</green>" : "<red>No</red>");
 
-                map.put("Founder", this.getClientManager().getClientById(targetClan.getFounder()).map(client -> "<yellow>%s</yellow>".formatted(client.getName())).orElse("null"));
+                map.put("Founder", this.getClientManager().getClientById(targetClan.getFounder()).map(founderClient -> UtilColor.serialize(ChatColor.YELLOW.getColor(), founderClient.getName())).orElse("null"));
             }
 
             map.put("Age", "<yellow>%s</yellow>".formatted(UtilTime.getTime(System.currentTimeMillis() - targetClan.getCreatedAt())));

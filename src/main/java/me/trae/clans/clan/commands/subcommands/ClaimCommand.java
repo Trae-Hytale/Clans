@@ -16,6 +16,7 @@ import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.ClaimCommandConfig;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
@@ -29,8 +30,12 @@ import java.util.Optional;
 @Component
 public class ClaimCommand extends AbstractClanSubCommand implements EventListener {
 
-    public ClaimCommand() {
+    private final ClaimCommandConfig claimCommandConfig;
+
+    public ClaimCommand(final ClaimCommandConfig claimCommandConfig) {
         super("claim", "Claim Territory");
+
+        this.claimCommandConfig = claimCommandConfig;
     }
 
     @Override
@@ -148,7 +153,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements EventListene
 
         this.getModule().getManager().getClanChunkStorage().put(chunk, clan);
 
-        this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), "Build_Lightsource_Yellow", Duration.ofMinutes(5).toMillis());
+        this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), this.claimCommandConfig.getOutlineBlockId(), Duration.ofMinutes(5).toMillis());
 
         final String chunkString = "(%s)".formatted(UtilChunk.formatChunk(chunk, ChatColor.YELLOW.getColor()));
 

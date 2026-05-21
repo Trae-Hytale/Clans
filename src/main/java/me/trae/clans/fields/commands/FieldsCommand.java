@@ -4,7 +4,9 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.command.PlayerCommand;
 import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
+import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.utilities.UtilString;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.fields.FieldsBlock;
@@ -32,8 +34,8 @@ public class FieldsCommand extends PlayerCommand<ClansPlugin, FieldsManager> {
         @Override
         public void execute(final PlayerRef playerRef, final String[] args) {
             UtilMessage.message(playerRef, "Fields", "Information:");
-            UtilMessage.message(playerRef, UtilString.pair("Remaining Blocks", "<yellow>%s</yellow>".formatted(this.getModule().getManager().getRemainingFieldsBlockList().size())));
-            UtilMessage.message(playerRef, UtilString.pair("Broken Blocks", "<yellow>%s</yellow>".formatted(this.getModule().getManager().getBrokenFieldsBlockList().size())));
+            UtilMessage.message(playerRef, UtilString.pair("Remaining Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getRemainingFieldsBlockList().size()))));
+            UtilMessage.message(playerRef, UtilString.pair("Broken Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getBrokenFieldsBlockList().size()))));
         }
     }
 

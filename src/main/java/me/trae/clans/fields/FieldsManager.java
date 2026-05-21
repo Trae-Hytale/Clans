@@ -56,6 +56,8 @@ public class FieldsManager implements Manager<ClansPlugin>, IFieldsManager {
             count++;
         }
 
+        this.repository.setLoaded(true);
+
         UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Fields Blocks.".formatted(count));
     }
 
