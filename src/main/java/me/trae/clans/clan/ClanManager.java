@@ -316,13 +316,8 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
         }
 
         this.coreGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
-            for (final ClansChatChannel chatChannel : ClansChatChannel.values()) {
-                if (!(gamer.getChatChannel().equals(chatChannel))) {
-                    continue;
-                }
-
+            if (gamer.getChatChannel() instanceof ClansChatChannel) {
                 gamer.resetChatChannel();
-                break;
             }
         });
     }
@@ -333,22 +328,34 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
             this.removeChatChannel(member.getPlayerRef());
         }
 
-        this.blockRestoreManager.unOutlineAllChunks(clan.getTerritory(), CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
+        if (clan.hasTerritory()) {
+            this.blockRestoreManager.unOutlineAllChunks(clan.getTerritory(), CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
+        }
 
-        for (final Clan targetClan : this.getClans()) {
-            targetClan.getAllianceByClan(clan).ifPresent(alliance -> {
-                targetClan.removeAlliance(alliance);
-                this.repository.update(targetClan, ClanProperty.ALLIANCES);
+        for (final UUID allianceId : clan.getAlliances().keySet()) {
+            this.getClanById(allianceId).ifPresent(allianceClan -> {
+                allianceClan.getAllianceByClan(clan).ifPresent(alliance -> {
+                    allianceClan.removeAlliance(alliance);
+                    this.repository.update(allianceClan, ClanProperty.ALLIANCES);
+                });
             });
+        }
 
-            targetClan.getEnemyByClan(clan).ifPresent(enemy -> {
-                targetClan.removeEnemy(enemy);
-                this.repository.update(targetClan, ClanProperty.ENEMIES);
+        for (final UUID enemyId : clan.getEnemies().keySet()) {
+            this.getClanById(enemyId).ifPresent(enemyClan -> {
+                enemyClan.getEnemyByClan(clan).ifPresent(enemy -> {
+                    enemyClan.removeEnemy(enemy);
+                    this.repository.update(enemyClan, ClanProperty.ENEMIES);
+                });
             });
+        }
 
-            targetClan.getPillageByClan(clan).ifPresent(pillage -> {
-                targetClan.removePillage(pillage);
-                this.repository.update(targetClan, ClanProperty.PILLAGES);
+        for (final UUID pillagerId : clan.getPillagers()) {
+            this.getClanById(pillagerId).ifPresent(pillagerClan -> {
+                pillagerClan.getPillageByClan(clan).ifPresent(pillage -> {
+                    pillagerClan.removePillage(pillage);
+                    this.repository.update(pillagerClan, ClanProperty.PILLAGES);
+                });
             });
         }
 
