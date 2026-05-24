@@ -4,37 +4,37 @@ import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.utilities.UtilTime;
+import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
+import me.trae.clans.clan.configs.RequestConfig;
 import me.trae.clans.clan.data.Request;
 import me.trae.clans.clan.properties.ClanProperty;
-import me.trae.core.framework.impl.SubScheduler;
+import me.trae.core.scheduler.annotations.SubScheduler;
 
-import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+@AllArgsConstructor
 @Component
-public class ClanRequestScheduler implements Module<ClansPlugin, ClanManager>, SubScheduler<Clan> {
+public class ClanRequestScheduler implements Module<ClansPlugin, ClanManager> {
 
-    private static final long EXPIRATION = Duration.ofMinutes(5).toMillis();
+    private final RequestConfig requestConfig;
 
-    @Override
-    public long getPeriod() {
-        return 250L;
-    }
-
-    @Override
-    public void onSchedule(final Clan clan) {
+    @SubScheduler(period = 250, unit = TimeUnit.MILLISECONDS)
+    public void onSubScheduler(final Clan clan) {
         for (final Request request : List.copyOf(clan.getRequests().values())) {
-            if (!(UtilTime.elapsed(request.getCreatedAt(), EXPIRATION))) {
+            if (!(UtilTime.elapsed(request.getCreatedAt(), this.requestConfig.getExpiration()))) {
                 continue;
             }
 
             clan.removeRequest(request);
             this.getManager().getRepository().update(clan, ClanProperty.REQUESTS);
 
-            this.inform(clan, request);
+            if (this.requestConfig.isInform()) {
+                this.inform(clan, request);
+            }
         }
     }
 

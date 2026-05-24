@@ -43,16 +43,18 @@ import me.trae.core.client.Client;
 import me.trae.core.client.ClientManager;
 import me.trae.core.cooldown.CooldownManager;
 import me.trae.core.gamer.GamerManager;
+import me.trae.core.scheduler.impl.SchedulerSource;
 
 import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @AllArgsConstructor
 @Getter
 @Service
-public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventListener {
+public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>, IClanManager, EventListener {
 
     public static final Function<Clan, String> CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER = clan -> "CLAN:%s".formatted(clan.getId().toString());
 
@@ -87,6 +89,11 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
         this.repository.setLoaded(true);
 
         UtilMessage.log("Database", "Loaded <yellow>%s</yellow> Clans.".formatted(count));
+    }
+
+    @Override
+    public Supplier<List<Clan>> getSchedulerSource() {
+        return this::getClans;
     }
 
     @Override
@@ -512,17 +519,27 @@ public class ClanManager implements Manager<ClansPlugin>, IClanManager, EventLis
     }
 
     @Override
-    public int getMaxSquadLimit(final Clan clan) {
-        final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
+    public int getSquadCount(final Clan clan) {
+        int squadCount = clan.getMembers().size();
 
-        return Math.min(this.squadConfig.getMaxLimit(), squadCount);
+        for (final UUID allianceId : clan.getAlliances().keySet()) {
+            final Optional<Clan> allianceClanOptional = this.getClanById(allianceId);
+            if (allianceClanOptional.isPresent()) {
+                squadCount += allianceClanOptional.get().getMembers().size();
+            }
+        }
+
+        return squadCount;
+    }
+
+    @Override
+    public int getMaxSquadLimit(final Clan clan) {
+        return Math.min(this.squadConfig.getMaxLimit(), this.getSquadCount(clan));
     }
 
     @Override
     public boolean isSquadFull(final Clan clan) {
-        final int squadCount = clan.getMembers().size() + clan.getAlliances().size();
-
-        return squadCount >= this.squadConfig.getMaxLimit();
+        return this.getSquadCount(clan) >= this.squadConfig.getMaxLimit();
     }
 
     @Override

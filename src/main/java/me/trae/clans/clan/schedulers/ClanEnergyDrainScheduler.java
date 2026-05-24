@@ -4,7 +4,6 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
-import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
@@ -18,23 +17,23 @@ import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.energy.ClanEnergyDisbandEvent;
 import me.trae.clans.clan.events.energy.ClanEnergyDrainEvent;
 import me.trae.core.config.events.ConfigReloadEvent;
-import me.trae.core.framework.impl.SubScheduler;
+import me.trae.core.scheduler.annotations.SubScheduler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Component
-public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager>, SubScheduler<Clan>, EventListener {
+public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager> {
 
     private List<Long> lastAlertIntervals;
 
-    @Override
-    public long getPeriod() {
-        return 60_000L;
-    }
+    @SubScheduler(period = 1, unit = TimeUnit.MINUTES)
+    public void onSubScheduler(final Clan clan) {
+        if (!(this.getManager().getEnergyConfig().isEnabled())) {
+            return;
+        }
 
-    @Override
-    public void onSchedule(final Clan clan) {
         if (!(clan.canDepleteEnergy())) {
             return;
         }
@@ -73,11 +72,6 @@ public class ClanEnergyDrainScheduler implements Module<ClansPlugin, ClanManager
                 break;
             }
         }
-    }
-
-    @Override
-    public boolean shouldSchedule() {
-        return this.getManager().getEnergyConfig().isEnabled();
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

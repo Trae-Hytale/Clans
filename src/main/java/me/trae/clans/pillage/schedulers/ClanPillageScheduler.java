@@ -7,12 +7,12 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.data.Pillage;
 import me.trae.clans.pillage.PillageManager;
-import me.trae.core.framework.impl.SubScheduler;
+import me.trae.core.scheduler.old.SchedulerImpl;
 
 import java.util.List;
 
 @Component
-public class ClanPillageScheduler implements Module<ClansPlugin, PillageManager>, SubScheduler<Clan> {
+public class ClanPillageScheduler implements Module<ClansPlugin, PillageManager>, SchedulerImpl<Clan> {
 
     @Override
     public long getPeriod() {
