@@ -59,8 +59,10 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
                 return false;
             }
 
-            if (this.getModule().getManager().getCooldownManager().isCooling(playerRef, COOLDOWN_NAME, true)) {
-                return false;
+            if (this.homeCommandConfig.getCooldown() > 0L) {
+                if (this.getModule().getManager().getCooldownManager().isCooling(playerRef, COOLDOWN_NAME, true)) {
+                    return false;
+                }
             }
         }
 
@@ -82,7 +84,9 @@ public class HomeCommand extends AbstractClanSubCommand implements EventListener
         });
 
         clanHomeTeleportData.setPostConsumer(teleportData -> {
-            this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, this.homeCommandConfig.getCooldown(), true, true);
+            if (this.homeCommandConfig.getCooldown() > 0L) {
+                this.getModule().getManager().getCooldownManager().add(event.getPlayerRef(), COOLDOWN_NAME, this.homeCommandConfig.getCooldown(), true, true);
+            }
 
             UtilMessage.message(teleportData.getPlayerRef(), "Clans", "You have teleported to Clan Home.");
         });

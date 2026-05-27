@@ -44,7 +44,7 @@ public class UnTrustCommand extends AbstractClanSubCommand implements EventListe
         }
 
         this.getModule().getManager().searchClan(playerRef, args[0], true).ifPresent(targetClan -> {
-            if (!(this.canUnTrustClan(playerRef, client, playerClan, targetClan))) {
+            if (!(this.canUnTrustClan(playerRef, playerClan, targetClan))) {
                 return;
             }
 
@@ -52,7 +52,7 @@ public class UnTrustCommand extends AbstractClanSubCommand implements EventListe
         });
     }
 
-    private boolean canUnTrustClan(final PlayerRef playerRef, final Client client, final Clan playerClan, final Clan targetClan) {
+    private boolean canUnTrustClan(final PlayerRef playerRef, final Clan playerClan, final Clan targetClan) {
         if (!(targetClan.isTrustedAllianceByClan(playerClan))) {
             UtilMessage.message(playerRef, "Clans", "You are not trusted with %s!".formatted(this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(playerClan, targetClan), targetClan)));
             return false;
