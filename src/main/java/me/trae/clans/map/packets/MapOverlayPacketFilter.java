@@ -4,12 +4,12 @@ import com.hypixel.hytale.protocol.Packet;
 import com.hypixel.hytale.protocol.packets.worldmap.*;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.chunk.palette.BitFieldArr;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.packet.OutboundPacketFilter;
+import io.github.trae.hytale.framework.utility.UtilWorld;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -23,10 +23,8 @@ import me.trae.core.client.Client;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Getter
 @Component
@@ -91,11 +89,9 @@ public class MapOverlayPacketFilter implements Module<ClansPlugin, MapManager>, 
 
     private String getWorldName(final PlayerRef playerRef) {
         try {
-            if (playerRef.getWorldUuid() != null) {
-                final World world = Universe.get().getWorld(playerRef.getWorldUuid());
-                if (world != null) {
-                    return world.getName();
-                }
+            final Optional<World> worldOptional = UtilWorld.getWorldByPlayerRef(playerRef);
+            if (worldOptional.isPresent()) {
+                return worldOptional.get().getName();
             }
         } catch (final Exception ignored) {
         }

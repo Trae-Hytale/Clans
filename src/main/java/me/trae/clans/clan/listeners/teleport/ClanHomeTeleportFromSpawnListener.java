@@ -33,12 +33,12 @@ public class ClanHomeTeleportFromSpawnListener implements Module<ClansPlugin, Cl
             return;
         }
 
-        final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
-
-        final World world = clanHomeTeleportData.getPlayer().getWorld();
+        final World world = clanHomeTeleportData.getFromLocation().getWorld();
         if (world == null) {
             return;
         }
+
+        final PlayerRef playerRef = clanHomeTeleportData.getPlayerRef();
 
         if (this.getManager().getClanByChunk(Chunk.of(world, playerRef.getTransform().getPosition())).map(Clan::isSpawn).orElse(false)) {
             clanHomeTeleportData.setDuration(0L);
