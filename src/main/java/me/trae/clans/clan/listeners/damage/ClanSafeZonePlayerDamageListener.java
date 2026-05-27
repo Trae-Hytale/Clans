@@ -15,12 +15,13 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.enums.ClanRelation;
+import me.trae.core.client.Client;
 import me.trae.core.damage.events.CustomDamageEvent;
 
 import java.util.Optional;
 
 @Component
-public class ClanSafeZoneDamageListener implements Module<ClansPlugin, ClanManager>, EventListener {
+public class ClanSafeZonePlayerDamageListener implements Module<ClansPlugin, ClanManager>, EventListener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void onCustomDamage(final CustomDamageEvent event) {
@@ -28,32 +29,28 @@ public class ClanSafeZoneDamageListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        if (!(event.getDamagee() instanceof final Player damagee)) {
+        if (!(event.getDamagee() instanceof final Player damageePlayer)) {
             return;
         }
 
-        if (!(event.getDamager() instanceof final Player damager)) {
+        if (!(event.getDamager() instanceof final Player damagerPlayer)) {
             return;
         }
 
-        final World damageeWorld = damagee.getWorld();
-        final World damagerWorld = damager.getWorld();
-        if (damageeWorld == null || damagerWorld == null) {
+        final World damageePlayerWorld = damageePlayer.getWorld();
+        final World damagerPlayerWorld = damagerPlayer.getWorld();
+        if (damageePlayerWorld == null || damagerPlayerWorld == null) {
             return;
         }
 
-        final Optional<PlayerRef> damageePlayerRefOptional = UtilPlayer.getPlayerRef(damagee);
-        final Optional<PlayerRef> damagerPlayerRefOptional = UtilPlayer.getPlayerRef(damager);
-
-        if (damageePlayerRefOptional.isEmpty() || damagerPlayerRefOptional.isEmpty()) {
+        final PlayerRef damageePlayerRef = UtilPlayer.getPlayerRef(damageePlayer).orElse(null);
+        final PlayerRef damagerPlayerRef = UtilPlayer.getPlayerRef(damagerPlayer).orElse(null);
+        if (damageePlayerRef == null || damagerPlayerRef == null) {
             return;
         }
 
-        final PlayerRef damageePlayerRef = damageePlayerRefOptional.get();
-        final PlayerRef damagerPlayerRef = damagerPlayerRefOptional.get();
-
-        final Optional<Clan> damageeTerritoryClanOptional = this.getManager().getClanByChunk(Chunk.of(damageeWorld, damageePlayerRef.getTransform().getPosition()));
-        final Optional<Clan> damagerTerritoryClanOptional = this.getManager().getClanByChunk(Chunk.of(damagerWorld, damagerPlayerRef.getTransform().getPosition()));
+        final Optional<Clan> damageeTerritoryClanOptional = this.getManager().getClanByChunk(Chunk.of(damageePlayerWorld, damageePlayerRef.getTransform().getPosition()));
+        final Optional<Clan> damagerTerritoryClanOptional = this.getManager().getClanByChunk(Chunk.of(damagerPlayerWorld, damagerPlayerRef.getTransform().getPosition()));
 
         Clan safeClan = null;
 
@@ -67,7 +64,11 @@ public class ClanSafeZoneDamageListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        event.setCancelled(true);
+        if (this.getManager().getClientManager().getClientByPlayer(damagerPlayerRef).map(Client::isAdministrating).orElse(false)) {
+            return;
+        }
+
+        event.setCancelledWithReason(this.getFrameName());
 
         final ClanRelation clanRelation = this.getManager().getClanRelationByPlayer(damagerPlayerRef, damageePlayerRef);
 
