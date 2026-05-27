@@ -50,7 +50,7 @@ public class ClanTerritoryBlockBreakListener implements Module<ClansPlugin, Clan
             return;
         }
 
-        final Chunk chunk = Chunk.of(world, event.getTargetBlock().toVector3d());
+        final Chunk chunk = event.getLocation().getChunk();
 
         final Optional<Clan> territoryClanOptional = this.getManager().getClanByChunk(chunk);
         if (territoryClanOptional.isEmpty()) {

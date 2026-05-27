@@ -43,22 +43,22 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), event.getTargetBlock());
+        final BlockLocation location = event.getLocation();
 
-        if (!(this.getManager().isFields(blockLocation))) {
+        if (!(this.getManager().isFields(location))) {
             return;
         }
 
-        if (this.getManager().getFieldsBlockByLocation(blockLocation).isPresent()) {
+        if (this.getManager().getFieldsBlockByLocation(location).isPresent()) {
             return;
         }
 
-        final FieldsBlock fieldsBlock = new FieldsBlock(blockLocation, itemInHand.getItemId());
+        final FieldsBlock fieldsBlock = new FieldsBlock(location, itemInHand.getItemId());
 
         this.getManager().addFieldsBlock(fieldsBlock);
         this.getManager().getRepository().save(fieldsBlock);
 
-        UtilMessage.message(playerRef, "Fields", "Saved <green>%s</green> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(itemInHand.getItemId(), blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()));
+        UtilMessage.message(playerRef, "Fields", "Saved <green>%s</green> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(itemInHand.getItemId(), location.getX(), location.getY(), location.getZ()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -83,17 +83,17 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), event.getTargetBlock());
+        final BlockLocation location = event.getLocation();
 
-        if (!(this.getManager().isFields(blockLocation))) {
+        if (!(this.getManager().isFields(location))) {
             return;
         }
 
-        this.getManager().getFieldsBlockByLocation(blockLocation).ifPresent(fieldsBlock -> {
+        this.getManager().getFieldsBlockByLocation(location).ifPresent(fieldsBlock -> {
             this.getManager().removeFieldsBlock(fieldsBlock);
             this.getManager().getRepository().delete(fieldsBlock);
 
-            UtilMessage.message(playerRef, "Fields", "Deleted <red>%s</red> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(blockType.getId(), blockLocation.getX(), blockLocation.getY(), blockLocation.getZ()));
+            UtilMessage.message(playerRef, "Fields", "Deleted <red>%s</red> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(blockType.getId(), location.getX(), location.getY(), location.getZ()));
         });
     }
 }

@@ -15,6 +15,7 @@ import io.github.trae.hytale.framework.system.annotations.EventSystemHandler;
 import io.github.trae.hytale.framework.system.data.EventSystemContext;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
+import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
@@ -54,7 +55,7 @@ public class ClanTerritoryBlockUseListener implements Module<ClansPlugin, ClanMa
             return;
         }
 
-        final Chunk chunk = Chunk.of(world, event.getTargetBlock().toVector3d());
+        final Chunk chunk = BlockLocation.of(world, event.getTargetBlock()).getChunk();
 
         final Optional<Clan> territoryClanOptional = this.getManager().getClanByChunk(chunk);
         if (territoryClanOptional.isEmpty()) {

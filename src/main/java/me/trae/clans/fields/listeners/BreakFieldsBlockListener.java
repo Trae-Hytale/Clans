@@ -2,7 +2,7 @@ package me.trae.clans.fields.listeners;
 
 import com.hypixel.hytale.component.AddReason;
 import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.math.vector.Vector3f;
+import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
@@ -49,17 +49,17 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
                 return;
             }
 
-            final BlockLocation blockLocation = BlockLocation.of(event.getWorld(), event.getTargetBlock());
+            final BlockLocation location = event.getLocation();
 
-            if (!(this.getManager().isFields(blockLocation))) {
+            if (!(this.getManager().isFields(location))) {
                 return;
             }
 
-            if (this.getManager().getBlockRestoreManager().getBlockRestoreByLocation(blockLocation).isPresent()) {
+            if (this.getManager().getBlockRestoreManager().getBlockRestoreByLocation(location).isPresent()) {
                 return;
             }
 
-            this.getManager().getFieldsBlockByLocation(blockLocation).ifPresent(fieldsBlock -> {
+            this.getManager().getFieldsBlockByLocation(location).ifPresent(fieldsBlock -> {
                 event.setCancelled(true);
 
                 this.getManager().getBlockRestoreManager().apply(this.getManager().createBlockRestore(fieldsBlock, fieldsBlockType));
@@ -69,7 +69,7 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
                         continue;
                     }
 
-                    final Holder<EntityStore> itemEntityStoreHolder = ItemComponent.generateItemDrop(event.getContext().getStore(), new ItemStack(fieldsItem.getId(), fieldsItem.getQuantity()), event.getTargetBlock().toVector3d(), Vector3f.ZERO, 0.0F, 0.5F, 0.0F);
+                    final Holder<EntityStore> itemEntityStoreHolder = ItemComponent.generateItemDrop(event.getContext().getStore(), new ItemStack(fieldsItem.getId(), fieldsItem.getQuantity()), event.getLocation().getPosition3d(), Rotation3f.ZERO, 0.0F, 0.5F, 0.0F);
 
                     if (itemEntityStoreHolder != null) {
                         event.getContext().getCommandBuffer().addEntity(itemEntityStoreHolder, AddReason.SPAWN);

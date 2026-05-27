@@ -48,6 +48,6 @@ public class ClanRelationDamageListener implements Module<ClansPlugin, ClanManag
 
         event.setCancelled(true);
 
-        UtilMessage.message(damager, "Clans", "You cannot harm %s.".formatted(this.getManager().getPlayerName(this.getManager().getClanRelationByPlayer(damagerPlayerRef, damageePlayerRef), damageePlayerRef)));
+        UtilMessage.message(damagerPlayerRef, "Clans", "You cannot harm %s.".formatted(this.getManager().getPlayerName(this.getManager().getClanRelationByPlayer(damagerPlayerRef, damageePlayerRef), damageePlayerRef)));
     }
 }

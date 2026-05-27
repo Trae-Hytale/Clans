@@ -20,6 +20,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
+import io.github.trae.hytale.framework.wrappers.EntityLocation;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
@@ -70,7 +71,7 @@ public class TerritoryTickingListener implements Module<ClansPlugin, ClanManager
 
         this.playerLastTerritoryMap.put(playerRef.getUuid(), currentTerritoryKey);
 
-        final BlockLocation blockLocation = BlockLocation.of(world, playerRef.getTransform().getPosition().toVector3i());
+        final BlockLocation blockLocation = EntityLocation.of(world, playerRef.getTransform().getPosition()).toBlockLocation();
 
         EventTitleUtil.hideEventTitleFromPlayer(playerRef, 0.0F);
         EventTitleUtil.showEventTitleToPlayer(playerRef, this.getManager().getTerritoryClanNameForTitle(playerClanOptional.orElse(null), territoryClanOptional.orElse(null), blockLocation), Message.raw("Territory").color(ChatColor.RED.getColor()).bold(true), false);

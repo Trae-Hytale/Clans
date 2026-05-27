@@ -10,6 +10,7 @@ import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
+import io.github.trae.hytale.framework.wrappers.EntityLocation;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
@@ -46,7 +47,7 @@ public class SetHomeCommand extends AbstractClanSubCommand implements EventListe
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(world, playerRef.getTransform().getPosition().toVector3i());
+        final BlockLocation blockLocation = EntityLocation.of(world, playerRef.getTransform().getPosition()).toBlockLocation();
 
         if (!(this.canSetHome(playerRef, playerClan, blockLocation))) {
             return;

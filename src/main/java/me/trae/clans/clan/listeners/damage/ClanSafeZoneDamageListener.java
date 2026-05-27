@@ -71,6 +71,6 @@ public class ClanSafeZoneDamageListener implements Module<ClansPlugin, ClanManag
 
         final ClanRelation clanRelation = this.getManager().getClanRelationByPlayer(damagerPlayerRef, damageePlayerRef);
 
-        UtilMessage.message(damager, "Clans", "You cannot harm %s in %s.".formatted(this.getManager().getPlayerName(clanRelation, damageePlayerRef), this.getManager().getClanName(clanRelation, safeClan)));
+        UtilMessage.message(damagerPlayerRef, "Clans", "You cannot harm %s in %s.".formatted(this.getManager().getPlayerName(clanRelation, damageePlayerRef), this.getManager().getClanName(clanRelation, safeClan)));
     }
 }

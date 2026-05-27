@@ -12,6 +12,7 @@ import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.sidebar.events.SidebarCreateEvent;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
+import io.github.trae.hytale.framework.wrappers.EntityLocation;
 import io.github.trae.utilities.UtilJava;
 import lombok.AllArgsConstructor;
 import me.trae.clans.ClansPlugin;
@@ -50,7 +51,7 @@ public class ClansSidebarCreateListener implements Module<ClansPlugin, ClanManag
             return;
         }
 
-        final BlockLocation blockLocation = BlockLocation.of(world, playerRef.getTransform().getPosition().toVector3i());
+        final BlockLocation blockLocation = EntityLocation.of(world, playerRef.getTransform().getPosition()).toBlockLocation();
 
         final Optional<Clan> territoryClanOptional = this.getManager().getClanByLocation(blockLocation);
 
