@@ -49,7 +49,7 @@ public class KickCommand extends AbstractClanSubCommand implements EventListener
             return;
         }
 
-        this.getModule().getManager().searchMember(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
+        this.getModule().getManager().searchMemberClient(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
             if (!(this.canKickPlayer(playerRef, client, playerClan, targetClient))) {
                 return;
             }

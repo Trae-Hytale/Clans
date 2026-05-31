@@ -53,11 +53,11 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
                 return;
             }
 
-            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
-                this.getModule().getManager().setCoins(targetPlayer, amount);
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayerRef -> {
+                this.getModule().getManager().setCoins(targetPlayerRef, amount);
 
-                UtilMessage.message(playerRef, "Economy", "You have updated the coins for <yellow>%s</yellow> to <gold>%s</gold>.".formatted(targetPlayer.getUsername(), UtilString.formatToDollarByInteger(amount)));
-                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> has updated your coins to <gold>%s</gold>.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+                UtilMessage.message(playerRef, "Economy", "You have updated the coins for <yellow>%s</yellow> to <gold>%s</gold>.".formatted(targetPlayerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+                UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> has updated your coins to <gold>%s</gold>.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
         }
     }
@@ -92,11 +92,11 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
                 return;
             }
 
-            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
-                this.getModule().getManager().giveCoins(targetPlayer, amount);
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayerRef -> {
+                this.getModule().getManager().giveCoins(targetPlayerRef, amount);
 
-                UtilMessage.message(playerRef, "Economy", "You gave <gold>%s</gold> to <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayer.getUsername()));
-                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> gave <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+                UtilMessage.message(playerRef, "Economy", "You gave <gold>%s</gold> to <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayerRef.getUsername()));
+                UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> gave <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
         }
     }
@@ -131,31 +131,64 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
                 return;
             }
 
-            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayer -> {
-                this.getModule().getManager().takeCoins(targetPlayer, amount);
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayerRef -> {
+                this.getModule().getManager().takeCoins(targetPlayerRef, amount);
 
-                UtilMessage.message(playerRef, "Economy", "You took <gold>%s</gold> from <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayer.getUsername()));
-                UtilMessage.message(targetPlayer, "Economy", "<yellow>%s</yellow> took <gold>%s</gold> from you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+                UtilMessage.message(playerRef, "Economy", "You took <gold>%s</gold> from <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayerRef.getUsername()));
+                UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> took <gold>%s</gold> from you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
         }
     }
 
     @Component
-    private static class SendCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+    public static class SendCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
 
-        private final PayCommand payCommand;
-
-        public SendCommand(final PayCommand payCommand) {
+        public SendCommand() {
             super("send", "Send Coins to a Player", Rank.DEFAULT);
 
             this.addAliases("pay", "transfer");
-
-            this.payCommand = payCommand;
         }
 
         @Override
         public void execute(final PlayerRef playerRef, final String[] args) {
-            this.payCommand.execute(playerRef, args);
+            if (args.length == 0) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Player.");
+                return;
+            }
+
+            if (args.length == 1) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a Amount.");
+                return;
+            }
+
+            final Integer amount = this.getModule().getManager().getAmount(args[1]);
+            if (amount == null) {
+                UtilMessage.message(playerRef, "Economy", "You did not input a valid Amount.");
+                return;
+            }
+
+            if (amount <= 0) {
+                UtilMessage.message(playerRef, "Economy", "Amount must be greater than Zero.");
+                return;
+            }
+
+            if (!(this.getModule().getManager().hasCoins(playerRef, amount))) {
+                UtilMessage.message(playerRef, "Economy", "You have insufficient funds to send <gold>%s</gold>.".formatted(UtilString.formatToDollarByInteger(amount)));
+                return;
+            }
+
+            UtilPlayer.searchPlayerRef(playerRef, args[0], true).ifPresent(targetPlayerRef -> {
+                if (targetPlayerRef.equals(playerRef)) {
+                    UtilMessage.message(playerRef, "Economy", "You cannot send money to yourself.");
+                    return;
+                }
+
+                this.getModule().getManager().takeCoins(playerRef, amount);
+                this.getModule().getManager().giveCoins(targetPlayerRef, amount);
+
+                UtilMessage.message(playerRef, "Economy", "You sent <gold>%s</gold> to <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayerRef.getUsername()));
+                UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> sent <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
+            });
         }
     }
 }

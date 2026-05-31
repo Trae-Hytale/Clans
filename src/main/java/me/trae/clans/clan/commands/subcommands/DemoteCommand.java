@@ -44,7 +44,7 @@ public class DemoteCommand extends AbstractClanSubCommand implements EventListen
             return;
         }
 
-        this.getModule().getManager().searchMember(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
+        this.getModule().getManager().searchMemberClient(playerClan, playerRef, args[0], true).ifPresent(targetClient -> {
             if (!(this.canDemoteMember(playerRef, client, playerClan, targetClient))) {
                 return;
             }

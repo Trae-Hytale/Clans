@@ -49,6 +49,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @AllArgsConstructor
@@ -156,9 +157,10 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
     }
 
     @Override
-    public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+    public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform, final Predicate<Clan> predicate) {
         return UtilSearch.search(
                 this.getClans(),
+                predicate,
                 clan -> clan.getName().equalsIgnoreCase(name),
                 clan -> clan.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)),
                 list -> {
@@ -190,11 +192,17 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
     }
 
     @Override
-    public Optional<Client> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+    public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+        return this.searchClan(messageReceiver, name, inform, null);
+    }
+
+    @Override
+    public Optional<Client> searchMemberClient(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform, final Predicate<Member> predicate) {
         final List<Client> clientList = clan.getMembers().values().stream().map(member -> this.getClientManager().getClientById(member.getId()).orElse(null)).toList();
 
         return UtilSearch.search(
                 clientList,
+                predicate != null ? client -> clan.getMemberById(client.getId()).map(predicate::test).orElse(false) : null,
                 memberClient -> memberClient.getName().equalsIgnoreCase(name),
                 memberClient -> memberClient.getName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT)),
                 null,
@@ -205,6 +213,11 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
                 name,
                 inform
         );
+    }
+
+    @Override
+    public Optional<Client> searchMemberClient(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform) {
+        return this.searchMemberClient(clan, messageReceiver, name, inform, null);
     }
 
     @Override

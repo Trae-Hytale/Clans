@@ -3,6 +3,8 @@ package me.trae.clans.economy;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Service;
 import io.github.trae.hf.Manager;
+import io.github.trae.hytale.framework.sidebar.events.SidebarUpdateEvent;
+import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.utilities.UtilString;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
         this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(amount);
             this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+            UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
     }
 
@@ -30,7 +33,10 @@ public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
     public void giveCoins(final PlayerRef playerRef, final int amount) {
         this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(gamer.getCoins() + amount);
+
             this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+
+            UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
     }
 
@@ -38,7 +44,10 @@ public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
     public void takeCoins(final PlayerRef playerRef, final int amount) {
         this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(gamer.getCoins() - amount);
+
             this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+
+            UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
     }
 

@@ -7,6 +7,7 @@ import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.hytale.framework.wrappers.Location;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.enums.InteractType;
 import me.trae.core.client.Client;
@@ -15,6 +16,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 public interface IClanManager {
 
@@ -38,9 +40,13 @@ public interface IClanManager {
 
     Optional<Clan> getClanByLocation(final Location location);
 
+    Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform, final Predicate<Clan> predicate);
+
     Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform);
 
-    Optional<Client> searchMember(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform);
+    Optional<Client> searchMemberClient(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform, final Predicate<Member> predicate);
+
+    Optional<Client> searchMemberClient(final Clan clan, final IMessageReceiver messageReceiver, final String name, final boolean inform);
 
     ClanRelation getClanRelationByClan(final Clan clan, final Clan target);
 
