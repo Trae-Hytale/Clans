@@ -102,10 +102,14 @@ public class CreateCommand extends AbstractClanSubCommand implements EventListen
         this.getModule().getManager().addClan(clan);
         this.getModule().getManager().getRepository().save(clan);
 
-        for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
-            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
+        if (this.createCommandConfig.isBroadcastMessage()) {
+            for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
+                final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
 
-            UtilMessage.message(targetPlayerRef, "Clans", "%s formed %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
+                UtilMessage.message(targetPlayerRef, "Clans", "%s formed %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
+            }
+        } else {
+            UtilMessage.message(playerRef, "Clans", "You formed %s.".formatted(this.getModule().getManager().getClanFullName(ClanRelation.SELF, clan)));
         }
     }
 }

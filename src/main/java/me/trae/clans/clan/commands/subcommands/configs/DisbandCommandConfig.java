@@ -10,13 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Configuration("Clan/Commands/CreateCommand")
-public class CreateCommandConfig {
+@Configuration("Clan/Commands/DisbandCommand")
+public class DisbandCommandConfig {
 
     private boolean broadcastMessage = true;
-
-    private int minimumNameLength = 3;
-    private int maximumNameLength = 14;
-
-    private String nameRegex = "^[A-Za-z0-9]+$";
 }

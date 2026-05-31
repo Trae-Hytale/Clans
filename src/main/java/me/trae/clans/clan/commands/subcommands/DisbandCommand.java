@@ -13,16 +13,23 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.configs.DisbandCommandConfig;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.clan.ClanDisbandEvent;
 import me.trae.core.client.Client;
 
+import java.util.Collections;
+
 @Component
 public class DisbandCommand extends AbstractClanSubCommand implements EventListener {
 
-    public DisbandCommand() {
+    private final DisbandCommandConfig disbandCommandConfig;
+
+    public DisbandCommand(final DisbandCommandConfig disbandCommandConfig) {
         super("disband", "Disband the Clan");
+
+        this.disbandCommandConfig = disbandCommandConfig;
     }
 
     @Override
@@ -64,10 +71,16 @@ public class DisbandCommand extends AbstractClanSubCommand implements EventListe
         final Clan clan = event.getClan();
         final PlayerRef playerRef = event.getPlayerRef();
 
-        for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
-            final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
+        if (this.disbandCommandConfig.isBroadcastMessage()) {
+            for (final PlayerRef targetPlayerRef : Universe.get().getPlayers()) {
+                final ClanRelation clanRelation = this.getModule().getManager().getClanRelationByClan(this.getModule().getManager().getClanByPlayer(targetPlayerRef).orElse(null), clan);
 
-            UtilMessage.message(targetPlayerRef, "Clans", "%s has disbanded %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
+                UtilMessage.message(targetPlayerRef, "Clans", "%s has disbanded %s.".formatted(this.getModule().getManager().getPlayerName(clanRelation, playerRef), this.getModule().getManager().getClanFullName(clanRelation, clan)));
+            }
+        } else {
+            UtilMessage.message(playerRef, "Clans", "You disbanded the Clan.");
+
+            this.getModule().getManager().messageClan(clan, "Clans", "%s has disbanded the Clan.".formatted(this.getModule().getManager().getPlayerName(ClanRelation.SELF, playerRef)), Collections.singletonList(playerRef.getUuid()));
         }
 
         this.getModule().getManager().disbandClan(clan);
