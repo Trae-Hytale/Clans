@@ -59,17 +59,19 @@ public class NeutralCommand extends AbstractClanSubCommand implements EventListe
             return false;
         }
 
+        if (!(client.isAdministrating())) {
+            if (targetClan.isAdmin()) {
+                UtilMessage.message(playerRef, "Clans", "You cannot request neutrality with Admin Clans!");
+                return false;
+            }
+        }
+
         if (targetClan.isNeutralByClan(playerClan)) {
             UtilMessage.message(playerRef, "Clans", "You are already neutral with %s!".formatted(this.getModule().getManager().getClanFullName(ClanRelation.NEUTRAL, targetClan)));
             return false;
         }
 
         if (!(client.isAdministrating())) {
-            if (targetClan.isAdmin()) {
-                UtilMessage.message(playerRef, "Clans", "You cannot request neutrality with Admin Clans!");
-                return false;
-            }
-
             if (playerClan.getRelationRequestByClan(targetClan, RelationRequestType.NEUTRAL).isPresent()) {
                 UtilMessage.message(playerRef, "Clans", "You already requested neutrality with %s!".formatted(this.getModule().getManager().getClanFullName(this.getModule().getManager().getClanRelationByClan(playerClan, targetClan), targetClan)));
                 return false;
