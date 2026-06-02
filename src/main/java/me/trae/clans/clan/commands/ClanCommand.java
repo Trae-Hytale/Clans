@@ -50,6 +50,11 @@ public class ClanCommand extends Command<ClansPlugin, ClanManager, PlayerRef> {
 
         if (args.length == 1) {
             this.getManager().searchClan(playerRef, args[0], true).ifPresent(targetClan -> {
+                if (targetClan.isAdmin() && !(client.isAdministrating())) {
+                    UtilMessage.message(playerRef, "Clans", "You cannot view Admin Clans!");
+                    return;
+                }
+
                 this.getManager().showClanInformation(playerRef, client, playerClanOptional.orElse(null), targetClan);
             });
         }
