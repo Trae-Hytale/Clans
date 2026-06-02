@@ -2,8 +2,6 @@ package me.trae.clans.fields.commands;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
-import io.github.trae.hytale.framework.command.PlayerCommand;
-import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
@@ -12,9 +10,11 @@ import me.trae.clans.ClansPlugin;
 import me.trae.clans.fields.FieldsBlock;
 import me.trae.clans.fields.FieldsManager;
 import me.trae.core.client.enums.Rank;
+import me.trae.core.command.Command;
+import me.trae.core.command.SubCommand;
 
 @Component
-public class FieldsCommand extends PlayerCommand<ClansPlugin, FieldsManager> {
+public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef> {
 
     public FieldsCommand() {
         super("fields", "Fields management", Rank.ADMIN);
@@ -25,7 +25,7 @@ public class FieldsCommand extends PlayerCommand<ClansPlugin, FieldsManager> {
     }
 
     @Component
-    private static class InfoCommand extends PlayerSubCommand<ClansPlugin, FieldsCommand> {
+    private static class InfoCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> {
 
         public InfoCommand() {
             super("info", "Fields information", Rank.ADMIN);
@@ -40,7 +40,7 @@ public class FieldsCommand extends PlayerCommand<ClansPlugin, FieldsManager> {
     }
 
     @Component
-    private static class ResetCommand extends PlayerSubCommand<ClansPlugin, FieldsCommand> {
+    private static class ResetCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> {
 
         public ResetCommand() {
             super("reset", "Reset all Fields Blocks", Rank.ADMIN);
@@ -57,7 +57,7 @@ public class FieldsCommand extends PlayerCommand<ClansPlugin, FieldsManager> {
     }
 
     @Component
-    private static class PurgeCommand extends PlayerSubCommand<ClansPlugin, FieldsCommand> {
+    private static class PurgeCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> {
 
         public PurgeCommand() {
             super("purge", "Purge all Fields Blocks", Rank.OWNER);

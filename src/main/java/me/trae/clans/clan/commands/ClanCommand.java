@@ -2,25 +2,24 @@ package me.trae.clans.clan.commands;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
-import io.github.trae.hytale.framework.command.PlayerCommand;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.core.client.Client;
-import me.trae.core.client.enums.Rank;
+import me.trae.core.command.Command;
 
 import java.util.Optional;
 import java.util.function.Consumer;
 
 @Component
-public class ClanCommand extends PlayerCommand<ClansPlugin, ClanManager> {
+public class ClanCommand extends Command<ClansPlugin, ClanManager, PlayerRef> {
 
     public static final Consumer<PlayerRef> CLAN_EMPTY_MESSAGE_CONSUMER = playerRef -> UtilMessage.message(playerRef, "Clans", "You are not in a Clan.");
     public static final Consumer<PlayerRef> CLAN_PRESENT_MESSAGE_CONSUMER = playerRef -> UtilMessage.message(playerRef, "Clans", "You are already in a Clan.");
 
     public ClanCommand() {
-        super("clan", "Clan management", Rank.DEFAULT);
+        super("clan", "Clan management");
 
         this.addAliases("c");
         this.addAliases("faction", "fac", "f");

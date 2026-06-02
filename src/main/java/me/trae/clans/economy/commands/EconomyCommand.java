@@ -3,20 +3,20 @@ package me.trae.clans.economy.commands;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.di.annotations.type.component.Service;
-import io.github.trae.hytale.framework.command.PlayerCommand;
-import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.utilities.UtilString;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.economy.EconomyManager;
 import me.trae.core.client.enums.Rank;
+import me.trae.core.command.Command;
+import me.trae.core.command.SubCommand;
 
 @Service
-public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
+public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerRef> {
 
     public EconomyCommand() {
-        super("economy", "Economy management", Rank.DEFAULT);
+        super("economy", "Economy management");
 
         this.addAliases("eco", "coins", "money", "balance", "bal");
     }
@@ -29,7 +29,7 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
     }
 
     @Component
-    private static class SetCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+    private static class SetCommand extends SubCommand<ClansPlugin, EconomyCommand, PlayerRef> {
 
         public SetCommand() {
             super("set", "Set Coins for a Player", Rank.ADMIN);
@@ -63,7 +63,7 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
     }
 
     @Component
-    private static class GiveCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+    private static class GiveCommand extends SubCommand<ClansPlugin, EconomyCommand, PlayerRef> {
 
         public GiveCommand() {
             super("give", "Give Coins to a Player", Rank.ADMIN);
@@ -102,7 +102,7 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
     }
 
     @Component
-    private static class TakeCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+    private static class TakeCommand extends SubCommand<ClansPlugin, EconomyCommand, PlayerRef> {
 
         public TakeCommand() {
             super("take", "Take Coins from a Player", Rank.ADMIN);
@@ -141,10 +141,10 @@ public class EconomyCommand extends PlayerCommand<ClansPlugin, EconomyManager> {
     }
 
     @Component
-    public static class SendCommand extends PlayerSubCommand<ClansPlugin, EconomyCommand> {
+    public static class SendCommand extends SubCommand<ClansPlugin, EconomyCommand, PlayerRef> {
 
         public SendCommand() {
-            super("send", "Send Coins to a Player", Rank.DEFAULT);
+            super("send", "Send Coins to a Player");
 
             this.addAliases("pay", "transfer");
         }

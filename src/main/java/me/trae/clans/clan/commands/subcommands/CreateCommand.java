@@ -53,7 +53,7 @@ public class CreateCommand extends AbstractClanSubCommand implements EventListen
     }
 
     private boolean canCreateClan(final PlayerRef playerRef, final Client client, final String name) {
-        if (this.getModule().getSubCommands().containsKey(name.toLowerCase(Locale.ROOT))) {
+        if (this.getModule().getAbstractCommand().getSubCommands().containsKey(name.toLowerCase(Locale.ROOT))) {
             UtilMessage.message(playerRef, "Clans", "You cannot use that as your Clan name!");
             return false;
         }

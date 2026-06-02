@@ -3,7 +3,6 @@ package me.trae.clans.clan.commands.chat;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
-import io.github.trae.hytale.framework.command.PlayerCommand;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
@@ -21,7 +20,7 @@ import me.trae.clans.clan.enums.ClansChatChannel;
 import me.trae.core.chat.events.ChatSendEvent;
 import me.trae.core.chat.events.abstracts.AbstractChatEvent;
 import me.trae.core.client.Client;
-import me.trae.core.client.enums.Rank;
+import me.trae.core.command.Command;
 import me.trae.core.gamer.Gamer;
 
 import java.util.ArrayList;
@@ -30,12 +29,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class AllyChatCommand extends PlayerCommand<ClansPlugin, ClanManager> implements EventListener {
+public class AllyChatCommand extends Command<ClansPlugin, ClanManager, PlayerRef> implements EventListener {
 
     private static final ClansChatChannel CHAT_CHANNEL = ClansChatChannel.ALLY_CHAT;
 
     public AllyChatCommand() {
-        super("allychat", "Toggle Ally Chat", Rank.DEFAULT);
+        super("allychat", "Toggle Ally Chat");
 
         this.addAliases("ac");
     }

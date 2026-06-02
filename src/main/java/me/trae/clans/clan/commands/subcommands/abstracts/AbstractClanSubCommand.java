@@ -1,7 +1,6 @@
 package me.trae.clans.clan.commands.subcommands.abstracts;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import io.github.trae.hytale.framework.command.subcommand.PlayerSubCommand;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import me.trae.clans.ClansPlugin;
@@ -12,17 +11,18 @@ import me.trae.clans.clan.commands.subcommands.abstracts.interfaces.IAbstractCla
 import me.trae.clans.clan.data.Member;
 import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
+import me.trae.core.command.SubCommand;
 
 import java.util.Optional;
 
-public abstract class AbstractClanSubCommand extends PlayerSubCommand<ClansPlugin, ClanCommand> implements IAbstractClanSubCommand {
+public abstract class AbstractClanSubCommand extends SubCommand<ClansPlugin, ClanCommand, PlayerRef> implements IAbstractClanSubCommand {
 
     public AbstractClanSubCommand(final String name, final String description, final Rank requiredRank) {
         super(name, description, requiredRank);
     }
 
     public AbstractClanSubCommand(final String name, final String description) {
-        this(name, description, Rank.DEFAULT);
+        super(name, description);
     }
 
     @Override
