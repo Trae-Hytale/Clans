@@ -43,13 +43,13 @@ public class CreateCommand extends AbstractClanSubCommand implements EventListen
             return;
         }
 
-        final String clanName = args[0];
+        final String name = args[0];
 
-        if (!(this.canCreateClan(playerRef, client, clanName))) {
+        if (!(this.canCreateClan(playerRef, client, name))) {
             return;
         }
 
-        UtilEvent.dispatch(new ClanCreateEvent(playerRef, client, clanName));
+        UtilEvent.dispatch(new ClanCreateEvent(playerRef, client, name));
     }
 
     private boolean canCreateClan(final PlayerRef playerRef, final Client client, final String name) {
