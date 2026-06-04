@@ -13,6 +13,7 @@ import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.configs.EnergyConfig;
 import me.trae.clans.clan.data.Member;
@@ -204,5 +205,22 @@ public class ClansSidebarUpdateListener implements Module<ClansPlugin, ClanManag
 
         event.getClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
         event.getTargetClan().getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onClanRename(final ClanRenameEvent event) {
+        if (event.isCancelled()) {
+            return;
+        }
+
+        final Clan clan = event.getClan();
+
+        clan.getMembers().values().stream().filter(Member::isOnline).map(Member::getPlayerRef).forEach(this::update);
+
+        for (final Chunk chunk : clan.getTerritory()) {
+            for (final Player player : chunk.getEntitiesByType(Player.class)) {
+                UtilPlayer.getPlayerRef(player).ifPresent(this::update);
+            }
+        }
     }
 }

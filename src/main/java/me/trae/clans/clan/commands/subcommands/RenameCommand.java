@@ -74,7 +74,7 @@ public class RenameCommand extends AbstractClanSubCommand implements EventListen
         return true;
     }
 
-    @EventHandler(priority = EventPriority.MONITOR)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onClanRename(final ClanRenameEvent event) {
         if (event.isCancelled()) {
             return;
