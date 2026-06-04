@@ -1,9 +1,11 @@
 package me.trae.clans.clan.commands.subcommands;
 
+import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.hytale.framework.command.impl.Confirmable;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
@@ -19,10 +21,11 @@ import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.clan.ClanDisbandEvent;
 import me.trae.core.client.Client;
 
+import java.time.Duration;
 import java.util.Collections;
 
 @Component
-public class DisbandCommand extends AbstractClanSubCommand implements EventListener {
+public class DisbandCommand extends AbstractClanSubCommand implements EventListener, Confirmable {
 
     private final DisbandCommandConfig disbandCommandConfig;
 
@@ -46,6 +49,12 @@ public class DisbandCommand extends AbstractClanSubCommand implements EventListe
     public void execute(final PlayerRef playerRef, final Player player, final Client client, final Clan playerClan, final String[] args) {
         if (!(this.canDisbandClan(playerRef, client, playerClan))) {
             return;
+        }
+
+        if (!(client.isAdministrating())) {
+            if (!(this.hasConfirmed(playerRef))) {
+                return;
+            }
         }
 
         UtilEvent.dispatch(new ClanDisbandEvent(playerClan, playerRef));
@@ -84,5 +93,20 @@ public class DisbandCommand extends AbstractClanSubCommand implements EventListe
         }
 
         this.getModule().getManager().disbandClan(clan);
+    }
+
+    @Override
+    public boolean isPreExecuteConfirmCheck() {
+        return false;
+    }
+
+    @Override
+    public long getConfirmationExpiry() {
+        return Duration.ofSeconds(15).toMillis();
+    }
+
+    @Override
+    public void sendConfirmationMessage(final CommandSender commandSender) {
+        UtilMessage.message(commandSender, "Clans", "<red>Run the command again to confirm disbanding the clan!</red>");
     }
 }
