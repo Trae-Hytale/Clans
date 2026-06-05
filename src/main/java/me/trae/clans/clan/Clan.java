@@ -11,16 +11,29 @@ import io.github.trae.utilities.UtilTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import me.trae.clans.clan.data.*;
+import me.trae.clans.clan.data.Alliance;
+import me.trae.clans.clan.data.Enemy;
+import me.trae.clans.clan.data.Member;
+import me.trae.clans.clan.data.Pillage;
+import me.trae.clans.clan.data.Request;
 import me.trae.clans.clan.data.enums.MemberRole;
 import me.trae.clans.clan.data.enums.PlayerRequestType;
 import me.trae.clans.clan.data.enums.RelationRequestType;
 import me.trae.clans.clan.data.enums.RequestType;
-import me.trae.clans.clan.data.properties.*;
+import me.trae.clans.clan.data.properties.AllianceProperty;
+import me.trae.clans.clan.data.properties.EnemyProperty;
+import me.trae.clans.clan.data.properties.MemberProperty;
+import me.trae.clans.clan.data.properties.PillageProperty;
+import me.trae.clans.clan.data.properties.RequestProperty;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.clans.clan.properties.ClanProperty;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor

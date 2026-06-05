@@ -3,7 +3,11 @@ package me.trae.clans.clan.interfaces;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import me.trae.clans.clan.Clan;
-import me.trae.clans.clan.data.*;
+import me.trae.clans.clan.data.Alliance;
+import me.trae.clans.clan.data.Enemy;
+import me.trae.clans.clan.data.Member;
+import me.trae.clans.clan.data.Pillage;
+import me.trae.clans.clan.data.Request;
 import me.trae.clans.clan.data.enums.RelationRequestType;
 
 import java.util.Optional;

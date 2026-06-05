@@ -1,7 +1,13 @@
 package me.trae.clans.map.packets;
 
 import com.hypixel.hytale.protocol.Packet;
-import com.hypixel.hytale.protocol.packets.worldmap.*;
+import com.hypixel.hytale.protocol.packets.worldmap.MapChunk;
+import com.hypixel.hytale.protocol.packets.worldmap.MapImage;
+import com.hypixel.hytale.protocol.packets.worldmap.MapMarker;
+import com.hypixel.hytale.protocol.packets.worldmap.MapMarkerComponent;
+import com.hypixel.hytale.protocol.packets.worldmap.PlayerMarkerComponent;
+import com.hypixel.hytale.protocol.packets.worldmap.TintComponent;
+import com.hypixel.hytale.protocol.packets.worldmap.UpdateWorldMap;
 import com.hypixel.hytale.server.core.io.adapter.PlayerPacketFilter;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -23,8 +29,11 @@ import me.trae.core.client.Client;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
+import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Component
