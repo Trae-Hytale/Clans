@@ -1,8 +1,10 @@
 package me.trae.clans.economy.commands;
 
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.di.annotations.type.component.Service;
+import io.github.trae.hytale.framework.command.suggestion.Suggestion;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import io.github.trae.utilities.UtilString;
@@ -11,6 +13,8 @@ import me.trae.clans.economy.EconomyManager;
 import me.trae.core.client.enums.Rank;
 import me.trae.core.command.Command;
 import me.trae.core.command.SubCommand;
+
+import java.util.List;
 
 @Service
 public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerRef> {
@@ -60,6 +64,13 @@ public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerR
                 UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> has updated your coins to <gold>%s</gold>.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
         }
+
+        @Override
+        public List<Suggestion> getSuggestions() {
+            return List.of(
+                    new Suggestion("Player", "player", "Provide a Player", _ -> Universe.get().getPlayers().stream().map(PlayerRef::getUsername).toList())
+            );
+        }
     }
 
     @Component
@@ -99,6 +110,13 @@ public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerR
                 UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> gave <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
         }
+
+        @Override
+        public List<Suggestion> getSuggestions() {
+            return List.of(
+                    new Suggestion("Player", "player", "Provide a Player", _ -> Universe.get().getPlayers().stream().map(PlayerRef::getUsername).toList())
+            );
+        }
     }
 
     @Component
@@ -137,6 +155,13 @@ public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerR
                 UtilMessage.message(playerRef, "Economy", "You took <gold>%s</gold> from <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayerRef.getUsername()));
                 UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> took <gold>%s</gold> from you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
+        }
+
+        @Override
+        public List<Suggestion> getSuggestions() {
+            return List.of(
+                    new Suggestion("Player", "player", "Provide a Player", _ -> Universe.get().getPlayers().stream().map(PlayerRef::getUsername).toList())
+            );
         }
     }
 
@@ -189,6 +214,13 @@ public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerR
                 UtilMessage.message(playerRef, "Economy", "You sent <gold>%s</gold> to <yellow>%s</yellow>.".formatted(UtilString.formatToDollarByInteger(amount), targetPlayerRef.getUsername()));
                 UtilMessage.message(targetPlayerRef, "Economy", "<yellow>%s</yellow> sent <gold>%s</gold> to you.".formatted(playerRef.getUsername(), UtilString.formatToDollarByInteger(amount)));
             });
+        }
+
+        @Override
+        public List<Suggestion> getSuggestions() {
+            return List.of(
+                    new Suggestion("Player", "player", "Provide a Player", _ -> Universe.get().getPlayers().stream().map(PlayerRef::getUsername).toList())
+            );
         }
     }
 }

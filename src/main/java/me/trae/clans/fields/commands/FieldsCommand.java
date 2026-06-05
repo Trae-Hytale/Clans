@@ -1,7 +1,9 @@
 package me.trae.clans.fields.commands;
 
+import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.hytale.framework.command.impl.Confirmable;
 import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
@@ -57,7 +59,7 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
     }
 
     @Component
-    private static class PurgeCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> {
+    private static class PurgeCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> implements Confirmable {
 
         public PurgeCommand() {
             super("purge", "Purge all Fields Blocks", Rank.OWNER);
@@ -74,6 +76,11 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
             }
 
             UtilMessage.message(playerRef, "Fields", "Deleted <yellow>%s</yellow> Fields Blocks.".formatted(count));
+        }
+
+        @Override
+        public void sendConfirmationMessage(final CommandSender commandSender) {
+            UtilMessage.message(commandSender, "Fields", "<red>Run the command again to confirm puring all fields blocks!</red>");
         }
     }
 }
