@@ -67,14 +67,14 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements EventLi
         final PlayerRef playerRef = event.getPlayerRef();
         final List<Chunk> chunks = event.getChunks();
 
-        for (final Chunk chunk : chunks) {
-            this.getModule().getManager().getClanChunkStorage().remove(chunk);
-        }
-
         this.getModule().getManager().getBlockRestoreManager().unOutlineAllChunks(chunks, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
         clan.getTerritory().clear();
         this.getModule().getManager().getRepository().update(clan, ClanProperty.TERRITORY);
+
+        for (final Chunk chunk : chunks) {
+            this.getModule().getManager().getClanChunkStorage().remove(chunk);
+        }
 
         if (clan.getHome() != null) {
             clan.setHome(null);
