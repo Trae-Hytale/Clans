@@ -7,9 +7,7 @@ import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilEvent;
-import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.utilities.UtilJava;
-import io.github.trae.utilities.UtilString;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.clan.Clan;
 import me.trae.clans.clan.ClanManager;
@@ -17,6 +15,7 @@ import me.trae.clans.clan.commands.ClanCommand;
 import me.trae.clans.clan.data.Member;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.enums.ClansChatChannel;
+import me.trae.core.chat.enums.CoreChatChannel;
 import me.trae.core.chat.events.ChatSendEvent;
 import me.trae.core.chat.events.abstracts.AbstractChatEvent;
 import me.trae.core.client.Client;
@@ -31,7 +30,7 @@ import java.util.UUID;
 @Component
 public class AllyChatCommand extends Command<ClansPlugin, ClanManager, PlayerRef> implements EventListener {
 
-    private static final ClansChatChannel CHAT_CHANNEL = ClansChatChannel.ALLY_CHAT;
+    private static final ClansChatChannel CHAT_CHANNEL = ClansChatChannel.ALLIANCE;
 
     public AllyChatCommand() {
         super("allychat", "Toggle Ally Chat");
@@ -62,13 +61,9 @@ public class AllyChatCommand extends Command<ClansPlugin, ClanManager, PlayerRef
             final Gamer gamer = gamerOptional.get();
 
             if (gamer.getChatChannel().equals(CHAT_CHANNEL)) {
-                gamer.resetChatChannel();
-
-                UtilMessage.message(playerRef, "Clans", UtilString.pair("Ally Chat", "<red>Disabled</red>"));
+                gamer.updateChatChannel(CoreChatChannel.GLOBAL);
             } else {
-                gamer.setChatChannel(CHAT_CHANNEL);
-
-                UtilMessage.message(playerRef, "Clans", UtilString.pair("Ally Chat", "<green>Enabled</green>"));
+                gamer.updateChatChannel(CHAT_CHANNEL);
             }
             return;
         }

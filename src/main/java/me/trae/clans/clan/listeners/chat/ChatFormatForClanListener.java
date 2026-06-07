@@ -26,7 +26,7 @@ public class ChatFormatForClanListener implements Module<ClansPlugin, ClanManage
             return;
         }
 
-        if (!(event.getChannel().equals(CoreChatChannel.GLOBAL_CHAT))) {
+        if (!(event.getChannel().equals(CoreChatChannel.GLOBAL))) {
             return;
         }
 
