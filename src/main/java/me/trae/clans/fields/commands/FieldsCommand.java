@@ -9,7 +9,7 @@ import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.utilities.UtilString;
 import me.trae.clans.ClansPlugin;
-import me.trae.clans.fields.FieldsBlock;
+import me.trae.clans.fields.FieldsData;
 import me.trae.clans.fields.FieldsManager;
 import me.trae.core.client.enums.Rank;
 import me.trae.core.command.Command;
@@ -36,8 +36,9 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
         @Override
         public void execute(final PlayerRef playerRef, final String[] args) {
             UtilMessage.message(playerRef, "Fields", "Information:");
-            UtilMessage.message(playerRef, UtilString.pair("Remaining Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getRemainingFieldsBlockList().size()))));
-            UtilMessage.message(playerRef, UtilString.pair("Broken Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getBrokenFieldsBlockList().size()))));
+
+            UtilMessage.message(playerRef, UtilString.pair("Remaining Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getRemainingDataList().size()))));
+            UtilMessage.message(playerRef, UtilString.pair("Broken Blocks", UtilColor.serialize(ChatColor.YELLOW.getColor(), String.valueOf(this.getModule().getManager().getBrokenDataList().size()))));
         }
     }
 
@@ -50,9 +51,9 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
 
         @Override
         public void execute(final PlayerRef playerRef, final String[] args) {
-            final int count = this.getModule().getManager().getBrokenFieldsBlockList().size();
+            final int count = this.getModule().getManager().getBrokenDataList().size();
 
-            this.getModule().getManager().reset();
+            this.getModule().getManager().replenish();
 
             UtilMessage.message(playerRef, "Fields", "Restored <yellow>%s</yellow> Fields Blocks.".formatted(count));
         }
@@ -69,9 +70,10 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
         public void execute(final PlayerRef playerRef, final String[] args) {
             int count = 0;
 
-            for (final FieldsBlock fieldsBlock : this.getModule().getManager().getFieldsBlockList()) {
-                this.getModule().getManager().removeFieldsBlock(fieldsBlock);
-                this.getModule().getManager().getRepository().delete(fieldsBlock);
+            for (final FieldsData fieldsData : this.getModule().getManager().getData()) {
+                this.getModule().getManager().removeData(fieldsData);
+                this.getModule().getManager().getRepository().delete(fieldsData);
+
                 count++;
             }
 

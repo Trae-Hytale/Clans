@@ -1,27 +1,21 @@
 package me.trae.clans.fields.listeners;
 
-import com.hypixel.hytale.component.AddReason;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.math.vector.Rotation3f;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
-import com.hypixel.hytale.server.core.inventory.ItemStack;
-import com.hypixel.hytale.server.core.modules.entity.item.ItemComponent;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hf.Module;
 import io.github.trae.hytale.framework.event.EventListener;
 import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
+import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.fields.FieldsManager;
-import me.trae.clans.fields.data.FieldsItem;
-import me.trae.clans.fields.enums.FieldsBlockType;
+import me.trae.clans.fields.blockrestore.FieldsBlockRestore;
+import me.trae.clans.fields.events.BreakFieldsBlockEvent;
+import me.trae.clans.fields.loot.Loot;
 import me.trae.core.client.Client;
 import me.trae.core.event.BlockBreakEvent;
-
-import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManager>, EventListener {
@@ -42,7 +36,7 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
             return;
         }
 
-        FieldsBlockType.getByBlockId(blockType.getId()).ifPresent(fieldsBlockType -> {
+        this.getManager().getBlockById(blockType.getId()).ifPresent(fieldsBlock -> {
             final PlayerRef playerRef = event.getPlayerRef();
 
             if (this.getManager().getClientManager().getClientByPlayer(playerRef).map(Client::isAdministrating).orElse(false)) {
@@ -51,7 +45,7 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
 
             final BlockLocation location = event.getLocation();
 
-            if (!(this.getManager().isFields(location))) {
+            if (!(this.getManager().isFieldsByLocation(location))) {
                 return;
             }
 
@@ -59,21 +53,17 @@ public class BreakFieldsBlockListener implements Module<ClansPlugin, FieldsManag
                 return;
             }
 
-            this.getManager().getFieldsBlockByLocation(location).ifPresent(fieldsBlock -> {
+            this.getManager().getDataByLocation(location).ifPresent(fieldsData -> {
                 event.setCancelled(true);
 
-                this.getManager().getBlockRestoreManager().apply(this.getManager().createBlockRestore(fieldsBlock, fieldsBlockType));
+                if (UtilEvent.supply(new BreakFieldsBlockEvent(fieldsData, fieldsBlock, playerRef)).isCancelled()) {
+                    return;
+                }
 
-                for (final FieldsItem fieldsItem : this.getManager().getDroppedFieldsItemList(fieldsBlockType)) {
-                    if (ThreadLocalRandom.current().nextInt(0, 100) > fieldsItem.getChance()) {
-                        continue;
-                    }
+                this.getManager().getBlockRestoreManager().apply(new FieldsBlockRestore(fieldsData, fieldsBlock, this.getManager().getDuration()));
 
-                    final Holder<EntityStore> itemEntityStoreHolder = ItemComponent.generateItemDrop(event.getContext().getStore(), new ItemStack(fieldsItem.getId(), fieldsItem.getQuantity()), event.getLocation().getPosition3d(), Rotation3f.ZERO, 0.0F, 0.5F, 0.0F);
-
-                    if (itemEntityStoreHolder != null) {
-                        event.getContext().getCommandBuffer().addEntity(itemEntityStoreHolder, AddReason.SPAWN);
-                    }
+                for (final Loot loot : fieldsBlock.getLootList()) {
+                    loot.apply(event);
                 }
             });
         });

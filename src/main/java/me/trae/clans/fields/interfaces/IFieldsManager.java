@@ -1,35 +1,33 @@
 package me.trae.clans.fields.interfaces;
 
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
-import me.trae.clans.fields.FieldsBlock;
-import me.trae.clans.fields.data.FieldsItem;
-import me.trae.clans.fields.enums.FieldsBlockType;
-import me.trae.core.blockrestore.BlockRestore;
+import me.trae.clans.fields.FieldsData;
+import me.trae.clans.fields.blocks.FieldsBlock;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface IFieldsManager {
 
-    List<FieldsBlock> getFieldsBlockList();
+    void flushData();
 
-    void flushAllFieldsBlocks();
+    List<FieldsData> getData();
 
-    void addFieldsBlock(final FieldsBlock fieldsBlock);
+    void addData(final FieldsData fieldsData);
 
-    void removeFieldsBlock(final FieldsBlock fieldsBlock);
+    void removeData(final FieldsData fieldsData);
 
-    Optional<FieldsBlock> getFieldsBlockByLocation(final BlockLocation blockLocation);
+    Optional<FieldsData> getDataByLocation(final BlockLocation location);
 
-    List<FieldsBlock> getBrokenFieldsBlockList();
+    boolean isFieldsByLocation(final BlockLocation location);
 
-    List<FieldsBlock> getRemainingFieldsBlockList();
+    Optional<FieldsBlock> getBlockById(final String id);
 
-    boolean isFields(final BlockLocation blockLocation);
+    List<FieldsData> getBrokenDataList();
 
-    BlockRestore createBlockRestore(final FieldsBlock fieldsBlock, final FieldsBlockType fieldsBlockType);
+    List<FieldsData> getRemainingDataList();
 
-    void reset();
+    void replenish();
 
-    List<FieldsItem> getDroppedFieldsItemList(final FieldsBlockType fieldsBlockType);
+    long getDuration();
 }

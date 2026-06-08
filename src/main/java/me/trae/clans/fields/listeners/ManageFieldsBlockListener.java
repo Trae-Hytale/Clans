@@ -11,9 +11,8 @@ import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilMessage;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
 import me.trae.clans.ClansPlugin;
-import me.trae.clans.fields.FieldsBlock;
+import me.trae.clans.fields.FieldsData;
 import me.trae.clans.fields.FieldsManager;
-import me.trae.clans.fields.enums.FieldsBlockType;
 import me.trae.core.client.Client;
 import me.trae.core.event.BlockBreakEvent;
 import me.trae.core.event.BlockPlaceEvent;
@@ -33,7 +32,7 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        if (FieldsBlockType.getByBlockId(itemInHand.getItemId()).isEmpty()) {
+        if (this.getManager().getBlockById(itemInHand.getItemId()).isEmpty()) {
             return;
         }
 
@@ -45,20 +44,20 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
 
         final BlockLocation location = event.getLocation();
 
-        if (!(this.getManager().isFields(location))) {
+        if (!(this.getManager().isFieldsByLocation(location))) {
             return;
         }
 
-        if (this.getManager().getFieldsBlockByLocation(location).isPresent()) {
+        if (this.getManager().getDataByLocation(location).isPresent()) {
             return;
         }
 
-        final FieldsBlock fieldsBlock = new FieldsBlock(location, itemInHand.getItemId());
+        final FieldsData fieldsData = new FieldsData(location, itemInHand.getItemId());
 
-        this.getManager().addFieldsBlock(fieldsBlock);
-        this.getManager().getRepository().save(fieldsBlock);
+        this.getManager().addData(fieldsData);
+        this.getManager().getRepository().save(fieldsData);
 
-        UtilMessage.message(playerRef, "Fields", "Saved <green>%s</green> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(itemInHand.getItemId(), location.getX(), location.getY(), location.getZ()));
+        UtilMessage.message(playerRef, "Fields", "Saved <green>%s</green> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>).".formatted(itemInHand.getItemId(), location.getX(), location.getY(), location.getZ()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
@@ -73,7 +72,7 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
             return;
         }
 
-        if (FieldsBlockType.getByBlockId(blockType.getId()).isEmpty()) {
+        if (this.getManager().getBlockById(blockType.getId()).isEmpty()) {
             return;
         }
 
@@ -85,15 +84,15 @@ public class ManageFieldsBlockListener implements Module<ClansPlugin, FieldsMana
 
         final BlockLocation location = event.getLocation();
 
-        if (!(this.getManager().isFields(location))) {
+        if (!(this.getManager().isFieldsByLocation(location))) {
             return;
         }
 
-        this.getManager().getFieldsBlockByLocation(location).ifPresent(fieldsBlock -> {
-            this.getManager().removeFieldsBlock(fieldsBlock);
-            this.getManager().getRepository().delete(fieldsBlock);
+        this.getManager().getDataByLocation(location).ifPresent(fieldsData -> {
+            this.getManager().removeData(fieldsData);
+            this.getManager().getRepository().delete(fieldsData);
 
-            UtilMessage.message(playerRef, "Fields", "Deleted <red>%s</red> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>)".formatted(blockType.getId(), location.getX(), location.getY(), location.getZ()));
+            UtilMessage.message(playerRef, "Fields", "Deleted <red>%s</red> at (<yellow>%s</yellow>, <yellow>%s</yellow>, <yellow>%s</yellow>).".formatted(blockType.getId(), location.getX(), location.getY(), location.getZ()));
         });
     }
 }
