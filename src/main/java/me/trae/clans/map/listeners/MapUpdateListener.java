@@ -7,6 +7,7 @@ import io.github.trae.hytale.framework.event.annotations.EventHandler;
 import io.github.trae.hytale.framework.event.constants.EventPriority;
 import io.github.trae.hytale.framework.utility.UtilPlayer;
 import me.trae.clans.ClansPlugin;
+import me.trae.clans.clan.events.TerritoryMassClaimEvent;
 import me.trae.clans.clan.events.clan.ClanAllyEvent;
 import me.trae.clans.clan.events.clan.ClanDisbandEvent;
 import me.trae.clans.clan.events.clan.ClanEnemyEvent;
@@ -60,6 +61,13 @@ public class MapUpdateListener implements Module<ClansPlugin, MapManager>, Event
         }
 
         this.getManager().refreshChunks(event.getClan().getTerritory());
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onTerritoryMassClaim(final TerritoryMassClaimEvent event) {
+        this.getManager().refreshChunks(event.getChunks());
+
+        event.getAffectedClans().forEach(clan -> this.getManager().refreshChunks(clan.getTerritory()));
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

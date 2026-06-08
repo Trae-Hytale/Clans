@@ -4,8 +4,10 @@ import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import io.github.trae.di.annotations.type.component.Component;
+import io.github.trae.hytale.framework.utility.UtilColor;
 import io.github.trae.hytale.framework.utility.UtilEvent;
 import io.github.trae.hytale.framework.utility.UtilMessage;
+import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.utilities.UtilInput;
 import me.trae.clans.clan.Clan;
@@ -22,6 +24,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class MassClaimCommand extends AbstractClanSubCommand {
@@ -84,12 +87,21 @@ public class MassClaimCommand extends AbstractClanSubCommand {
             claimedChunkList.add(nearbyChunk);
         }
 
+        if (claimedChunkList.isEmpty()) {
+            UtilMessage.message(playerRef, "Clans", "You already own all chunks in that area.");
+            return;
+        }
+
         territoryClanSet.forEach(territoryClan -> this.getModule().getManager().getRepository().update(territoryClan, ClanProperty.TERRITORY));
 
         this.getModule().getManager().getRepository().update(playerClan, ClanProperty.TERRITORY);
 
         UtilMessage.message(playerRef, "Clans", "You have claimed <yellow>%s</yellow>x chunks for %s.".formatted(claimedChunkList.size(), this.getModule().getManager().getClanFullName(ClanRelation.SELF, playerClan)));
 
-        UtilEvent.dispatch(new TerritoryMassClaimEvent(playerClan, playerRef, claimedChunkList));
+        if (!(territoryClanSet.isEmpty())) {
+            UtilMessage.message(playerRef, "Clans", "You also claimed over <yellow>%s</yellow> clans: [%s]".formatted(territoryClanSet.size(), territoryClanSet.stream().map(territoryClan -> this.getModule().getManager().getClanShortName(this.getModule().getManager().getClanRelationByClan(playerClan, territoryClan), territoryClan)).collect(Collectors.joining(UtilColor.serialize(ChatColor.GRAY.getColor(), ", ")))));
+        }
+
+        UtilEvent.dispatch(new TerritoryMassClaimEvent(playerClan, playerRef, claimedChunkList, territoryClanSet));
     }
 }

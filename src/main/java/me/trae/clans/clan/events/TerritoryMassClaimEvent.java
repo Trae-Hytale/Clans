@@ -8,6 +8,7 @@ import lombok.Getter;
 import me.trae.clans.clan.Clan;
 
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Getter
@@ -16,4 +17,5 @@ public class TerritoryMassClaimEvent extends CustomEvent {
     private final Clan clan;
     private final PlayerRef playerRef;
     private final List<Chunk> chunks;
+    private final Set<Clan> affectedClans;
 }

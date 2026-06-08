@@ -45,7 +45,7 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements EventLi
             return;
         }
 
-        UtilEvent.dispatch(new TerritoryUnClaimAllEvent(playerClan, playerRef, playerClan.getTerritory()));
+        UtilEvent.dispatch(new TerritoryUnClaimAllEvent(playerClan, playerRef, List.copyOf(playerClan.getTerritory())));
     }
 
     private boolean canUnClaimAll(final PlayerRef playerRef, final Clan playerClan) {
@@ -69,7 +69,7 @@ public class UnClaimAllCommand extends AbstractClanSubCommand implements EventLi
 
         this.getModule().getManager().getBlockRestoreManager().unOutlineAllChunks(chunks, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan));
 
-        clan.getTerritory().clear();
+        clan.getTerritory().removeAll(chunks);
         this.getModule().getManager().getRepository().update(clan, ClanProperty.TERRITORY);
 
         for (final Chunk chunk : chunks) {
