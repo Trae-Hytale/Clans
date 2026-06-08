@@ -27,7 +27,7 @@ public class EconomyCommand extends Command<ClansPlugin, EconomyManager, PlayerR
 
     @Override
     public void execute(final PlayerRef playerRef, final String[] args) {
-        this.getManager().getGamerManager().getGamerByPlayer(playerRef).ifPresent(gamer -> {
+        this.getManager().getClansGamerManager().getGamerByPlayer(playerRef).ifPresent(gamer -> {
             UtilMessage.message(playerRef, "Economy", "You have <gold>%s</gold>.".formatted(gamer.getFormattedCoins()));
         });
     }

@@ -18,23 +18,23 @@ import me.trae.clans.gamer.properties.GamerProperty;
 @Service
 public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
 
-    private final GamerManager gamerManager;
+    private final GamerManager clansGamerManager;
 
     @Override
     public void setCoins(final PlayerRef playerRef, final int amount) {
-        this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
+        this.clansGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(amount);
-            this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+            this.clansGamerManager.getRepository().update(gamer, GamerProperty.COINS);
             UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
     }
 
     @Override
     public void giveCoins(final PlayerRef playerRef, final int amount) {
-        this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
+        this.clansGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(gamer.getCoins() + amount);
 
-            this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+            this.clansGamerManager.getRepository().update(gamer, GamerProperty.COINS);
 
             UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
@@ -42,10 +42,10 @@ public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
 
     @Override
     public void takeCoins(final PlayerRef playerRef, final int amount) {
-        this.gamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
+        this.clansGamerManager.getGamerByPlayer(playerRef).ifPresent(gamer -> {
             gamer.setCoins(gamer.getCoins() - amount);
 
-            this.gamerManager.getRepository().update(gamer, GamerProperty.COINS);
+            this.clansGamerManager.getRepository().update(gamer, GamerProperty.COINS);
 
             UtilEvent.dispatch(new SidebarUpdateEvent("CLANS", playerRef));
         });
@@ -53,7 +53,7 @@ public class EconomyManager implements Manager<ClansPlugin>, IEconomyManager {
 
     @Override
     public boolean hasCoins(final PlayerRef playerRef, final int amount) {
-        return this.gamerManager.getGamerByPlayer(playerRef).map(gamer -> gamer.getCoins() >= amount).orElse(false);
+        return this.clansGamerManager.getGamerByPlayer(playerRef).map(gamer -> gamer.getCoins() >= amount).orElse(false);
     }
 
     @Override

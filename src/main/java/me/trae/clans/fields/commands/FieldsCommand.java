@@ -2,6 +2,7 @@ package me.trae.clans.fields.commands;
 
 import com.hypixel.hytale.server.core.command.system.CommandSender;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import io.github.trae.di.InjectorApi;
 import io.github.trae.di.annotations.type.component.Component;
 import io.github.trae.hytale.framework.command.impl.Confirmable;
 import io.github.trae.hytale.framework.utility.UtilColor;
@@ -11,6 +12,7 @@ import io.github.trae.utilities.UtilString;
 import me.trae.clans.ClansPlugin;
 import me.trae.clans.fields.FieldsData;
 import me.trae.clans.fields.FieldsManager;
+import me.trae.clans.fields.configs.FieldsConfig;
 import me.trae.core.client.enums.Rank;
 import me.trae.core.command.Command;
 import me.trae.core.command.SubCommand;
@@ -83,6 +85,33 @@ public class FieldsCommand extends Command<ClansPlugin, FieldsManager, PlayerRef
         @Override
         public void sendConfirmationMessage(final CommandSender commandSender) {
             UtilMessage.message(commandSender, "Fields", "<red>Run the command again to confirm puring all fields blocks!</red>");
+        }
+    }
+
+    @Component
+    private static class AutoPickupCommand extends SubCommand<ClansPlugin, FieldsCommand, PlayerRef> {
+
+        public AutoPickupCommand() {
+            super("autopickup", "Toggle Auto Pickup", Rank.ADMIN);
+        }
+
+        @Override
+        public void execute(final PlayerRef playerRef, final String[] args) {
+            final FieldsConfig fieldsConfig = this.getModule().getManager().getFieldsConfig();
+
+            if (fieldsConfig.isInsertLootIntoInventory()) {
+                fieldsConfig.setInsertLootIntoInventory(false);
+
+                InjectorApi.saveConfiguration(fieldsConfig.getClass());
+
+                UtilMessage.message(playerRef, "Fields", UtilString.pair("Auto Pickup", "<red>Off</red>"));
+            } else {
+                fieldsConfig.setInsertLootIntoInventory(true);
+
+                InjectorApi.saveConfiguration(fieldsConfig.getClass());
+
+                UtilMessage.message(playerRef, "Fields", UtilString.pair("Auto Pickup", "<green>On</green>"));
+            }
         }
     }
 }

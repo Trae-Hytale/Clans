@@ -33,7 +33,7 @@ public abstract class ItemLoot extends ChanceLoot implements IItemLoot {
 
     @Override
     public void apply(final BlockBreakEvent blockBreakEvent) {
-        if (this.getChance() != 100 && UtilNumber.getRandomNumber(Integer.class, 0, 100) > this.getChance()) {
+        if (this.getChance() != 100 && UtilNumber.getRandomNumber(Integer.class, 1, 100) > this.getChance()) {
             return;
         }
 

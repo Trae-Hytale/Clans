@@ -121,5 +121,7 @@ public interface IClan {
 
     boolean canDepleteEnergy();
 
+    long getEnergyRemaining();
+
     String getFormattedEnergyRemaining();
 }

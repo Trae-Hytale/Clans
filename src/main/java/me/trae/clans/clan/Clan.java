@@ -394,12 +394,17 @@ public class Clan implements Domain<ClanProperty>, IClan {
     }
 
     @Override
+    public long getEnergyRemaining() {
+        return this.getEnergy() / this.getTerritory().size();
+    }
+
+    @Override
     public String getFormattedEnergyRemaining() {
         if (!(this.canDepleteEnergy())) {
             return "Unlimited";
         }
 
-        return UtilTime.getTime(this.getEnergy() / this.getTerritory().size());
+        return UtilTime.getTime(this.getEnergyRemaining(), 1);
     }
 
     @Override
