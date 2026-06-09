@@ -18,7 +18,7 @@ public class EnergyConfig {
 
     private boolean enabled = true;
 
-    private long defaultEnergy = Duration.ofDays(1).toMillis();
+    private long defaultEnergy = Duration.ofDays(4).toMillis();
 
     private List<String> alertIntervals = List.of("24h", "12h", "6h", "2h", "1h", "45m", "30m", "15m", "10m", "5m", "3m", "2m", "1m");
 }

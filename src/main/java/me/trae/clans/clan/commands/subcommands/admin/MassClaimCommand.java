@@ -18,7 +18,6 @@ import me.trae.clans.clan.commands.subcommands.admin.configs.MassClaimCommandCon
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.TerritoryMassClaimEvent;
 import me.trae.clans.clan.properties.ClanProperty;
-import me.trae.core.blockrestore.BlockRestore;
 import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
@@ -111,9 +110,7 @@ public class MassClaimCommand extends AbstractClanSubCommand {
             if (this.massClaimCommandConfig.isDrawOutlineForEachChunk()) {
                 this.getModule().getManager().getBlockRestoreManager().outlineAllChunks(claimedChunkList, blockRestoreName, outlineBlockId, outlineDuration);
             } else {
-                final List<BlockRestore> blockRestoreList = Chunk.getTotalOutlineOfAllChunks(claimedChunkList).stream().map(blockLocation -> new BlockRestore(blockRestoreName, blockLocation, outlineBlockId, outlineDuration)).toList();
-
-                this.getModule().getManager().getBlockRestoreManager().applyAll(blockRestoreList);
+                this.getModule().getManager().getBlockRestoreManager().outlineOfAllTotalChunks(claimedChunkList, blockRestoreName, outlineBlockId, outlineDuration);
             }
         }
 
