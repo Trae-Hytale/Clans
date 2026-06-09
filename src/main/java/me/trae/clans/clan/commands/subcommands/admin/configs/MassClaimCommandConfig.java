@@ -1,4 +1,4 @@
-package me.trae.clans.clan.commands.subcommands.configs;
+package me.trae.clans.clan.commands.subcommands.admin.configs;
 
 import io.github.trae.di.configuration.annotations.Configuration;
 import lombok.AllArgsConstructor;
@@ -12,10 +12,14 @@ import java.time.Duration;
 @NoArgsConstructor
 @Getter
 @Setter
-@Configuration("Clan/Commands/ClaimCommand")
-public class ClaimCommandConfig {
+@Configuration("Clan/Commands/Admin/MassClaimCommand")
+public class MassClaimCommandConfig {
 
-    private String outlineBlockId = "Build_Lightsource_Yellow";
+    private boolean outlineEnabled = true;
+
+    private boolean drawOutlineForEachChunk = true;
+
+    private String outlineBlockId = "Build_Lightsource_Red";
 
     private long outlineDuration = Duration.ofMinutes(5).toMillis();
 }

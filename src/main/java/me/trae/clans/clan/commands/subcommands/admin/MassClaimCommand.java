@@ -11,11 +11,14 @@ import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.Chunk;
 import io.github.trae.utilities.UtilInput;
 import me.trae.clans.clan.Clan;
+import me.trae.clans.clan.ClanManager;
 import me.trae.clans.clan.commands.subcommands.abstracts.AbstractClanSubCommand;
 import me.trae.clans.clan.commands.subcommands.abstracts.enums.ClanStateRequirement;
+import me.trae.clans.clan.commands.subcommands.admin.configs.MassClaimCommandConfig;
 import me.trae.clans.clan.enums.ClanRelation;
 import me.trae.clans.clan.events.TerritoryMassClaimEvent;
 import me.trae.clans.clan.properties.ClanProperty;
+import me.trae.core.blockrestore.BlockRestore;
 import me.trae.core.client.Client;
 import me.trae.core.client.enums.Rank;
 
@@ -29,8 +32,12 @@ import java.util.stream.Collectors;
 @Component
 public class MassClaimCommand extends AbstractClanSubCommand {
 
-    public MassClaimCommand() {
+    private final MassClaimCommandConfig massClaimCommandConfig;
+
+    public MassClaimCommand(final MassClaimCommandConfig massClaimCommandConfig) {
         super("massclaim", "Massclaim Clan Territory", Rank.OWNER);
+
+        this.massClaimCommandConfig = massClaimCommandConfig;
     }
 
     @Override
@@ -92,9 +99,23 @@ public class MassClaimCommand extends AbstractClanSubCommand {
             return;
         }
 
+        this.getModule().getManager().getRepository().update(playerClan, ClanProperty.TERRITORY);
+
         territoryClanSet.forEach(territoryClan -> this.getModule().getManager().getRepository().update(territoryClan, ClanProperty.TERRITORY));
 
-        this.getModule().getManager().getRepository().update(playerClan, ClanProperty.TERRITORY);
+        if (this.massClaimCommandConfig.isOutlineEnabled()) {
+            final String blockRestoreName = ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(playerClan);
+            final String outlineBlockId = this.massClaimCommandConfig.getOutlineBlockId();
+            final long outlineDuration = this.massClaimCommandConfig.getOutlineDuration();
+
+            if (this.massClaimCommandConfig.isDrawOutlineForEachChunk()) {
+                this.getModule().getManager().getBlockRestoreManager().outlineAllChunks(claimedChunkList, blockRestoreName, outlineBlockId, outlineDuration);
+            } else {
+                final List<BlockRestore> blockRestoreList = Chunk.getTotalOutlineOfAllChunks(claimedChunkList).stream().map(blockLocation -> new BlockRestore(blockRestoreName, blockLocation, outlineBlockId, outlineDuration)).toList();
+
+                this.getModule().getManager().getBlockRestoreManager().applyAll(blockRestoreList);
+            }
+        }
 
         UtilMessage.message(playerRef, "Clans", "You have claimed <yellow>%s</yellow>x chunks for %s.".formatted(claimedChunkList.size(), this.getModule().getManager().getClanFullName(ClanRelation.SELF, playerClan)));
 

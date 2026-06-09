@@ -23,7 +23,6 @@ import me.trae.clans.clan.events.territory.TerritoryClaimEvent;
 import me.trae.clans.clan.properties.ClanProperty;
 import me.trae.core.client.Client;
 
-import java.time.Duration;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -153,7 +152,7 @@ public class ClaimCommand extends AbstractClanSubCommand implements EventListene
 
         this.getModule().getManager().getClanChunkStorage().put(chunk, clan);
 
-        this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), this.claimCommandConfig.getOutlineBlockId(), Duration.ofMinutes(5).toMillis());
+        this.getModule().getManager().getBlockRestoreManager().outlineChunk(chunk, ClanManager.CHUNK_OUTLINE_BLOCK_RESTORE_NAME_FORMATTER.apply(clan), this.claimCommandConfig.getOutlineBlockId(), this.claimCommandConfig.getOutlineDuration());
 
         final String chunkString = "(%s)".formatted(UtilChunk.formatChunk(chunk, ChatColor.YELLOW.getColor()));
 

@@ -46,7 +46,7 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
 
     @Override
     public void cacheOverlay(final int chunkX, final int chunkZ, final Color color, final MapImage mapImage) {
-        this.overlayCache.computeIfAbsent(ChunkUtil.indexChunk(chunkX, chunkZ), __ -> new ConcurrentHashMap<>()).put(color.getRGB() & 0xFFFFFF, mapImage);
+        this.overlayCache.computeIfAbsent(ChunkUtil.indexChunk(chunkX, chunkZ), _ -> new ConcurrentHashMap<>()).put(color.getRGB() & 0xFFFFFF, mapImage);
     }
 
     @Override
@@ -135,7 +135,7 @@ public class MapManager implements Manager<ClansPlugin>, IMapManager {
 
         for (final Chunk chunk : chunkList) {
             this.invalidateChunk(chunk);
-            chunkIndicesByWorld.computeIfAbsent(chunk.getWorld(), __ -> new LongOpenHashSet()).add(ChunkUtil.indexChunk(chunk.getX(), chunk.getZ()));
+            chunkIndicesByWorld.computeIfAbsent(chunk.getWorld(), _ -> new LongOpenHashSet()).add(ChunkUtil.indexChunk(chunk.getX(), chunk.getZ()));
         }
 
         for (final Map.Entry<World, LongOpenHashSet> entry : chunkIndicesByWorld.entrySet()) {
