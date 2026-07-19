@@ -80,11 +80,11 @@ public class TerritoryTickingListener implements Module<ClansPlugin, ClanManager
 
         UtilEvent.dispatch(new TerritoryChangeEvent(playerRef));
 
-        territoryClanOptional.ifPresent(clan -> UtilEvent.dispatch(new TerritoryEnterEvent(playerRef, clan)));
+        territoryClanOptional.ifPresent(territoryClan -> UtilEvent.dispatch(new TerritoryEnterEvent(playerRef, territoryClan)));
 
         if (previousTerritoryKey != null) {
-            this.getManager().getClanById(previousTerritoryKey).ifPresent(clan -> {
-                UtilEvent.dispatch(new TerritoryExitEvent(playerRef, clan));
+            this.getManager().getClanById(previousTerritoryKey).ifPresent(previousTerritoryClan -> {
+                UtilEvent.dispatch(new TerritoryExitEvent(playerRef, previousTerritoryClan));
             });
         }
     }

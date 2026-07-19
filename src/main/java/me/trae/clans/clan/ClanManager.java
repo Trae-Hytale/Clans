@@ -164,6 +164,7 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
     @Override
     public Optional<Clan> searchClan(final IMessageReceiver messageReceiver, final String name, final boolean inform, final Predicate<Clan> predicate) {
         return UtilSearch.search(
+                Clan.class,
                 this.getClans(),
                 predicate,
                 clan -> clan.getName().equalsIgnoreCase(name),
@@ -206,6 +207,7 @@ public class ClanManager implements Manager<ClansPlugin>, SchedulerSource<Clan>,
         final List<Client> clientList = clan.getMembers().values().stream().map(member -> this.getClientManager().getClientById(member.getId()).orElse(null)).toList();
 
         return UtilSearch.search(
+                Client.class,
                 clientList,
                 predicate != null ? client -> clan.getMemberById(client.getId()).map(predicate::test).orElse(false) : null,
                 memberClient -> memberClient.getName().equalsIgnoreCase(name),

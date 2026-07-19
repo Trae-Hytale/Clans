@@ -87,6 +87,6 @@ public class ClanTerritoryBlockUseListener implements Module<ClansPlugin, ClanMa
             return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.GATEWAY_INTERACT);
         }
 
-        return false;
+        return this.getManager().canInteract(playerRef, playerClan, territoryClan, InteractType.BLOCK_INTERACT);
     }
 }

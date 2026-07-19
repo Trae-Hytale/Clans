@@ -3,6 +3,7 @@ package me.trae.clans.clan;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import io.github.trae.database.domain.data.DomainData;
 import io.github.trae.database.domain.models.Domain;
+import io.github.trae.di.InjectorApi;
 import io.github.trae.hytale.framework.utility.UtilLocation;
 import io.github.trae.hytale.framework.utility.enums.ChatColor;
 import io.github.trae.hytale.framework.wrappers.BlockLocation;
@@ -27,6 +28,7 @@ import me.trae.clans.clan.data.properties.PillageProperty;
 import me.trae.clans.clan.data.properties.RequestProperty;
 import me.trae.clans.clan.interfaces.IClan;
 import me.trae.clans.clan.properties.ClanProperty;
+import me.trae.core.client.ClientManager;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -119,7 +121,13 @@ public class Clan implements Domain<ClanProperty>, IClan {
 
     @Override
     public boolean isOnline() {
-        return this.getMembers().values().stream().anyMatch(Member::isOnline);
+        return this.getMembers().values().stream().anyMatch(member -> {
+            if (!(member.isOnline())) {
+                return false;
+            }
+
+            return InjectorApi.get(ClientManager.class).getClientById(member.getId()).map(client -> !(client.isAdministrating())).orElse(true);
+        });
     }
 
     @Override
